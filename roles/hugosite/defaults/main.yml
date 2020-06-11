@@ -1,0 +1,6 @@
+---
+# defaults file for hugosite
+#
+build_git_repo: "https://github.com/operator-framework/olm-docs"
+github_docs_dir: "."
+updown: "absent"

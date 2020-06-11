@@ -1,0 +1,1303 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="generator" content="Hugo 0.69.2" />
+
+<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+
+<link rel="shortcut icon" href="/favicons/favicon.ico" >
+<link rel="apple-touch-icon" href="/favicons/apple-touch-icon-180x180.png" sizes="180x180">
+<link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">
+<link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicons/android-36x36.png" sizes="36x36">
+<link rel="icon" type="image/png" href="/favicons/android-48x48.png" sizes="48x48">
+<link rel="icon" type="image/png" href="/favicons/android-72x72.png" sizes="72x72">
+<link rel="icon" type="image/png" href="/favicons/android-96x96.png" sizes="96x96">
+<link rel="icon" type="image/png" href="/favicons/android-144x144.png" sizes="144x144">
+<link rel="icon" type="image/png" href="/favicons/android-192x192.png" sizes="192x192">
+
+<title>Ansible Playbook Bundle Migration Operator | Operator SDK</title><meta property="og:title" content="Ansible Playbook Bundle Migration Operator" />
+<meta property="og:description" content="This guide will walk you through migrating your legacy Ansible Playbook Bundles (APB) to a more modern Kubernetes Operator architecture. We will cover how to prepare a new Ansible-based Operator, cover the changes that you will need to make to the Ansible logic in your existing APB, and at the end you will have a functional Operator.
+Directory structure and metadata Generate Operator resources Before we begin our migration, we need to first generate an Ansible operator using the operator-sdk tool." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/docs/ansible/reference/apb-migration-guide/" />
+
+<meta itemprop="name" content="Ansible Playbook Bundle Migration Operator">
+<meta itemprop="description" content="This guide will walk you through migrating your legacy Ansible Playbook Bundles (APB) to a more modern Kubernetes Operator architecture. We will cover how to prepare a new Ansible-based Operator, cover the changes that you will need to make to the Ansible logic in your existing APB, and at the end you will have a functional Operator.
+Directory structure and metadata Generate Operator resources Before we begin our migration, we need to first generate an Ansible operator using the operator-sdk tool.">
+
+<meta itemprop="wordCount" content="1256">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Ansible Playbook Bundle Migration Operator"/>
+<meta name="twitter:description" content="This guide will walk you through migrating your legacy Ansible Playbook Bundles (APB) to a more modern Kubernetes Operator architecture. We will cover how to prepare a new Ansible-based Operator, cover the changes that you will need to make to the Ansible logic in your existing APB, and at the end you will have a functional Operator.
+Directory structure and metadata Generate Operator resources Before we begin our migration, we need to first generate an Ansible operator using the operator-sdk tool."/>
+
+
+
+
+
+<link rel="preload" href="/scss/main.min.2156b902b150b9e3872e1d22ac593d6651f390478d18ef3c04a45ca6b90d637b.css" as="style">
+<link href="/scss/main.min.2156b902b150b9e3872e1d22ac593d6651f390478d18ef3c04a45ca6b90d637b.css" rel="stylesheet" integrity="">
+
+
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+
+
+  </head>
+  <body class="td-page">
+    <header>
+      <header class="of-header-main">
+    <a href="/" class="of-brand">
+      <picture class="of-brand__picture">
+        <source srcset="/build/images/logo.svg" media="(min-width: 992px)">
+        <img src="/build/images/logo-sm.svg" alt="">  
+      </picture> 
+        </a>
+    <nav class="of-nav-main nav-collapse">
+      <ul class="of-nav-main__items menu-items">
+        <li class="of-nav-main__item"><a class="of-link-list__a " href="/">Home</a></li>
+        
+    
+    <li class="of-nav-main__item"><a class="of-link-list__a" href="/build/" title="Build">Build</a></li>
+    
+    <li class="of-nav-main__item"><a class="of-link-list__a" href="/docs/" title="Documentation">Documentation</a></li>
+    
+    </ul>
+    </nav>
+   
+    <div class="of-header-main__search">
+		
+
+    </div>
+  </header>
+    </header>
+    <div class="container-fluid td-outer">
+      <div class="td-main">
+        <div class="row flex-xl-nowrap">
+          <div class="col-12 col-md-3 col-xl-2 td-sidebar d-print-none">
+            
+
+
+
+
+<div id="td-sidebar-menu" class="td-sidebar__inner">
+  
+  <nav class="collapse td-sidebar-nav pt-2 pl-4" id="td-section-nav">
+    
+    
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/" class="align-left pl-0 pr-2 td-sidebar-link td-sidebar-link__section">Documentation</a>
+  </li>
+  <ul>
+    <li class="collapse show" id="docs">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsinstall-operator-sdk" href="/docs/install-operator-sdk/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuilderquickstart" href="/docs/kubebuilder/quickstart/">Quickstart</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/ansible/" class="align-left pl-0 pr-2 td-sidebar-link td-sidebar-link__section">Ansible Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse show" id="docsansible">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibleinstallation" href="/docs/ansible/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblequickstart" href="/docs/ansible/quickstart/">Quickstart</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibletesting-guide" href="/docs/ansible/testing-guide/">Testing with Molecule</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibledevelopment-tips" href="/docs/ansible/development-tips/">Development Tips</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/ansible/reference/" class="align-left pl-0 pr-2 active td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse show" id="docsansiblereference">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceadvanced_options" href="/docs/ansible/reference/advanced_options/">Advanced Options</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page  active" id="m-docsansiblereferenceapb-migration-guide" href="/docs/ansible/reference/apb-migration-guide/">APB Migration</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencedependent-watches" href="/docs/ansible/reference/dependent-watches/">Dependent Watches</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencefinalizers" href="/docs/ansible/reference/finalizers/">Finalizers</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceinformation-flow-ansible-operator" href="/docs/ansible/reference/information-flow-ansible-operator/">Information Flow</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceretroactively-owned-resources" href="/docs/ansible/reference/retroactively-owned-resources/">Retroactively Owned Resources</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencescaffolding" href="/docs/ansible/reference/scaffolding/">Scaffolding</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencewatches" href="/docs/ansible/reference/watches/">Watches</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibledevwebhooks" href="/docs/ansible/dev/webhooks/"></a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Golang Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolang">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolanginstallation" href="/docs/golang/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangquickstart" href="/docs/golang/quickstart/">Quickstart</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangunit-testing" href="/docs/golang/unit-testing/">Unit Testing</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolange2e-tests" href="/docs/golang/e2e-tests/">Writing E2E Tests</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/monitoring/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Monitoring</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangmonitoring">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangmonitoringprometheus" href="/docs/golang/monitoring/prometheus/">With Prometheus</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangmonitoringservice-monitor" href="/docs/golang/monitoring/service-monitor/">Using Prometheus Operator ServiceMonitor CRD</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/olm-integration/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Integrating with OLM</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangolm-integration">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationcsv-annotations" href="/docs/golang/olm-integration/csv-annotations/">CSV Code Annotations</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationgenerating-a-csv" href="/docs/golang/olm-integration/generating-a-csv/">Generating ClusterServiceVersion&#39;s</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationolm-cli" href="/docs/golang/olm-integration/olm-cli/">Running with OLM</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationbundle-cli" href="/docs/golang/olm-integration/bundle-cli/">Working with Bundles</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/references/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangreferences">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesclient" href="/docs/golang/references/client/">Controller Runtime Client API</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesevent-filtering" href="/docs/golang/references/event-filtering/">Using Predicates for Event Filtering</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferenceslogging" href="/docs/golang/references/logging/">Logging</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesproject_layout" href="/docs/golang/references/project_layout/">Project Layout</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/helm/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Helm Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docshelm">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelminstallation" href="/docs/helm/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmquickstart" href="/docs/helm/quickstart/">Quickstart</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/helm/reference/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docshelmreference">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferenceadvanced_features" href="/docs/helm/reference/advanced_features/">Advanced Features</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferencescaffolding" href="/docs/helm/reference/scaffolding/">Scaffolding</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferencewatches" href="/docs/helm/reference/watches/">Watches</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/scorecard/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Scorecard</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsscorecard">
+      
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/cli/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">CLI Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscli">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk" href="/docs/cli/operator-sdk/">operator-sdk</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add" href="/docs/cli/operator-sdk_add/">operator-sdk add</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_api" href="/docs/cli/operator-sdk_add_api/">operator-sdk add api</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_controller" href="/docs/cli/operator-sdk_add_controller/">operator-sdk add controller</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_crd" href="/docs/cli/operator-sdk_add_crd/">operator-sdk add crd</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_build" href="/docs/cli/operator-sdk_build/">operator-sdk build</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle" href="/docs/cli/operator-sdk_bundle/">operator-sdk bundle</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle_create" href="/docs/cli/operator-sdk_bundle_create/">operator-sdk bundle create</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle_validate" href="/docs/cli/operator-sdk_bundle_validate/">operator-sdk bundle validate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_cleanup" href="/docs/cli/operator-sdk_cleanup/">operator-sdk cleanup</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion" href="/docs/cli/operator-sdk_completion/">operator-sdk completion</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion_bash" href="/docs/cli/operator-sdk_completion_bash/">operator-sdk completion bash</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion_zsh" href="/docs/cli/operator-sdk_completion_zsh/">operator-sdk completion zsh</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate" href="/docs/cli/operator-sdk_generate/">operator-sdk generate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_crds" href="/docs/cli/operator-sdk_generate_crds/">operator-sdk generate crds</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_csv" href="/docs/cli/operator-sdk_generate_csv/">operator-sdk generate csv</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_k8s" href="/docs/cli/operator-sdk_generate_k8s/">operator-sdk generate k8s</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_migrate" href="/docs/cli/operator-sdk_migrate/">operator-sdk migrate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_new" href="/docs/cli/operator-sdk_new/">operator-sdk new</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm" href="/docs/cli/operator-sdk_olm/">operator-sdk olm</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_install" href="/docs/cli/operator-sdk_olm_install/">operator-sdk olm install</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_status" href="/docs/cli/operator-sdk_olm_status/">operator-sdk olm status</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_uninstall" href="/docs/cli/operator-sdk_olm_uninstall/">operator-sdk olm uninstall</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_print-deps" href="/docs/cli/operator-sdk_print-deps/">operator-sdk print-deps</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_run" href="/docs/cli/operator-sdk_run/">operator-sdk run</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_scorecard" href="/docs/cli/operator-sdk_scorecard/">operator-sdk scorecard</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_test" href="/docs/cli/operator-sdk_test/">operator-sdk test</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_test_local" href="/docs/cli/operator-sdk_test_local/">operator-sdk test local</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_version" href="/docs/cli/operator-sdk_version/">operator-sdk version</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/contribution-guidelines/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Contribution Guidelines</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscontribution-guidelines">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesdeveloper-guide" href="/docs/contribution-guidelines/developer-guide/">Development Environment</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesrelease" href="/docs/contribution-guidelines/release/">Release Guide</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesreporting-issues" href="/docs/contribution-guidelines/reporting-issues/">Reporting Issues</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/contribution-guidelines/testing/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Testing</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscontribution-guidelinestesting">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinestestingrunning-the-tests" href="/docs/contribution-guidelines/testing/running-the-tests/">Running Tests</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinestestingtravis-build" href="/docs/contribution-guidelines/testing/travis-build/">Travis CI</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelineslocal-changes" href="/docs/contribution-guidelines/local-changes/">Local Changes</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelineslocal-docs" href="/docs/contribution-guidelines/local-docs/">Local Docs</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrating-existing-apis" href="/docs/migrating-existing-apis/">Migrating Existing K8S APIs</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/migration/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Migration Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsmigration">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrationv010-migration-guide" href="/docs/migration/v0.1.0-migration-guide/">Migration</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrationversion-upgrade-guide" href="/docs/migration/version-upgrade-guide/">Version Upgrade</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsoperator-scope" href="/docs/operator-scope/">Operator Scope</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsversioning" href="/docs/versioning/">Versioning</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsfaq" href="/docs/faq/">FAQ</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuilderadvanced-topics" href="/docs/kubebuilder/advanced-topics/"></a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuildermigrationproject_migration_guide" href="/docs/kubebuilder/migration/project_migration_guide/"></a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+  </nav>
+</div>
+
+
+
+
+          </div>
+
+          <main class="col-12 col-md-9 col-xl-8 pl-md-5" role="main">
+            
+  
+
+            
+            
+<div class="td-content">
+	<h1>Ansible Playbook Bundle Migration Operator</h1>
+	
+	<p>This guide will walk you through migrating your legacy Ansible Playbook Bundles (APB)
+to a more modern Kubernetes Operator architecture. We will cover how to prepare a new
+Ansible-based Operator, cover the changes that you will need to make to the Ansible
+logic in your existing APB, and at the end you will have a functional Operator.</p>
+<h2 id="directory-structure-and-metadata">Directory structure and metadata</h2>
+<h3 id="generate-operator-resources">Generate Operator resources</h3>
+<p>Before we begin our migration, we need to first generate an Ansible operator using the operator-sdk tool. Run the following command:</p>
+<pre><code>operator-sdk new &lt;name&gt; --type=ansible --api-version=&lt;group&gt;/&lt;version&gt; --kind=&lt;kind&gt;`
+</code></pre><p>where:</p>
+<ul>
+<li><code>&lt;name&gt;</code> is the name for your operator, so if for example you have a <code>memcached-apb</code>, you would probably use <code>memcached-operator</code></li>
+<li><code>&lt;group&gt;</code> is the API group for your Kubernetes Custom Resource Definition. For example, if I own the domain <code>example.com</code>, I might use the group <code>apps.example.com</code>.</li>
+<li><code>&lt;version&gt;</code> is the API version for your Kubernetes Custom Resource Definition. <code>v1alpha1</code> is a common starting value, with <code>v1beta1</code> implying a fair amount of API stability and <code>v1</code> implying no breaking API changes at all.</li>
+<li><code>&lt;kind&gt;</code> is the kind of your resource. For example, if you are creating a <code>memcached-operator</code>, your <code>kind</code> would likely be <code>Memcached</code></li>
+</ul>
+<p>So for the example <code>memcached-operator</code>, the command would be:</p>
+<pre><code>operator-sdk new memcached-operator --type=ansible --api-version=apps.example.com/v1alpha1 --kind=Memcached
+</code></pre><p>Once this is generated, take the <code>build</code>, <code>deploy</code>, and <code>molecule</code> directories, as well as the <code>watches.yaml</code> and copy them into your APB directory.</p>
+<h3 id="dockerfile">Dockerfile</h3>
+<p>You now have two Dockerfiles, your original APB <code>Dockerfile</code> at the top-level, and a <code>build/Dockerfile</code> for your operator.</p>
+<p>In your <code>build/Dockerfile</code>, ensure that your playbooks and roles are being copied to <code>${HOME}/roles</code> and <code>${HOME}/playbooks</code>, and that your <code>watches.yaml</code> is being copied to <code>${HOME}/watches.yaml</code>.</p>
+<p>If you are installing any additional dependencies, ensure that those are reflected in your <code>build/Dockerfile</code> as well.</p>
+<p>As a sample, your <code>build/Dockerfile</code> will probably look something like this:</p>
+<pre><code>FROM quay.io/operator-framework/ansible-operator:v0.9.0
+
+COPY watches.yaml ${HOME}/watches.yaml
+
+COPY roles/ ${HOME}/roles/
+COPY playbooks/ ${HOME}/playbooks/
+</code></pre><p>Once this is done you may remove your original APB <code>Dockerfile</code>.</p>
+<h3 id="watchesyaml">watches.yaml</h3>
+<p>In the <code>watches.yaml</code>, ensure the playbook for your <code>kind</code> points to your <code>provision.yml</code> playbook in the container (likely location for that will be <code>/opt/ansible/playbooks/provision.yml</code>).</p>
+<p>Next, add a finalizer block with a name of: <code>finalizer.&lt;name&gt;.&lt;group&gt;/&lt;version&gt;</code>, and set the playbook to point to your <code>deprovision.yml</code> in the container (likely location for that will be <code>/opt/ansible/playbooks/deprovision.yml</code>). For the memcached-operator we generated above, the watches.yaml would look like this:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span>- <span style="color:#204a87;font-weight:bold">version</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>v1alpha1<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">group</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>apps.example.com<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">kind</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Memcached<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">playbook</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>/opt/ansible/playbooks/provision.yml<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">finalizer</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>finalizer.memcached.apps.example.com/v1alpha1<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">playbook</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>/opt/ansible/playbooks/deprovision.yml<span style="color:#f8f8f8;text-decoration:underline">
+</span></code></pre></div><h4 id="binding">Binding</h4>
+<p>If you have a <code>bind</code> playbook, add a new entry to your <code>watches.yaml</code> (you can copy paste the existing entry).</p>
+<p>The <code>version</code> and <code>group</code>, will remain unchanged, but update the <code>kind</code> with a <code>Binding</code> suffix.</p>
+<p>For example, if you have a resource with <code>kind: Memcached</code>, the kind of your new entry will be <code>MemcachedBinding</code>.</p>
+<p>The playbook for this entry should map to your <code>bind</code> playbook, (likely location <code>/opt/ansible/playbooks/bind.yml</code>), and if you have an <code>unbind</code> playbook then set the playbook for the finalizer to point to it (likely location <code>/opt/ansible/playbooks/unbind.yml</code>). If you don&rsquo;t have an <code>unbind</code> playbook, remove the finalizer block for your <code>Binding</code> resource.</p>
+<p>For an APB with both <code>bind</code> and <code>unbind</code> playbooks, the <code>watches.yaml</code> would end up looking like this:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span>- <span style="color:#204a87;font-weight:bold">version</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>v1alpha1<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">group</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>apps.example.com<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">kind</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Memcached<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">playbook</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>/opt/ansible/playbooks/provision.yml<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">finalizer</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>finalizer.memcached.apps.example.com/v1alpha1<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">playbook</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>/opt/ansible/playbooks/deprovision.yml<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span>- <span style="color:#204a87;font-weight:bold">version</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>v1alpha1<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">group</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>apps.example.com<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">kind</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>MemcachedBinding<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">playbook</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>/opt/ansible/playbooks/bind.yml<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">finalizer</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>finalizer.memcachedbinding.apps.example.com/v1alpha1<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">playbook</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>/opt/ansible/playbooks/unbind.yml<span style="color:#f8f8f8;text-decoration:underline">
+</span></code></pre></div><p>You will also need to run <code>operator-sdk add crd --api-version=&lt;group&gt;/&lt;version&gt; --kind=&lt;kind&gt;</code> to generate a new CRD and example in <code>deploy/crds</code>.</p>
+<h3 id="deploycrds">deploy/crds/</h3>
+<p>Now that you have all your CRDs created, you can generate the OpenAPI spec for them using your <code>apb.yml</code>.</p>
+<p>The <code>convert.py</code> script included at the bottom of this document can handle the conversion to the OpenAPI spec, at which point you can copy paste everything from <code>validation:</code> on into your primary CRD (for the regular <code>parameters</code>), or into your <code>Binding</code> CRD (for <code>bind_parameters</code>).</p>
+<p>You may notice that the OpenAPI validation uses <code>camelCase</code> parameters, while your <code>apb.yml</code> and Ansible playbooks probably assume <code>snake_case</code> variables. <code>Ansible Operator</code> will automatically convert the <code>camelCase</code> parameters from the Kubernetes resource into <code>snake_case</code> before passing them to your playbook, so this should not require any change on your part.</p>
+<h2 id="ansible-logic">Ansible logic</h2>
+<p>There will be some changes required to your Ansible playbooks/roles/tasks.</p>
+<h3 id="idempotence">Idempotence</h3>
+<p>One major conceptual difference between the APB model and the Operator model, is that APBs are meant to run <code>provision</code> once, while operators constantly reconcile to ensure that the state of the cluster matches the state that the user requested.</p>
+<p>This means that you will need to ensure that your playbooks are idempotent, and can be run repeatedly with the same parameters without causing an error.</p>
+<h3 id="service-bundle-contract-and-meta-variables">Service Bundle contract and meta variables</h3>
+<p>Ansible Operator does not respect the Service Bundle contract that exists between APBs and the Ansible Service Broker. The following variables will not be passed in by the Ansible Operator:</p>
+<ul>
+<li><code>cluster</code>: Operators ideally work on both Kubernetes and OpenShift, so any uses of openshift-specific resources should handle errors and fallback</li>
+<li><code>_apb_plan_id</code>: Operators have no concept of a plan</li>
+<li><code>_apb_service_class_id</code>: This concept is replaced by the group/version/kind specified in your CRD</li>
+<li><code>_apb_service_instance_id</code>: This concept is replaced by <code>meta.name</code>, the name of the Custom Resource created by the user requesting the action.</li>
+<li><code>_apb_last_requesting_user</code>: There is no analogue to this.</li>
+<li><code>_apb_provision_creds</code>: There is no analogue to this.</li>
+<li><code>_apb_service_binding_id</code>: This concept is replaced by the <code>meta.name</code> of a <code>&lt;kind&gt;Binding</code> resource</li>
+<li><code>namespace</code>: This is accessible via the <code>meta.namespace</code> variable</li>
+</ul>
+<p>Instead, the Ansible Operator will pass in a field called <code>meta</code>, which contains the <code>name</code> and <code>namespace</code> of the Custom Resource that the user created.</p>
+<h3 id="asb_encode_binding">asb_encode_binding</h3>
+<p>The <code>asb_encode_binding</code> module will not be present in the Ansible Operator base image. In order to save credentials after a successful provision, you will need to create a <code>secret</code> in Kubernetes, and update the status of your custom resource so that people can find it. For example, if we have the following Custom Resource group/version/kind:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#204a87;font-weight:bold">version</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>v1alpha1<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span><span style="color:#204a87;font-weight:bold">group</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>apps.example.com<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span><span style="color:#204a87;font-weight:bold">kind</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>PostgreSQL<span style="color:#f8f8f8;text-decoration:underline">
+</span></code></pre></div><p>the following task:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>encode<span style="color:#f8f8f8;text-decoration:underline"> </span>bind<span style="color:#f8f8f8;text-decoration:underline"> </span>credentials<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">asb_encode_binding</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">fields</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span><span style="color:#204a87;font-weight:bold">DB_TYPE</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>postgres<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span><span style="color:#204a87;font-weight:bold">DB_HOST</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#34;{{ app_name }}&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span><span style="color:#204a87;font-weight:bold">DB_PORT</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#34;5432&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span><span style="color:#204a87;font-weight:bold">DB_USER</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#34;{{ postgresql_user }}&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span><span style="color:#204a87;font-weight:bold">DB_PASSWORD</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#34;{{ postgresql_password }}&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span><span style="color:#204a87;font-weight:bold">DB_NAME</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#34;{{ postgresql_database }}&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></code></pre></div><p>would become:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Create<span style="color:#f8f8f8;text-decoration:underline"> </span>bind<span style="color:#f8f8f8;text-decoration:underline"> </span>credential<span style="color:#f8f8f8;text-decoration:underline"> </span>secret<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">community.kubernetes.k8s</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">definition</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span><span style="color:#204a87;font-weight:bold">apiVersion</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>v1<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span><span style="color:#204a87;font-weight:bold">kind</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Secret<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span><span style="color:#204a87;font-weight:bold">metadata</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#39;{{ meta.name }}-credentials&#39;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">namespace</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#39;{{ meta.namespace }}&#39;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span><span style="color:#204a87;font-weight:bold">data</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">DB_TYPE</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#34;{{ &#39;postgres&#39; | b64encode }}&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">DB_HOST</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#34;{{ app_name | b64encode }}&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">DB_PORT</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#34;{{ &#39;5432&#39; | b64encode }}&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">DB_USER</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#34;{{ postgresql_user | b64encode }}&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">DB_PASSWORD</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#34;{{ postgresql_password | b64encode }}&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">DB_NAME</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#34;{{ postgresql_database | b64encode }}&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span>- <span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Attach<span style="color:#f8f8f8;text-decoration:underline"> </span>secret<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>CR<span style="color:#f8f8f8;text-decoration:underline"> </span>status<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">operator_sdk.util.k8s_status</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">api_version</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>apps.example.com/v1alpha1<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">kind</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>PostgreSQL<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#39;{{ meta.name }}&#39;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">namespace</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#39;{{ meta.namespace }}&#39;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">status</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span><span style="color:#204a87;font-weight:bold">bind_credentials_secret</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#39;{{ meta.name }}-credentials&#39;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></code></pre></div><h3 id="ansible_kubernetes_modules">ansible_kubernetes_modules</h3>
+<p>The <code>ansible_kubernetes_modules</code> role and the generated modules are now deprecated.
+The  <code>community.kubernetes</code> Ansible collection supports Ansible 2.9+ and is the supported way to interact with Kubernetes from Ansible.
+The <code>community.kubernetes.k8s</code> module takes normal kubernetes manifests, so if you currently rely on the old generated modules some refactoring will be required.</p>
+<h1 id="convertpy">convert.py</h1>
+<p>The <code>convert.py</code> script should be run from inside the APB directory, next to the <code>apb.yml</code></p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8f5902;font-style:italic">#!/usr/bin/env python</span>
+
+<span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">yaml</span>
+
+
+<span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">extract_params</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">all_params</span><span style="color:#000;font-weight:bold">):</span>
+    <span style="color:#000">properties</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">{}</span>
+    <span style="color:#000">required</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87">set</span><span style="color:#000;font-weight:bold">()</span>
+    <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">param</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">all_params</span><span style="color:#000;font-weight:bold">:</span>
+        <span style="color:#000">name</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">param</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;name&#39;</span><span style="color:#000;font-weight:bold">]</span>
+        <span style="color:#000">name_parts</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">split</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#39;_&#39;</span><span style="color:#000;font-weight:bold">)</span>
+        <span style="color:#000">camel_name</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">name_parts</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#4e9a06">&#39;&#39;</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">join</span><span style="color:#000;font-weight:bold">([</span><span style="color:#000">x</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">title</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">x</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">name_parts</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">:]])</span>
+        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">param</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#39;required&#39;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">is</span> <span style="color:#3465a4">True</span><span style="color:#000;font-weight:bold">:</span>
+            <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">camel_name</span> <span style="color:#204a87;font-weight:bold">not</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">properties</span><span style="color:#000;font-weight:bold">:</span>
+                <span style="color:#000">required</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">add</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">camel_name</span><span style="color:#000;font-weight:bold">)</span>
+        <span style="color:#204a87;font-weight:bold">elif</span> <span style="color:#000">camel_name</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">required</span> <span style="color:#204a87;font-weight:bold">and</span> <span style="color:#000">param</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#39;required&#39;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">is</span> <span style="color:#3465a4">False</span><span style="color:#000;font-weight:bold">:</span>
+            <span style="color:#000">required</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">remove</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">camel_name</span><span style="color:#000;font-weight:bold">)</span>
+        <span style="color:#000">properties</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">camel_name</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#4e9a06">&#34;type&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">param</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#34;type&#34;</span><span style="color:#000;font-weight:bold">],</span>
+            <span style="color:#4e9a06">&#34;description&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">param</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;description&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">param</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;title&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;&#34;</span><span style="color:#000;font-weight:bold">))</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#4e9a06">&#34;validation&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">&#34;openAPIv3Schema&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#4e9a06">&#34;properties&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#4e9a06">&#34;spec&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#4e9a06">&#34;required&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">list</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">required</span><span style="color:#000;font-weight:bold">),</span>
+                    <span style="color:#4e9a06">&#34;properties&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">properties</span>
+                <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+
+<span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">main</span><span style="color:#000;font-weight:bold">():</span>
+    <span style="color:#204a87;font-weight:bold">with</span> <span style="color:#204a87">open</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#39;apb.yml&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#39;r&#39;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">f</span><span style="color:#000;font-weight:bold">:</span>
+        <span style="color:#000">apb_meta</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">yaml</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">safe_load</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">f</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">read</span><span style="color:#000;font-weight:bold">())</span>
+
+    <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">field</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;parameters&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#39;bind_parameters&#39;</span><span style="color:#000;font-weight:bold">]:</span>
+        <span style="color:#204a87;font-weight:bold">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Converting {0} to OpenAPI spec&#34;</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">format</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">field</span><span style="color:#000;font-weight:bold">))</span>
+        <span style="color:#204a87;font-weight:bold">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">yaml</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">dump</span><span style="color:#000;font-weight:bold">({</span><span style="color:#000">field</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">extract_params</span><span style="color:#000;font-weight:bold">([</span>
+            <span style="color:#000">param</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">x</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">apb_meta</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;plans&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">param</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">x</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">field</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">[])</span>
+        <span style="color:#000;font-weight:bold">])},</span> <span style="color:#000">default_flow_style</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#3465a4">False</span><span style="color:#000;font-weight:bold">))</span>
+
+
+<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">__name__</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#39;__main__&#39;</span><span style="color:#000;font-weight:bold">:</span>
+    <span style="color:#000">main</span><span style="color:#000;font-weight:bold">()</span>
+</code></pre></div><p>It will parse the <code>parameters</code> and <code>bind_parameters</code> from your <code>apb.yml</code>, and output OpenAPI
+validation blocks that can be included in your <code>CustomResourceDefinition</code>s. For example, when
+run through the <code>convert.py</code> script, the following <code>apb.yml</code>:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#204a87;font-weight:bold">version</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#0000cf;font-weight:bold">1.0.0</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span><span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>keycloak-apb<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span><span style="color:#204a87;font-weight:bold">description</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Keycloak<span style="color:#f8f8f8;text-decoration:underline"> </span>- Open<span style="color:#f8f8f8;text-decoration:underline"> </span>Source<span style="color:#f8f8f8;text-decoration:underline"> </span>Identity<span style="color:#f8f8f8;text-decoration:underline"> </span>and<span style="color:#f8f8f8;text-decoration:underline"> </span>Access<span style="color:#f8f8f8;text-decoration:underline"> </span>Management<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span><span style="color:#204a87;font-weight:bold">bindable</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>True<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span><span style="color:#204a87;font-weight:bold">async</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>optional<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span><span style="color:#204a87;font-weight:bold">tags</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span>- sso<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span>- keycloak<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span><span style="color:#204a87;font-weight:bold">metadata</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">displayName</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Keycloak<span style="color:#f8f8f8;text-decoration:underline"> </span>(APB)<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">imageUrl</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#34;https://github.com/ansibleplaybookbundle/keycloak-apb/raw/master/docs/imgs/keycloak_ico.png&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">documentationUrl</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#34;http://www.keycloak.org/documentation.html&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">providerDisplayName</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#34;Red Hat, Inc.&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">dependencies</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span>- <span style="color:#4e9a06">&#39;docker.io/jboss/keycloak-openshift:3.4.3.Final&#39;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span>- <span style="color:#4e9a06">&#39;centos/postgresql-95-centos7:9.5&#39;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">serviceName</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>keycloak<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span><span style="color:#204a87;font-weight:bold">plans</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span>- <span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>ephemeral<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">description</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Deploy<span style="color:#f8f8f8;text-decoration:underline"> </span>keycloak<span style="color:#f8f8f8;text-decoration:underline"> </span>without<span style="color:#f8f8f8;text-decoration:underline"> </span>persistence<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">free</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>True<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">metadata</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span><span style="color:#204a87;font-weight:bold">displayName</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Keycloak<span style="color:#f8f8f8;text-decoration:underline"> </span>ephemeral<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">parameters</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span>- <span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>admin_username<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">required</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>True<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">default</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>admin<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>string<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">title</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Keycloak<span style="color:#f8f8f8;text-decoration:underline"> </span>admin<span style="color:#f8f8f8;text-decoration:underline"> </span>username<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span>- <span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>admin_password<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">required</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>True<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>string<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">display_type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>password<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">title</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Keycloak<span style="color:#f8f8f8;text-decoration:underline"> </span>admin<span style="color:#f8f8f8;text-decoration:underline"> </span>password<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span>- <span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>apb_keycloak_uri<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">required</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>False<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>string<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">title</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Keycloak<span style="color:#f8f8f8;text-decoration:underline"> </span>URL<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">description</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>URL<span style="color:#f8f8f8;text-decoration:underline"> </span>where<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>applications<span style="color:#f8f8f8;text-decoration:underline"> </span>should<span style="color:#f8f8f8;text-decoration:underline"> </span>redirect<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>for<span style="color:#f8f8f8;text-decoration:underline"> </span>authentication.<span style="color:#f8f8f8;text-decoration:underline"> </span>Must<span style="color:#f8f8f8;text-decoration:underline"> </span>be<span style="color:#f8f8f8;text-decoration:underline"> </span>resolvable<span style="color:#f8f8f8;text-decoration:underline"> </span>by<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>browser<span style="color:#f8f8f8;text-decoration:underline"> </span>and<span style="color:#f8f8f8;text-decoration:underline"> </span>pods.<span style="color:#f8f8f8;text-decoration:underline"> </span>Leave<span style="color:#f8f8f8;text-decoration:underline"> </span>empty<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>use<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>host<span style="color:#f8f8f8;text-decoration:underline"> </span>generated<span style="color:#f8f8f8;text-decoration:underline"> </span>by<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>route<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span>- <span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>keycloak_users<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">required</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>False<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>string<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">display_type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>textarea<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">title</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Users<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">description</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>JSON<span style="color:#f8f8f8;text-decoration:underline"> </span>defining<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>users<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>add<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>realm<span style="color:#f8f8f8;text-decoration:underline"> </span>and<span style="color:#f8f8f8;text-decoration:underline"> </span>their<span style="color:#f8f8f8;text-decoration:underline"> </span>memberships<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span>- <span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>keycloak_roles<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">required</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>False<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>string<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">display_type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>textarea<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">title</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Roles<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">description</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>JSON<span style="color:#f8f8f8;text-decoration:underline"> </span>defining<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>roles<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>add<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>realm<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">bind_parameters</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span>- <span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>service_name<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">display_group</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Provision<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">required</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>True<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">title</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Name<span style="color:#f8f8f8;text-decoration:underline"> </span>of<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>service<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>bind<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>string<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span>- <span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>redirect_uris<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">display_group</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Provision<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">required</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>True<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">title</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Redirect<span style="color:#f8f8f8;text-decoration:underline"> </span>URIs<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">description</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Valid<span style="color:#f8f8f8;text-decoration:underline"> </span>Redirect<span style="color:#f8f8f8;text-decoration:underline"> </span>URIs<span style="color:#f8f8f8;text-decoration:underline"> </span>a<span style="color:#f8f8f8;text-decoration:underline"> </span>browser<span style="color:#f8f8f8;text-decoration:underline"> </span>can<span style="color:#f8f8f8;text-decoration:underline"> </span>redirect<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>after<span style="color:#f8f8f8;text-decoration:underline"> </span>a<span style="color:#f8f8f8;text-decoration:underline"> </span>successful<span style="color:#f8f8f8;text-decoration:underline"> </span>login/logout.<span style="color:#f8f8f8;text-decoration:underline"> </span>Simple<span style="color:#f8f8f8;text-decoration:underline"> </span>wildcards<span style="color:#f8f8f8;text-decoration:underline"> </span>are<span style="color:#f8f8f8;text-decoration:underline"> </span>allowed.<span style="color:#f8f8f8;text-decoration:underline"> </span>e.g.<span style="color:#f8f8f8;text-decoration:underline"> </span>https<span style="color:#000;font-weight:bold">:</span>//myservice-myproject.apps.example.com/*<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>string<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span>- <span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>web_origins<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">display_group</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Provision<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">title</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Web<span style="color:#f8f8f8;text-decoration:underline"> </span>Origins<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">description</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Web<span style="color:#f8f8f8;text-decoration:underline"> </span>Origins<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>allow<span style="color:#f8f8f8;text-decoration:underline"> </span>CORS<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>string<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span>- <span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>sso_url_name<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">default</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>SSO_URL<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">display_group</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Binding<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">title</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Keycloak<span style="color:#f8f8f8;text-decoration:underline"> </span>URL<span style="color:#f8f8f8;text-decoration:underline"> </span>Variable<span style="color:#f8f8f8;text-decoration:underline"> </span>name<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">description</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>How<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>application<span style="color:#f8f8f8;text-decoration:underline"> </span>will<span style="color:#f8f8f8;text-decoration:underline"> </span>refer<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>Keycloak<span style="color:#f8f8f8;text-decoration:underline"> </span>URL<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>string<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span>- <span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>sso_realm_name<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">default</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>SSO_REALM<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">display_group</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Binding<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">title</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Keycloak<span style="color:#f8f8f8;text-decoration:underline"> </span>Realm<span style="color:#f8f8f8;text-decoration:underline"> </span>Variable<span style="color:#f8f8f8;text-decoration:underline"> </span>name<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">description</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>How<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>application<span style="color:#f8f8f8;text-decoration:underline"> </span>will<span style="color:#f8f8f8;text-decoration:underline"> </span>refer<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>Keycloak<span style="color:#f8f8f8;text-decoration:underline"> </span>Realm<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>string<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span>- <span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>sso_client_name<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">default</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>SSO_CLIENT<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">display_group</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Binding<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">title</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Keycloak<span style="color:#f8f8f8;text-decoration:underline"> </span>Client<span style="color:#f8f8f8;text-decoration:underline"> </span>Variable<span style="color:#f8f8f8;text-decoration:underline"> </span>name<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">description</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>How<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>application<span style="color:#f8f8f8;text-decoration:underline"> </span>will<span style="color:#f8f8f8;text-decoration:underline"> </span>refer<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>Keycloak<span style="color:#f8f8f8;text-decoration:underline"> </span>Client<span style="color:#f8f8f8;text-decoration:underline"> </span>name<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>string<span style="color:#f8f8f8;text-decoration:underline">
+</span></code></pre></div><p>will produce this output:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">Converting<span style="color:#f8f8f8;text-decoration:underline"> </span>parameters<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>OpenAPI<span style="color:#f8f8f8;text-decoration:underline"> </span>spec<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span><span style="color:#204a87;font-weight:bold">parameters</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">validation</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">openAPIv3Schema</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span><span style="color:#204a87;font-weight:bold">properties</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">spec</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">          </span><span style="color:#204a87;font-weight:bold">properties</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">            </span><span style="color:#204a87;font-weight:bold">adminPassword</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">description</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Keycloak<span style="color:#f8f8f8;text-decoration:underline"> </span>admin<span style="color:#f8f8f8;text-decoration:underline"> </span>password<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>string<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">            </span><span style="color:#204a87;font-weight:bold">adminUsername</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">description</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Keycloak<span style="color:#f8f8f8;text-decoration:underline"> </span>admin<span style="color:#f8f8f8;text-decoration:underline"> </span>username<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>string<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">            </span><span style="color:#204a87;font-weight:bold">apbKeycloakUri</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">description</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>URL<span style="color:#f8f8f8;text-decoration:underline"> </span>where<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>applications<span style="color:#f8f8f8;text-decoration:underline"> </span>should<span style="color:#f8f8f8;text-decoration:underline"> </span>redirect<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>for<span style="color:#f8f8f8;text-decoration:underline"> </span>authentication.<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">                </span>Must<span style="color:#f8f8f8;text-decoration:underline"> </span>be<span style="color:#f8f8f8;text-decoration:underline"> </span>resolvable<span style="color:#f8f8f8;text-decoration:underline"> </span>by<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>browser<span style="color:#f8f8f8;text-decoration:underline"> </span>and<span style="color:#f8f8f8;text-decoration:underline"> </span>pods.<span style="color:#f8f8f8;text-decoration:underline"> </span>Leave<span style="color:#f8f8f8;text-decoration:underline"> </span>empty<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>use<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">                </span>host<span style="color:#f8f8f8;text-decoration:underline"> </span>generated<span style="color:#f8f8f8;text-decoration:underline"> </span>by<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>route<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>string<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">            </span><span style="color:#204a87;font-weight:bold">keycloakRoles</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">description</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>JSON<span style="color:#f8f8f8;text-decoration:underline"> </span>defining<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>roles<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>add<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>realm<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>string<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">            </span><span style="color:#204a87;font-weight:bold">keycloakUsers</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">description</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>JSON<span style="color:#f8f8f8;text-decoration:underline"> </span>defining<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>users<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>add<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>realm<span style="color:#f8f8f8;text-decoration:underline"> </span>and<span style="color:#f8f8f8;text-decoration:underline"> </span>their<span style="color:#f8f8f8;text-decoration:underline"> </span>memberships<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>string<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">          </span><span style="color:#204a87;font-weight:bold">required</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">          </span>- adminUsername<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">          </span>- adminPassword<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span>Converting<span style="color:#f8f8f8;text-decoration:underline"> </span>bind_parameters<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>OpenAPI<span style="color:#f8f8f8;text-decoration:underline"> </span>spec<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span><span style="color:#204a87;font-weight:bold">bind_parameters</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">validation</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">openAPIv3Schema</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span><span style="color:#204a87;font-weight:bold">properties</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">spec</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">          </span><span style="color:#204a87;font-weight:bold">properties</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">            </span><span style="color:#204a87;font-weight:bold">redirectUris</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">description</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Valid<span style="color:#f8f8f8;text-decoration:underline"> </span>Redirect<span style="color:#f8f8f8;text-decoration:underline"> </span>URIs<span style="color:#f8f8f8;text-decoration:underline"> </span>a<span style="color:#f8f8f8;text-decoration:underline"> </span>browser<span style="color:#f8f8f8;text-decoration:underline"> </span>can<span style="color:#f8f8f8;text-decoration:underline"> </span>redirect<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>after<span style="color:#f8f8f8;text-decoration:underline"> </span>a<span style="color:#f8f8f8;text-decoration:underline"> </span>successful<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">                </span>login/logout.<span style="color:#f8f8f8;text-decoration:underline"> </span>Simple<span style="color:#f8f8f8;text-decoration:underline"> </span>wildcards<span style="color:#f8f8f8;text-decoration:underline"> </span>are<span style="color:#f8f8f8;text-decoration:underline"> </span>allowed.<span style="color:#f8f8f8;text-decoration:underline"> </span>e.g.<span style="color:#f8f8f8;text-decoration:underline"> </span>https<span style="color:#000;font-weight:bold">:</span>//myservice-myproject.apps.example.com/*<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>string<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">            </span><span style="color:#204a87;font-weight:bold">serviceName</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">description</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Name<span style="color:#f8f8f8;text-decoration:underline"> </span>of<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>service<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>bind<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>string<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">            </span><span style="color:#204a87;font-weight:bold">ssoClientName</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">description</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>How<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>application<span style="color:#f8f8f8;text-decoration:underline"> </span>will<span style="color:#f8f8f8;text-decoration:underline"> </span>refer<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>Keycloak<span style="color:#f8f8f8;text-decoration:underline"> </span>Client<span style="color:#f8f8f8;text-decoration:underline"> </span>name<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>string<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">            </span><span style="color:#204a87;font-weight:bold">ssoRealmName</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">description</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>How<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>application<span style="color:#f8f8f8;text-decoration:underline"> </span>will<span style="color:#f8f8f8;text-decoration:underline"> </span>refer<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>Keycloak<span style="color:#f8f8f8;text-decoration:underline"> </span>Realm<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>string<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">            </span><span style="color:#204a87;font-weight:bold">ssoUrlName</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">description</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>How<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>application<span style="color:#f8f8f8;text-decoration:underline"> </span>will<span style="color:#f8f8f8;text-decoration:underline"> </span>refer<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>the<span style="color:#f8f8f8;text-decoration:underline"> </span>Keycloak<span style="color:#f8f8f8;text-decoration:underline"> </span>URL<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>string<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">            </span><span style="color:#204a87;font-weight:bold">webOrigins</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">description</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Web<span style="color:#f8f8f8;text-decoration:underline"> </span>Origins<span style="color:#f8f8f8;text-decoration:underline"> </span>to<span style="color:#f8f8f8;text-decoration:underline"> </span>allow<span style="color:#f8f8f8;text-decoration:underline"> </span>CORS<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>string<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">          </span><span style="color:#204a87;font-weight:bold">required</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">          </span>- serviceName<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">          </span>- redirectUris<span style="color:#f8f8f8;text-decoration:underline">
+</span></code></pre></div><p>The block beneath <code>parameters</code> would be put into the <code>Keycloak</code> CRD, and the block beneath <code>bind_parameters</code> would be put in the <code>KeycloakBinding</code> CRD.</p>
+
+	
+	
+	<div class="text-muted mt-5 pt-3 border-top">Last modified January 1, 0001
+</div>
+</div>
+
+
+          </main>
+        </div>
+      </div>
+      <div class="row flex-xl-nowrap">
+        
+<footer class="of-footer-main">
+  <div class="of-footer-main__meta">
+    <img src="/build/images/logo.svg" alt="">
+    <p class="of-footer-main__meta__text">The Operator Framework is an open source toolkit to manage Kubernetes nativeapplications, called Operators, in an effective, automated, and scalable way.</p>
+    <ul class="of-link-list of-link-list--secondary">
+      <li class="of-link-list__li"><a class="of-link-list__a" href="#">Operator SDK</a></li>
+      <li class="of-link-list__li"><a class="of-link-list__a" href="#">Operator Lifecycle Manager</a></li>
+      <li class="of-link-list__li"><a class="of-link-list__a" class="of-link of-link--external" href="#">OperatorHub</a></li>
+    </ul>
+  </div>
+  <div class="of-footer-main__social">
+    <h4 class="of-heading of-heading--sm">Connect with us!</h4>
+      
+        
+        
+    <ul class="of-link-list">
+      
+        <li class="of-link-list__li">
+          <a class="of-link-list__a" href="https://groups.google.com/forum/#!forum/operator-framework" aria-label="Forum">
+            <i class="fas fa-comment"></i>
+          </a>
+        </li>
+      
+        <li class="of-link-list__li">
+          <a class="of-link-list__a" href="https://github.com/operator-framework/operator-sdk" aria-label="github">
+            <i class="fab fa-github"></i>
+          </a>
+        </li>
+      
+</ul>
+
+      
+    
+
+  </div>
+  <div class="of-footer-main__copyright">
+    <p>Copyright &copy; 2020</p>
+    <ul class="of-link-list">
+      <li class="of-link-list__li"><a href="https://www.redhat.com/en/about/privacy-policy">Privacy Statement</a></li>
+      
+    </ul>
+  </div>
+</footer>
+</body>
+</html>
+
+      </div>
+    </div>
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+<script src="/js/main.min.29b0315468c00226fa6f4556a9cebc0ac4fe1ce1457a01b22c0a06b329877383.js" integrity="sha256-KbAxVGjAAib6b0VWqc68CsT&#43;HOFFegGyLAoGsymHc4M=" crossorigin="anonymous"></script>
+
+
+
+  </body>
+</html>

@@ -1,0 +1,1227 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="generator" content="Hugo 0.69.2" />
+
+<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+
+<link rel="shortcut icon" href="/favicons/favicon.ico" >
+<link rel="apple-touch-icon" href="/favicons/apple-touch-icon-180x180.png" sizes="180x180">
+<link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">
+<link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicons/android-36x36.png" sizes="36x36">
+<link rel="icon" type="image/png" href="/favicons/android-48x48.png" sizes="48x48">
+<link rel="icon" type="image/png" href="/favicons/android-72x72.png" sizes="72x72">
+<link rel="icon" type="image/png" href="/favicons/android-96x96.png" sizes="96x96">
+<link rel="icon" type="image/png" href="/favicons/android-144x144.png" sizes="144x144">
+<link rel="icon" type="image/png" href="/favicons/android-192x192.png" sizes="192x192">
+
+<title>Writing E2E Tests | Operator SDK</title><meta property="og:title" content="Writing E2E Tests" />
+<meta property="og:description" content="Using the Operator SDK&rsquo;s Test Framework to Write E2E Tests End-to-end tests are essential to ensure that an operator works as intended in real-world scenarios. The Operator SDK includes a testing framework to make writing tests simpler and quicker by removing boilerplate code and providing common test utilities. The Operator SDK includes the test framework as a library under pkg/test and the e2e tests are written as standard go tests." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/docs/golang/e2e-tests/" />
+
+<meta itemprop="name" content="Writing E2E Tests">
+<meta itemprop="description" content="Using the Operator SDK&rsquo;s Test Framework to Write E2E Tests End-to-end tests are essential to ensure that an operator works as intended in real-world scenarios. The Operator SDK includes a testing framework to make writing tests simpler and quicker by removing boilerplate code and providing common test utilities. The Operator SDK includes the test framework as a library under pkg/test and the e2e tests are written as standard go tests.">
+
+<meta itemprop="wordCount" content="2022">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Writing E2E Tests"/>
+<meta name="twitter:description" content="Using the Operator SDK&rsquo;s Test Framework to Write E2E Tests End-to-end tests are essential to ensure that an operator works as intended in real-world scenarios. The Operator SDK includes a testing framework to make writing tests simpler and quicker by removing boilerplate code and providing common test utilities. The Operator SDK includes the test framework as a library under pkg/test and the e2e tests are written as standard go tests."/>
+
+
+
+
+
+<link rel="preload" href="/scss/main.min.2156b902b150b9e3872e1d22ac593d6651f390478d18ef3c04a45ca6b90d637b.css" as="style">
+<link href="/scss/main.min.2156b902b150b9e3872e1d22ac593d6651f390478d18ef3c04a45ca6b90d637b.css" rel="stylesheet" integrity="">
+
+
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+
+
+  </head>
+  <body class="td-page">
+    <header>
+      <header class="of-header-main">
+    <a href="/" class="of-brand">
+      <picture class="of-brand__picture">
+        <source srcset="/build/images/logo.svg" media="(min-width: 992px)">
+        <img src="/build/images/logo-sm.svg" alt="">  
+      </picture> 
+        </a>
+    <nav class="of-nav-main nav-collapse">
+      <ul class="of-nav-main__items menu-items">
+        <li class="of-nav-main__item"><a class="of-link-list__a " href="/">Home</a></li>
+        
+    
+    <li class="of-nav-main__item"><a class="of-link-list__a" href="/build/" title="Build">Build</a></li>
+    
+    <li class="of-nav-main__item"><a class="of-link-list__a" href="/docs/" title="Documentation">Documentation</a></li>
+    
+    </ul>
+    </nav>
+   
+    <div class="of-header-main__search">
+		
+
+    </div>
+  </header>
+    </header>
+    <div class="container-fluid td-outer">
+      <div class="td-main">
+        <div class="row flex-xl-nowrap">
+          <div class="col-12 col-md-3 col-xl-2 td-sidebar d-print-none">
+            
+
+
+
+
+<div id="td-sidebar-menu" class="td-sidebar__inner">
+  
+  <nav class="collapse td-sidebar-nav pt-2 pl-4" id="td-section-nav">
+    
+    
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/" class="align-left pl-0 pr-2 td-sidebar-link td-sidebar-link__section">Documentation</a>
+  </li>
+  <ul>
+    <li class="collapse show" id="docs">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsinstall-operator-sdk" href="/docs/install-operator-sdk/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuilderquickstart" href="/docs/kubebuilder/quickstart/">Quickstart</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/ansible/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Ansible Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsansible">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibleinstallation" href="/docs/ansible/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblequickstart" href="/docs/ansible/quickstart/">Quickstart</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibletesting-guide" href="/docs/ansible/testing-guide/">Testing with Molecule</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibledevelopment-tips" href="/docs/ansible/development-tips/">Development Tips</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/ansible/reference/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsansiblereference">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceadvanced_options" href="/docs/ansible/reference/advanced_options/">Advanced Options</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceapb-migration-guide" href="/docs/ansible/reference/apb-migration-guide/">APB Migration</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencedependent-watches" href="/docs/ansible/reference/dependent-watches/">Dependent Watches</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencefinalizers" href="/docs/ansible/reference/finalizers/">Finalizers</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceinformation-flow-ansible-operator" href="/docs/ansible/reference/information-flow-ansible-operator/">Information Flow</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceretroactively-owned-resources" href="/docs/ansible/reference/retroactively-owned-resources/">Retroactively Owned Resources</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencescaffolding" href="/docs/ansible/reference/scaffolding/">Scaffolding</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencewatches" href="/docs/ansible/reference/watches/">Watches</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibledevwebhooks" href="/docs/ansible/dev/webhooks/"></a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/" class="align-left pl-0 pr-2 active td-sidebar-link td-sidebar-link__section">Golang Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse show" id="docsgolang">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolanginstallation" href="/docs/golang/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangquickstart" href="/docs/golang/quickstart/">Quickstart</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangunit-testing" href="/docs/golang/unit-testing/">Unit Testing</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page  active" id="m-docsgolange2e-tests" href="/docs/golang/e2e-tests/">Writing E2E Tests</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/monitoring/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Monitoring</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangmonitoring">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangmonitoringprometheus" href="/docs/golang/monitoring/prometheus/">With Prometheus</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangmonitoringservice-monitor" href="/docs/golang/monitoring/service-monitor/">Using Prometheus Operator ServiceMonitor CRD</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/olm-integration/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Integrating with OLM</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangolm-integration">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationcsv-annotations" href="/docs/golang/olm-integration/csv-annotations/">CSV Code Annotations</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationgenerating-a-csv" href="/docs/golang/olm-integration/generating-a-csv/">Generating ClusterServiceVersion&#39;s</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationolm-cli" href="/docs/golang/olm-integration/olm-cli/">Running with OLM</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationbundle-cli" href="/docs/golang/olm-integration/bundle-cli/">Working with Bundles</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/references/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangreferences">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesclient" href="/docs/golang/references/client/">Controller Runtime Client API</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesevent-filtering" href="/docs/golang/references/event-filtering/">Using Predicates for Event Filtering</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferenceslogging" href="/docs/golang/references/logging/">Logging</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesproject_layout" href="/docs/golang/references/project_layout/">Project Layout</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/helm/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Helm Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docshelm">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelminstallation" href="/docs/helm/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmquickstart" href="/docs/helm/quickstart/">Quickstart</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/helm/reference/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docshelmreference">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferenceadvanced_features" href="/docs/helm/reference/advanced_features/">Advanced Features</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferencescaffolding" href="/docs/helm/reference/scaffolding/">Scaffolding</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferencewatches" href="/docs/helm/reference/watches/">Watches</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/scorecard/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Scorecard</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsscorecard">
+      
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/cli/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">CLI Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscli">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk" href="/docs/cli/operator-sdk/">operator-sdk</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add" href="/docs/cli/operator-sdk_add/">operator-sdk add</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_api" href="/docs/cli/operator-sdk_add_api/">operator-sdk add api</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_controller" href="/docs/cli/operator-sdk_add_controller/">operator-sdk add controller</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_crd" href="/docs/cli/operator-sdk_add_crd/">operator-sdk add crd</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_build" href="/docs/cli/operator-sdk_build/">operator-sdk build</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle" href="/docs/cli/operator-sdk_bundle/">operator-sdk bundle</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle_create" href="/docs/cli/operator-sdk_bundle_create/">operator-sdk bundle create</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle_validate" href="/docs/cli/operator-sdk_bundle_validate/">operator-sdk bundle validate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_cleanup" href="/docs/cli/operator-sdk_cleanup/">operator-sdk cleanup</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion" href="/docs/cli/operator-sdk_completion/">operator-sdk completion</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion_bash" href="/docs/cli/operator-sdk_completion_bash/">operator-sdk completion bash</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion_zsh" href="/docs/cli/operator-sdk_completion_zsh/">operator-sdk completion zsh</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate" href="/docs/cli/operator-sdk_generate/">operator-sdk generate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_crds" href="/docs/cli/operator-sdk_generate_crds/">operator-sdk generate crds</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_csv" href="/docs/cli/operator-sdk_generate_csv/">operator-sdk generate csv</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_k8s" href="/docs/cli/operator-sdk_generate_k8s/">operator-sdk generate k8s</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_migrate" href="/docs/cli/operator-sdk_migrate/">operator-sdk migrate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_new" href="/docs/cli/operator-sdk_new/">operator-sdk new</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm" href="/docs/cli/operator-sdk_olm/">operator-sdk olm</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_install" href="/docs/cli/operator-sdk_olm_install/">operator-sdk olm install</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_status" href="/docs/cli/operator-sdk_olm_status/">operator-sdk olm status</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_uninstall" href="/docs/cli/operator-sdk_olm_uninstall/">operator-sdk olm uninstall</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_print-deps" href="/docs/cli/operator-sdk_print-deps/">operator-sdk print-deps</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_run" href="/docs/cli/operator-sdk_run/">operator-sdk run</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_scorecard" href="/docs/cli/operator-sdk_scorecard/">operator-sdk scorecard</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_test" href="/docs/cli/operator-sdk_test/">operator-sdk test</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_test_local" href="/docs/cli/operator-sdk_test_local/">operator-sdk test local</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_version" href="/docs/cli/operator-sdk_version/">operator-sdk version</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/contribution-guidelines/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Contribution Guidelines</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscontribution-guidelines">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesdeveloper-guide" href="/docs/contribution-guidelines/developer-guide/">Development Environment</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesrelease" href="/docs/contribution-guidelines/release/">Release Guide</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesreporting-issues" href="/docs/contribution-guidelines/reporting-issues/">Reporting Issues</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/contribution-guidelines/testing/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Testing</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscontribution-guidelinestesting">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinestestingrunning-the-tests" href="/docs/contribution-guidelines/testing/running-the-tests/">Running Tests</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinestestingtravis-build" href="/docs/contribution-guidelines/testing/travis-build/">Travis CI</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelineslocal-changes" href="/docs/contribution-guidelines/local-changes/">Local Changes</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelineslocal-docs" href="/docs/contribution-guidelines/local-docs/">Local Docs</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrating-existing-apis" href="/docs/migrating-existing-apis/">Migrating Existing K8S APIs</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/migration/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Migration Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsmigration">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrationv010-migration-guide" href="/docs/migration/v0.1.0-migration-guide/">Migration</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrationversion-upgrade-guide" href="/docs/migration/version-upgrade-guide/">Version Upgrade</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsoperator-scope" href="/docs/operator-scope/">Operator Scope</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsversioning" href="/docs/versioning/">Versioning</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsfaq" href="/docs/faq/">FAQ</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuilderadvanced-topics" href="/docs/kubebuilder/advanced-topics/"></a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuildermigrationproject_migration_guide" href="/docs/kubebuilder/migration/project_migration_guide/"></a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+  </nav>
+</div>
+
+
+
+
+          </div>
+
+          <main class="col-12 col-md-9 col-xl-8 pl-md-5" role="main">
+            
+  
+
+            
+            
+<div class="td-content">
+	<h1>Writing E2E Tests</h1>
+	
+	<h1 id="using-the-operator-sdks-test-framework-to-write-e2e-tests">Using the Operator SDK&rsquo;s Test Framework to Write E2E Tests</h1>
+<p>End-to-end tests are essential to ensure that an operator works
+as intended in real-world scenarios. The Operator SDK includes a testing
+framework to make writing tests simpler and quicker by removing boilerplate
+code and providing common test utilities. The Operator SDK includes the
+test framework as a library under <code>pkg/test</code> and the e2e tests are written
+as standard go tests.</p>
+<h2 id="components">Components</h2>
+<p>The test framework includes a few components. The most important to talk
+about are Framework and Context.</p>
+<h3 id="framework">Framework</h3>
+<p><a href="https://github.com/operator-framework/operator-sdk/blob/master/pkg/test/framework.go">Framework</a> contains all global variables, such as the kubeconfig, kubeclient,
+scheme, and dynamic client (provided via the controller-runtime project).
+It is initialized by the MainEntry function and can be used anywhere in the tests.</p>
+<p><strong>Note:</strong> several required arguments are initialized and added by <code>MainEntry()</code>. Do not attempt to
+use <code>testing.M</code> directly.</p>
+<h3 id="context">Context</h3>
+<p><a href="https://github.com/operator-framework/operator-sdk/blob/master/pkg/test/context.go">Context</a> is a local context that stores important information for each test, such
+as the namespace for that test and the cleanup functions. By handling
+namespace and resource initialization through Context, we can make sure that all
+resources are properly handled and removed after the test finishes.</p>
+<h2 id="walkthrough-writing-tests">Walkthrough: Writing Tests</h2>
+<p>In this section, we will be walking through writing the e2e tests of the sample
+<a href="https://github.com/operator-framework/operator-sdk-samples/tree/master/go/memcached-operator">memcached-operator</a>.</p>
+<h3 id="main-test">Main Test</h3>
+<p>The first step to writing a test is to create the <code>main_test.go</code> file. The <code>main_test.go</code>
+file simply calls the test framework&rsquo;s main entry that sets up the framework and then
+starts the tests. It should be pretty much identical for all operators. This is what it
+looks like for the memcached-operator:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">package</span> <span style="color:#000">e2e</span>
+
+<span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+    <span style="color:#4e9a06">&#34;testing&#34;</span>
+
+    <span style="color:#000">f</span> <span style="color:#4e9a06">&#34;github.com/operator-framework/operator-sdk/pkg/test&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">TestMain</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">m</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">testing</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">M</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">f</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MainEntry</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">m</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><h3 id="individual-tests">Individual Tests</h3>
+<p>In this section, we will be designing a test based on the <a href="https://github.com/operator-framework/operator-sdk-samples/blob/master/go/memcached-operator/test/e2e/memcached_test.go">memcached_test.go</a> file
+from the <a href="https://github.com/operator-framework/operator-sdk-samples/tree/master/go/memcached-operator">memcached-operator</a> sample.</p>
+<h4 id="1-import-the-framework">1. Import the framework</h4>
+<p>Once MainEntry sets up the framework, it runs the remainder of the tests. First, make
+sure to import <code>testing</code>, the operator-sdk test framework (<code>pkg/test</code>) as well as your operator&rsquo;s libraries:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+    <span style="color:#4e9a06">&#34;testing&#34;</span>
+
+    <span style="color:#000">cachev1alpha1</span> <span style="color:#4e9a06">&#34;github.com/operator-framework/operator-sdk-samples/go/memcached-operator/pkg/apis/cache/v1alpha1&#34;</span>
+    <span style="color:#4e9a06">&#34;github.com/operator-framework/operator-sdk-samples/go/memcached-operator/pkg/apis&#34;</span>
+
+    <span style="color:#000">framework</span> <span style="color:#4e9a06">&#34;github.com/operator-framework/operator-sdk/pkg/test&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+</code></pre></div><h4 id="2-register-types-with-framework-scheme">2. Register types with framework scheme</h4>
+<p>The next step is to register your operator&rsquo;s scheme with the framework&rsquo;s dynamic client.
+To do this, pass the CRD&rsquo;s <code>AddToScheme</code> function and its List type object to the framework&rsquo;s
+<a href="https://github.com/operator-framework/operator-sdk/blob/master/pkg/test/framework.go#L109">AddToFrameworkScheme</a> function. For our example memcached-operator, it looks like this:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000">memcachedList</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">cachev1alpha1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MemcachedList</span><span style="color:#000;font-weight:bold">{}</span>
+<span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">framework</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">AddToFrameworkScheme</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">apis</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">AddToScheme</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">memcachedList</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">t</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Fatalf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;failed to add custom resource scheme to framework: %v&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>We pass in the CR List object <code>memcachedList</code> as an argument to <code>AddToFrameworkScheme()</code> because
+the framework needs to ensure that the dynamic client has the REST mappings to query the API
+server for the CR type. The framework will keep polling the API server for the mappings and
+timeout after 5 seconds, returning an error if the mappings were not discovered in that time.</p>
+<h4 id="3-setup-the-test-context-and-resources">3. Setup the test context and resources</h4>
+<p>The next step is to create a Context for the current test and defer its cleanup function:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000">ctx</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">framework</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NewContext</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">t</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">defer</span> <span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Cleanup</span><span style="color:#000;font-weight:bold">()</span>
+</code></pre></div><p>Now that there is a <code>Context</code>, the test&rsquo;s Kubernetes resources (specifically the test namespace,
+Service Account, RBAC, and Operator deployment in <code>local</code> testing; just the Operator deployment
+in <code>cluster</code> testing) can be initialized:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">InitializeClusterResources</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">framework</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">CleanupOptions</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">TestContext</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Timeout</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">cleanupTimeout</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">RetryInterval</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">cleanupRetryInterval</span><span style="color:#000;font-weight:bold">})</span>
+<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">t</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Fatalf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;failed to initialize cluster resources: %v&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>The <code>InitializeClusterResources</code> function uses the custom <code>Create</code> function in the framework client to create the resources provided
+in your namespaced manifest. The custom <code>Create</code> function use the controller-runtime&rsquo;s client to create resources and then
+creates a cleanup function that is called by <code>ctx.Cleanup</code> which deletes the resource and then waits for the resource to be
+fully deleted before returning. This is configurable with <code>CleanupOptions</code>. For info on how to use <code>CleanupOptions</code> see
+<a href="#how-to-use-cleanup">this section</a>.</p>
+<p>If you want to make sure the operator&rsquo;s deployment is fully ready before moving onto the next part of the
+test, the <code>WaitForOperatorDeployment</code> function from <a href="https://github.com/operator-framework/operator-sdk/tree/master/pkg/test/e2eutil">e2eutil</a> (in the sdk under <code>pkg/test/e2eutil</code>) can be used:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8f5902;font-style:italic">// get namespace
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000">namespace</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GetOperatorNamespace</span><span style="color:#000;font-weight:bold">()</span>
+<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">t</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Fatal</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">err</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#8f5902;font-style:italic">// get global framework variables
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000">f</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">framework</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Global</span>
+<span style="color:#8f5902;font-style:italic">// wait for memcached-operator to be ready
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000">err</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">e2eutil</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">WaitForOperatorDeployment</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">t</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">f</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">KubeClient</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">namespace</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;memcached-operator&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">time</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Second</span><span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#0000cf;font-weight:bold">5</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">time</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Second</span><span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#0000cf;font-weight:bold">30</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">t</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Fatal</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">err</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><h4 id="4-write-the-test-specific-code">4. Write the test specific code</h4>
+<p>Since the controller-runtime&rsquo;s dynamic client uses go contexts, make sure to import the go context library.
+In this example, we imported it as <code>goctx</code>:</p>
+<h5 id="a-idhow-to-use-cleanupahow-to-use-the-framework-client-creates-cleanupoptions"><a id="how-to-use-cleanup"></a>How to use the Framework Client <code>Create</code>'s <code>CleanupOptions</code></h5>
+<p>The test framework provides <code>Client</code>, which exposes most of the controller-runtime&rsquo;s client unmodified, but the <code>Create</code>
+function has added functionality to create cleanup functions for these resources as well. To manage how cleanup
+is handled, we use a <code>CleanupOptions</code> struct. Here are some examples of how to use it:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8f5902;font-style:italic">// Create with no cleanup
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000">Create</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">goctx</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">exampleMemcached</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">framework</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">CleanupOptions</span><span style="color:#000;font-weight:bold">{})</span>
+
+<span style="color:#8f5902;font-style:italic">// Create with cleanup but no polling for resources to be deleted
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000">Create</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">goctx</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">exampleMemcached</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">framework</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">CleanupOptions</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">TestContext</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">})</span>
+
+<span style="color:#8f5902;font-style:italic">// Create with cleanup and polling wait for resources to be deleted
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000">Create</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">goctx</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">exampleMemcached</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">framework</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">CleanupOptions</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">TestContext</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Timeout</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">timeout</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">RetryInterval</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">retryInterval</span><span style="color:#000;font-weight:bold">})</span>
+</code></pre></div><p>This is how we can create a custom memcached custom resource with a size of 3:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8f5902;font-style:italic">// create memcached custom resource
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000">exampleMemcached</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">cachev1alpha1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Memcached</span><span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">ObjectMeta</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">metav1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ObjectMeta</span><span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000">Name</span><span style="color:#000;font-weight:bold">:</span>      <span style="color:#4e9a06">&#34;example-memcached&#34;</span><span style="color:#000;font-weight:bold">,</span>
+        <span style="color:#000">Namespace</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">namespace</span><span style="color:#000;font-weight:bold">,</span>
+    <span style="color:#000;font-weight:bold">},</span>
+    <span style="color:#000">Spec</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">cachev1alpha1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MemcachedSpec</span><span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000">Size</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">3</span><span style="color:#000;font-weight:bold">,</span>
+    <span style="color:#000;font-weight:bold">},</span>
+<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000">err</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">f</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Create</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">goctx</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">exampleMemcached</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">framework</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">CleanupOptions</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">TestContext</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Timeout</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">time</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Second</span> <span style="color:#ce5c00;font-weight:bold">*</span> <span style="color:#0000cf;font-weight:bold">5</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">RetryInterval</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">time</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Second</span> <span style="color:#ce5c00;font-weight:bold">*</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">})</span>
+<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">err</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>Now we can check if the operator successfully worked. In the case of the memcached operator, it should have
+created a deployment called &ldquo;example-memcached&rdquo; with 3 replicas. To check, we use the <code>WaitForDeployment</code> function, which
+is the same as <code>WaitForOperatorDeployment</code> with the exception that <code>WaitForOperatorDeployment</code> will skip waiting
+for the deployment if the test is run locally and the <code>--up-local</code> flag is set; the <code>WaitForDeployment</code> function always
+waits for the deployment:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8f5902;font-style:italic">// wait for example-memcached to reach 3 replicas
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000">err</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">e2eutil</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">WaitForDeployment</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">t</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">f</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">KubeClient</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">namespace</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;example-memcached&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">3</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">time</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Second</span><span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#0000cf;font-weight:bold">5</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">time</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Second</span><span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#0000cf;font-weight:bold">30</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">err</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>We can also test that the deployment scales correctly when the CR is updated:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000">err</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">f</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">goctx</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">types</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NamespacedName</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">Name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;example-memcached&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Namespace</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">namespace</span><span style="color:#000;font-weight:bold">},</span> <span style="color:#000">exampleMemcached</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">err</span>
+<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000">exampleMemcached</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Spec</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Size</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">4</span>
+<span style="color:#000">err</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">f</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Update</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">goctx</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">exampleMemcached</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">err</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#8f5902;font-style:italic">// wait for example-memcached to reach 4 replicas
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000">err</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">e2eutil</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">WaitForDeployment</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">t</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">f</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">KubeClient</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">namespace</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;example-memcached&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">4</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">time</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Second</span><span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#0000cf;font-weight:bold">5</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">time</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Second</span><span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#0000cf;font-weight:bold">30</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">err</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>Once the end of the function is reached, the Context&rsquo;s cleanup
+functions will automatically be run since they were deferred when the Context was created.</p>
+<h2 id="running-the-tests">Running the Tests</h2>
+<p>To make running the tests simpler, the <code>operator-sdk</code> CLI tool has a <code>test</code> subcommand that can configure
+default test settings, such as locations of your global resource manifest file (by default
+<code>deploy/crd.yaml</code>) and your namespaced resource manifest file (by default <code>deploy/service_account.yaml</code> concatenated with
+<code>deploy/rbac.yaml</code> and <code>deploy/operator.yaml</code>), and allows the user to configure runtime options.</p>
+<p>To run the tests, run the <code>operator-sdk test local</code> command in your project root and pass the location of the tests
+as an argument. You can use <code>--help</code> to view the other configuration options and use <code>--go-test-flags</code> to pass in arguments to <code>go test</code>. Here is an example command:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ operator-sdk <span style="color:#204a87">test</span> <span style="color:#204a87">local</span> ./test/e2e --go-test-flags <span style="color:#4e9a06">&#34;-v -parallel=2&#34;</span>
+</code></pre></div><h3 id="image-flag">Image Flag</h3>
+<p>If you wish to specify a different operator image than specified in your <code>operator.yaml</code> file (or a user-specified
+namespaced manifest file), you can use the <code>--image</code> flag:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ operator-sdk <span style="color:#204a87">test</span> <span style="color:#204a87">local</span> ./test/e2e --image quay.io/example/my-operator:v0.0.2
+</code></pre></div><h3 id="namespace-flag">Namespace Flag</h3>
+<p>If you wish to run all the tests in 1 namespace (which also forces <code>-parallel=1</code>), you can use the <code>--namespace</code> flag:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl create namespace operator-test
+$ operator-sdk <span style="color:#204a87">test</span> <span style="color:#204a87">local</span> ./test/e2e --operator-namespace operator-test
+</code></pre></div><h3 id="up-local-flag">Up-Local Flag</h3>
+<p>To run the operator itself locally during the tests instead of starting a deployment in the cluster, you can use the
+<code>--up-local</code> flag. This mode will still create global resources, but by default will not create any in-cluster namespaced
+resources unless the user specifies one through the <code>--namespaced-manifest</code> flag.</p>
+<p><strong>NOTE</strong>: The <code>--up-local</code> flag requires the <code>--operator-namespace</code> flag and the command will NOT create the namespace. Then, be sure that you are specifying a valid namespace.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl create namespace operator-test
+$ operator-sdk <span style="color:#204a87">test</span> <span style="color:#204a87">local</span> ./test/e2e --operator-namespace operator-test --up-local
+</code></pre></div><h3 id="no-setup-flag">No-Setup Flag</h3>
+<p>If you would prefer to create the resources yourself and skip resource creation, you can use the <code>--no-setup</code> flag:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl create namespace operator-test
+$ kubectl create -f deploy/crds/cache.example.com_memcacheds_crd.yaml
+$ kubectl create -f deploy/service_account.yaml --namespace operator-test
+$ kubectl create -f deploy/role.yaml --namespace operator-test
+$ kubectl create -f deploy/role_binding.yaml --namespace operator-test
+$ kubectl create -f deploy/operator.yaml --namespace operator-test
+$ operator-sdk <span style="color:#204a87">test</span> <span style="color:#204a87">local</span> ./test/e2e --operator-namespace operator-test --no-setup
+</code></pre></div><h3 id="test-permissions">Test Permissions</h3>
+<p>Executing e2e tests requires the permission to access, create, and delete resources on your cluster. Depending on what kind of Kubernetes cluster
+you are using, this may require some manual setup. For example, OpenShift users are not created with cluster-admin access by default, so you would have
+to manually add permissions to access these resources.</p>
+<p>The simplest way to accomplish this is to bind the cluster-admin Cluster Role to the Service Account you will run the test under.
+If you are unable or unwilling to grant such access, a more limited permission set can be created and bound to your Service Account.
+A good place to start would be the Role bound to your operator itself, such as <a href="https://github.com/operator-framework/operator-sdk-samples/blob/master/go/memcached-operator/deploy/role.yaml">this role for the memcached operator example</a>.
+In addition, you might have to create a Cluster Role to allow your tests to create namespaces, like so:</p>
+<pre><code>apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: testuser
+rules:
+- apiGroups:
+  - &quot;&quot;
+  resources:
+  - namespaces
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - watch
+  - update
+</code></pre><p>Note that this isn&rsquo;t an exhaustive permission set, and the e2e tests you write might require more or less access.</p>
+<p>For more documentation on the <code>operator-sdk test local</code> command, see the <a href="../cli/operator-sdk_test_local">SDK CLI Reference</a> doc.</p>
+<h3 id="skip-cleanup-error-flag">Skip-Cleanup-Error Flag</h3>
+<p>If the tests encounter an error, it is possible to tell the framework not to delete the resources. This behavior is enabled with the <code>--skip-cleanup-error</code> flag:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ operator-sdk <span style="color:#204a87">test</span> <span style="color:#204a87">local</span> ./test/e2e --skip-cleanup-error
+</code></pre></div><p>This is useful if after the error happens, you need to inspect the resources that were created in the test or if you have automated scripts that download all the logs from the pods at the end of the test run.</p>
+<p><strong>NOTE</strong>: The created resources will be deleted if the tests pass.</p>
+<h3 id="running-go-test-directly-not-recommended">Running Go Test Directly (Not Recommended)</h3>
+<p>For advanced use cases, it is possible to run the tests via <code>go test</code> directly. As long as all flags defined
+in <a href="https://github.com/operator-framework/operator-sdk/blob/master/pkg/test/main_entry.go#L25">MainEntry</a> are declared, the tests will run correctly. Running the tests directly with missing flags
+will result in undefined behavior. This is an example <code>go test</code> equivalent to the <code>operator-sdk test local</code> example above:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#8f5902;font-style:italic"># Combine service_account, role, role_binding, and operator manifests into namespaced manifest</span>
+$ cp deploy/service_account.yaml deploy/namespace-init.yaml
+$ <span style="color:#204a87">echo</span> -e <span style="color:#4e9a06">&#34;\n---\n&#34;</span> &gt;&gt; deploy/namespace-init.yaml
+$ cat deploy/role.yaml &gt;&gt; deploy/namespace-init.yaml
+$ <span style="color:#204a87">echo</span> -e <span style="color:#4e9a06">&#34;\n---\n&#34;</span> &gt;&gt; deploy/namespace-init.yaml
+$ cat deploy/role_binding.yaml &gt;&gt; deploy/namespace-init.yaml
+$ <span style="color:#204a87">echo</span> -e <span style="color:#4e9a06">&#34;\n---\n&#34;</span> &gt;&gt; deploy/namespace-init.yaml
+$ cat deploy/operator.yaml &gt;&gt; deploy/namespace-init.yaml
+<span style="color:#8f5902;font-style:italic"># Run tests</span>
+$ go <span style="color:#204a87">test</span> ./test/e2e/... -root<span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">$(</span><span style="color:#204a87">pwd</span><span style="color:#204a87;font-weight:bold">)</span> -kubeconfig<span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">$HOME</span>/.kube/config -globalMan deploy/crds/cache.example.com_apps_crd.yaml -namespacedMan deploy/namespace-init.yaml -v -parallel<span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">2</span>
+</code></pre></div><h2 id="manual-cleanup">Manual Cleanup</h2>
+<p>While the test framework provides utilities that allow the test to automatically be cleaned up when done,
+it is possible that an error in the test code could cause a panic, which would stop the test
+without running the deferred cleanup. To clean up manually, you should check what namespaces currently exist
+in your cluster. You can do this with <code>kubectl</code>:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl get namespaces
+
+Example Output:
+NAME                                            STATUS    AGE
+default                                         Active    2h
+kube-public                                     Active    2h
+kube-system                                     Active    2h
+main-1534287036                                 Active    23s
+memcached-memcached-group-cluster-1534287037    Active    22s
+memcached-memcached-group-cluster2-1534287037   Active    22s
+</code></pre></div><p>The names of the namespaces will be either start with <code>main</code> or with the name of the tests and the suffix will
+be a Unix timestamp (number of seconds since January 1, 1970 00:00 UTC). Kubectl can be used to delete these
+namespaces and the resources in those namespaces:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl delete namespace main-153428703
+</code></pre></div><p>Since the CRD is not namespaced, it must be deleted separately. Clean up the CRD created by the tests using the CRD manifest <code>deploy/crd.yaml</code>:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl delete -f deploy/crds/cache.example.com_memcacheds_crd.yaml
+</code></pre></div>
+	
+	
+	<div class="text-muted mt-5 pt-3 border-top">Last modified January 1, 0001
+</div>
+</div>
+
+
+          </main>
+        </div>
+      </div>
+      <div class="row flex-xl-nowrap">
+        
+<footer class="of-footer-main">
+  <div class="of-footer-main__meta">
+    <img src="/build/images/logo.svg" alt="">
+    <p class="of-footer-main__meta__text">The Operator Framework is an open source toolkit to manage Kubernetes nativeapplications, called Operators, in an effective, automated, and scalable way.</p>
+    <ul class="of-link-list of-link-list--secondary">
+      <li class="of-link-list__li"><a class="of-link-list__a" href="#">Operator SDK</a></li>
+      <li class="of-link-list__li"><a class="of-link-list__a" href="#">Operator Lifecycle Manager</a></li>
+      <li class="of-link-list__li"><a class="of-link-list__a" class="of-link of-link--external" href="#">OperatorHub</a></li>
+    </ul>
+  </div>
+  <div class="of-footer-main__social">
+    <h4 class="of-heading of-heading--sm">Connect with us!</h4>
+      
+        
+        
+    <ul class="of-link-list">
+      
+        <li class="of-link-list__li">
+          <a class="of-link-list__a" href="https://groups.google.com/forum/#!forum/operator-framework" aria-label="Forum">
+            <i class="fas fa-comment"></i>
+          </a>
+        </li>
+      
+        <li class="of-link-list__li">
+          <a class="of-link-list__a" href="https://github.com/operator-framework/operator-sdk" aria-label="github">
+            <i class="fab fa-github"></i>
+          </a>
+        </li>
+      
+</ul>
+
+      
+    
+
+  </div>
+  <div class="of-footer-main__copyright">
+    <p>Copyright &copy; 2020</p>
+    <ul class="of-link-list">
+      <li class="of-link-list__li"><a href="https://www.redhat.com/en/about/privacy-policy">Privacy Statement</a></li>
+      
+    </ul>
+  </div>
+</footer>
+</body>
+</html>
+
+      </div>
+    </div>
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+<script src="/js/main.min.29b0315468c00226fa6f4556a9cebc0ac4fe1ce1457a01b22c0a06b329877383.js" integrity="sha256-KbAxVGjAAib6b0VWqc68CsT&#43;HOFFegGyLAoGsymHc4M=" crossorigin="anonymous"></script>
+
+
+
+  </body>
+</html>

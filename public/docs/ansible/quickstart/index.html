@@ -1,0 +1,1215 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="generator" content="Hugo 0.69.2" />
+
+<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+
+<link rel="shortcut icon" href="/favicons/favicon.ico" >
+<link rel="apple-touch-icon" href="/favicons/apple-touch-icon-180x180.png" sizes="180x180">
+<link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">
+<link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicons/android-36x36.png" sizes="36x36">
+<link rel="icon" type="image/png" href="/favicons/android-48x48.png" sizes="48x48">
+<link rel="icon" type="image/png" href="/favicons/android-72x72.png" sizes="72x72">
+<link rel="icon" type="image/png" href="/favicons/android-96x96.png" sizes="96x96">
+<link rel="icon" type="image/png" href="/favicons/android-144x144.png" sizes="144x144">
+<link rel="icon" type="image/png" href="/favicons/android-192x192.png" sizes="192x192">
+
+<title>Ansible Operator Quickstart | Operator SDK</title><meta property="og:title" content="Ansible Operator Quickstart" />
+<meta property="og:description" content="This guide walks through an example of building a simple memcached-operator powered by Ansible using tools and libraries provided by the Operator SDK.
+Create a new project After installing the Operator SDK CLI and ansible operator prerequisites, use the CLI to create a new Ansible-based memcached-operator project:
+$ operator-sdk new memcached-operator --api-version=cache.example.com/v1alpha1 --kind=Memcached --type=ansible $ cd memcached-operator This creates the memcached-operator project specifically for watching the Memcached resource with APIVersion cache." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/docs/ansible/quickstart/" />
+
+<meta itemprop="name" content="Ansible Operator Quickstart">
+<meta itemprop="description" content="This guide walks through an example of building a simple memcached-operator powered by Ansible using tools and libraries provided by the Operator SDK.
+Create a new project After installing the Operator SDK CLI and ansible operator prerequisites, use the CLI to create a new Ansible-based memcached-operator project:
+$ operator-sdk new memcached-operator --api-version=cache.example.com/v1alpha1 --kind=Memcached --type=ansible $ cd memcached-operator This creates the memcached-operator project specifically for watching the Memcached resource with APIVersion cache.">
+
+<meta itemprop="wordCount" content="1224">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Ansible Operator Quickstart"/>
+<meta name="twitter:description" content="This guide walks through an example of building a simple memcached-operator powered by Ansible using tools and libraries provided by the Operator SDK.
+Create a new project After installing the Operator SDK CLI and ansible operator prerequisites, use the CLI to create a new Ansible-based memcached-operator project:
+$ operator-sdk new memcached-operator --api-version=cache.example.com/v1alpha1 --kind=Memcached --type=ansible $ cd memcached-operator This creates the memcached-operator project specifically for watching the Memcached resource with APIVersion cache."/>
+
+
+
+
+
+<link rel="preload" href="/scss/main.min.2156b902b150b9e3872e1d22ac593d6651f390478d18ef3c04a45ca6b90d637b.css" as="style">
+<link href="/scss/main.min.2156b902b150b9e3872e1d22ac593d6651f390478d18ef3c04a45ca6b90d637b.css" rel="stylesheet" integrity="">
+
+
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+
+
+  </head>
+  <body class="td-page">
+    <header>
+      <header class="of-header-main">
+    <a href="/" class="of-brand">
+      <picture class="of-brand__picture">
+        <source srcset="/build/images/logo.svg" media="(min-width: 992px)">
+        <img src="/build/images/logo-sm.svg" alt="">  
+      </picture> 
+        </a>
+    <nav class="of-nav-main nav-collapse">
+      <ul class="of-nav-main__items menu-items">
+        <li class="of-nav-main__item"><a class="of-link-list__a " href="/">Home</a></li>
+        
+    
+    <li class="of-nav-main__item"><a class="of-link-list__a" href="/build/" title="Build">Build</a></li>
+    
+    <li class="of-nav-main__item"><a class="of-link-list__a" href="/docs/" title="Documentation">Documentation</a></li>
+    
+    </ul>
+    </nav>
+   
+    <div class="of-header-main__search">
+		
+
+    </div>
+  </header>
+    </header>
+    <div class="container-fluid td-outer">
+      <div class="td-main">
+        <div class="row flex-xl-nowrap">
+          <div class="col-12 col-md-3 col-xl-2 td-sidebar d-print-none">
+            
+
+
+
+
+<div id="td-sidebar-menu" class="td-sidebar__inner">
+  
+  <nav class="collapse td-sidebar-nav pt-2 pl-4" id="td-section-nav">
+    
+    
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/" class="align-left pl-0 pr-2 td-sidebar-link td-sidebar-link__section">Documentation</a>
+  </li>
+  <ul>
+    <li class="collapse show" id="docs">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsinstall-operator-sdk" href="/docs/install-operator-sdk/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuilderquickstart" href="/docs/kubebuilder/quickstart/">Quickstart</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/ansible/" class="align-left pl-0 pr-2 active td-sidebar-link td-sidebar-link__section">Ansible Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse show" id="docsansible">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibleinstallation" href="/docs/ansible/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page  active" id="m-docsansiblequickstart" href="/docs/ansible/quickstart/">Quickstart</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibletesting-guide" href="/docs/ansible/testing-guide/">Testing with Molecule</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibledevelopment-tips" href="/docs/ansible/development-tips/">Development Tips</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/ansible/reference/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsansiblereference">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceadvanced_options" href="/docs/ansible/reference/advanced_options/">Advanced Options</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceapb-migration-guide" href="/docs/ansible/reference/apb-migration-guide/">APB Migration</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencedependent-watches" href="/docs/ansible/reference/dependent-watches/">Dependent Watches</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencefinalizers" href="/docs/ansible/reference/finalizers/">Finalizers</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceinformation-flow-ansible-operator" href="/docs/ansible/reference/information-flow-ansible-operator/">Information Flow</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceretroactively-owned-resources" href="/docs/ansible/reference/retroactively-owned-resources/">Retroactively Owned Resources</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencescaffolding" href="/docs/ansible/reference/scaffolding/">Scaffolding</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencewatches" href="/docs/ansible/reference/watches/">Watches</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibledevwebhooks" href="/docs/ansible/dev/webhooks/"></a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Golang Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolang">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolanginstallation" href="/docs/golang/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangquickstart" href="/docs/golang/quickstart/">Quickstart</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangunit-testing" href="/docs/golang/unit-testing/">Unit Testing</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolange2e-tests" href="/docs/golang/e2e-tests/">Writing E2E Tests</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/monitoring/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Monitoring</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangmonitoring">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangmonitoringprometheus" href="/docs/golang/monitoring/prometheus/">With Prometheus</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangmonitoringservice-monitor" href="/docs/golang/monitoring/service-monitor/">Using Prometheus Operator ServiceMonitor CRD</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/olm-integration/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Integrating with OLM</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangolm-integration">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationcsv-annotations" href="/docs/golang/olm-integration/csv-annotations/">CSV Code Annotations</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationgenerating-a-csv" href="/docs/golang/olm-integration/generating-a-csv/">Generating ClusterServiceVersion&#39;s</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationolm-cli" href="/docs/golang/olm-integration/olm-cli/">Running with OLM</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationbundle-cli" href="/docs/golang/olm-integration/bundle-cli/">Working with Bundles</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/references/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangreferences">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesclient" href="/docs/golang/references/client/">Controller Runtime Client API</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesevent-filtering" href="/docs/golang/references/event-filtering/">Using Predicates for Event Filtering</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferenceslogging" href="/docs/golang/references/logging/">Logging</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesproject_layout" href="/docs/golang/references/project_layout/">Project Layout</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/helm/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Helm Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docshelm">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelminstallation" href="/docs/helm/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmquickstart" href="/docs/helm/quickstart/">Quickstart</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/helm/reference/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docshelmreference">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferenceadvanced_features" href="/docs/helm/reference/advanced_features/">Advanced Features</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferencescaffolding" href="/docs/helm/reference/scaffolding/">Scaffolding</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferencewatches" href="/docs/helm/reference/watches/">Watches</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/scorecard/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Scorecard</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsscorecard">
+      
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/cli/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">CLI Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscli">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk" href="/docs/cli/operator-sdk/">operator-sdk</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add" href="/docs/cli/operator-sdk_add/">operator-sdk add</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_api" href="/docs/cli/operator-sdk_add_api/">operator-sdk add api</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_controller" href="/docs/cli/operator-sdk_add_controller/">operator-sdk add controller</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_crd" href="/docs/cli/operator-sdk_add_crd/">operator-sdk add crd</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_build" href="/docs/cli/operator-sdk_build/">operator-sdk build</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle" href="/docs/cli/operator-sdk_bundle/">operator-sdk bundle</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle_create" href="/docs/cli/operator-sdk_bundle_create/">operator-sdk bundle create</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle_validate" href="/docs/cli/operator-sdk_bundle_validate/">operator-sdk bundle validate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_cleanup" href="/docs/cli/operator-sdk_cleanup/">operator-sdk cleanup</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion" href="/docs/cli/operator-sdk_completion/">operator-sdk completion</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion_bash" href="/docs/cli/operator-sdk_completion_bash/">operator-sdk completion bash</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion_zsh" href="/docs/cli/operator-sdk_completion_zsh/">operator-sdk completion zsh</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate" href="/docs/cli/operator-sdk_generate/">operator-sdk generate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_crds" href="/docs/cli/operator-sdk_generate_crds/">operator-sdk generate crds</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_csv" href="/docs/cli/operator-sdk_generate_csv/">operator-sdk generate csv</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_k8s" href="/docs/cli/operator-sdk_generate_k8s/">operator-sdk generate k8s</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_migrate" href="/docs/cli/operator-sdk_migrate/">operator-sdk migrate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_new" href="/docs/cli/operator-sdk_new/">operator-sdk new</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm" href="/docs/cli/operator-sdk_olm/">operator-sdk olm</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_install" href="/docs/cli/operator-sdk_olm_install/">operator-sdk olm install</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_status" href="/docs/cli/operator-sdk_olm_status/">operator-sdk olm status</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_uninstall" href="/docs/cli/operator-sdk_olm_uninstall/">operator-sdk olm uninstall</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_print-deps" href="/docs/cli/operator-sdk_print-deps/">operator-sdk print-deps</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_run" href="/docs/cli/operator-sdk_run/">operator-sdk run</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_scorecard" href="/docs/cli/operator-sdk_scorecard/">operator-sdk scorecard</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_test" href="/docs/cli/operator-sdk_test/">operator-sdk test</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_test_local" href="/docs/cli/operator-sdk_test_local/">operator-sdk test local</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_version" href="/docs/cli/operator-sdk_version/">operator-sdk version</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/contribution-guidelines/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Contribution Guidelines</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscontribution-guidelines">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesdeveloper-guide" href="/docs/contribution-guidelines/developer-guide/">Development Environment</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesrelease" href="/docs/contribution-guidelines/release/">Release Guide</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesreporting-issues" href="/docs/contribution-guidelines/reporting-issues/">Reporting Issues</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/contribution-guidelines/testing/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Testing</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscontribution-guidelinestesting">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinestestingrunning-the-tests" href="/docs/contribution-guidelines/testing/running-the-tests/">Running Tests</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinestestingtravis-build" href="/docs/contribution-guidelines/testing/travis-build/">Travis CI</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelineslocal-changes" href="/docs/contribution-guidelines/local-changes/">Local Changes</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelineslocal-docs" href="/docs/contribution-guidelines/local-docs/">Local Docs</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrating-existing-apis" href="/docs/migrating-existing-apis/">Migrating Existing K8S APIs</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/migration/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Migration Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsmigration">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrationv010-migration-guide" href="/docs/migration/v0.1.0-migration-guide/">Migration</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrationversion-upgrade-guide" href="/docs/migration/version-upgrade-guide/">Version Upgrade</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsoperator-scope" href="/docs/operator-scope/">Operator Scope</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsversioning" href="/docs/versioning/">Versioning</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsfaq" href="/docs/faq/">FAQ</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuilderadvanced-topics" href="/docs/kubebuilder/advanced-topics/"></a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuildermigrationproject_migration_guide" href="/docs/kubebuilder/migration/project_migration_guide/"></a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+  </nav>
+</div>
+
+
+
+
+          </div>
+
+          <main class="col-12 col-md-9 col-xl-8 pl-md-5" role="main">
+            
+  
+
+            
+            
+<div class="td-content">
+	<h1>Ansible Operator Quickstart</h1>
+	
+	<p>This guide walks through an example of building a simple memcached-operator powered by Ansible using tools and libraries provided by the Operator SDK.</p>
+<h2 id="create-a-new-project">Create a new project</h2>
+<p>After <a href="/docs/install-operator-sdk">installing the Operator SDK CLI</a> and
+<a href="/docs/ansible/installation">ansible operator prerequisites</a>, use the CLI to create a
+new Ansible-based memcached-operator project:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ operator-sdk new memcached-operator --api-version<span style="color:#ce5c00;font-weight:bold">=</span>cache.example.com/v1alpha1 --kind<span style="color:#ce5c00;font-weight:bold">=</span>Memcached --type<span style="color:#ce5c00;font-weight:bold">=</span>ansible
+$ <span style="color:#204a87">cd</span> memcached-operator
+</code></pre></div><p>This creates the memcached-operator project specifically for watching the
+Memcached resource with APIVersion <code>cache.example.com/v1apha1</code> and Kind
+<code>Memcached</code>.</p>
+<p>To learn more about the project directory structure, see <a href="../reference/scaffolding">project
+layout</a> doc.</p>
+<h4 id="operator-scope">Operator scope</h4>
+<p>Read the <a href="../../operator-scope">operator scope</a> documentation on how to run your operator as namespace-scoped vs cluster-scoped.</p>
+<h2 id="customize-the-operator-logic">Customize the operator logic</h2>
+<p>For this example the memcached-operator will execute the following
+reconciliation logic for each <code>Memcached</code> Custom Resource (CR):</p>
+<ul>
+<li>Create a memcached Deployment if it doesn&rsquo;t exist</li>
+<li>Ensure that the Deployment size is the same as specified by the <code>Memcached</code>
+CR</li>
+</ul>
+<h2 id="watch-the-memcached-cr">Watch the Memcached CR</h2>
+<p>By default, the memcached-operator watches <code>Memcached</code> resource events as shown
+in <code>watches.yaml</code> and executes Ansible Role <code>Memcached</code>:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span>- <span style="color:#204a87;font-weight:bold">version</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>v1alpha1<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">group</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>cache.example.com<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">kind</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Memcached<span style="color:#f8f8f8;text-decoration:underline">
+</span></code></pre></div><h4 id="options">Options</h4>
+<p><strong>Role</strong>
+Specifying a <code>role</code> option in <code>watches.yaml</code> will configure the operator to use
+this specified path when launching <code>ansible-runner</code> with an Ansible Role. By
+default, the <code>new</code> command will fill in an absolute path to where your role
+should go.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span>- <span style="color:#204a87;font-weight:bold">version</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>v1alpha1<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">group</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>cache.example.com<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">kind</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Memcached<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">role</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>memcached<span style="color:#f8f8f8;text-decoration:underline">
+</span></code></pre></div><p><strong>Playbook</strong>
+Specifying a <code>playbook</code> option in <code>watches.yaml</code> will configure the operator to
+use this specified path when launching <code>ansible-runner</code> with an Ansible
+Playbook</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span>- <span style="color:#204a87;font-weight:bold">version</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>v1alpha1<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">group</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>cache.example.com<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">kind</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Memcached<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">playbook</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>playbook.yaml<span style="color:#f8f8f8;text-decoration:underline">
+</span></code></pre></div><p>See <a href="/docs/ansible/reference/watches">watches reference</a> for more information.</p>
+<h2 id="building-the-memcached-ansible-role">Building the Memcached Ansible Role</h2>
+<p>The first thing to do is to modify the generated Ansible role under
+<code>roles/memcached</code>. This Ansible Role controls the logic that is executed when a
+resource is modified.</p>
+<h3 id="define-the-memcached-spec">Define the Memcached spec</h3>
+<p>Defining the spec for an Ansible Operator can be done entirely in Ansible. The
+Ansible Operator will simply pass all key value pairs listed in the Custom
+Resource spec field along to Ansible as extra
+<a href="https://docs.ansible.com/ansible/2.5/user_guide/playbooks_variables.html#passing-variables-on-the-command-line">variables</a>.
+The names of all variables in the spec field are converted to snake_case
+by the operator before running ansible. For example, <code>serviceAccount</code> in
+the spec becomes <code>service_account</code> in ansible.
+It is recommended that you perform some type validation in Ansible on the
+variables to ensure that your application is receiving expected input.</p>
+<p>First, set a default in case the user doesn&rsquo;t set the <code>spec</code> field by modifying
+<code>roles/memcached/defaults/main.yml</code>:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#204a87;font-weight:bold">size</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></code></pre></div><h3 id="defining-the-memcached-deployment">Defining the Memcached deployment</h3>
+<p>Now that we have the spec defined, we can define what Ansible is actually
+executed on resource changes. Since this is an Ansible Role, the default
+behavior will be to execute the tasks in <code>roles/memcached/tasks/main.yml</code>. We
+want Ansible to create a deployment if it does not exist which runs the
+<code>memcached:1.4.36-alpine</code> image. Ansible 2.5+ supports the <a href="https://docs.ansible.com/ansible/2.6/modules/k8s_module.html">k8s Ansible
+Module</a> which we
+will leverage to control the deployment definition.</p>
+<p>Modify <code>roles/memcached/tasks/main.yml</code> to look like the following:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span>- <span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>start<span style="color:#f8f8f8;text-decoration:underline"> </span>memcached<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">community.kubernetes.k8s</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">definition</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span><span style="color:#204a87;font-weight:bold">kind</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Deployment<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span><span style="color:#204a87;font-weight:bold">apiVersion</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>apps/v1<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span><span style="color:#204a87;font-weight:bold">metadata</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#39;{{ meta.name }}-memcached&#39;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">namespace</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#39;{{ meta.namespace }}&#39;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span><span style="color:#204a87;font-weight:bold">spec</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">replicas</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#34;{{size}}&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">selector</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">          </span><span style="color:#204a87;font-weight:bold">matchLabels</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">            </span><span style="color:#204a87;font-weight:bold">app</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>memcached<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">template</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">          </span><span style="color:#204a87;font-weight:bold">metadata</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">            </span><span style="color:#204a87;font-weight:bold">labels</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">app</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>memcached<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">          </span><span style="color:#204a87;font-weight:bold">spec</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">            </span><span style="color:#204a87;font-weight:bold">containers</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">            </span>- <span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>memcached<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">command</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span>- memcached<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span>- -m=<span style="color:#0000cf;font-weight:bold">64</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span>- -o<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span>- modern<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span>- -v<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">image</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#34;docker.io/memcached:1.4.36-alpine&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">ports</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">                </span>- <span style="color:#204a87;font-weight:bold">containerPort</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#0000cf;font-weight:bold">11211</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></code></pre></div><p>It is important to note that we used the <code>size</code> variable to control how many
+replicas of the Memcached deployment we want. We set the default to <code>1</code>, but
+any user can create a Custom Resource that overwrites the default.</p>
+<h3 id="build-and-run-the-operator">Build and run the operator</h3>
+<p>Before running the operator, Kubernetes needs to know about the new custom
+resource definition the operator will be watching.</p>
+<p>Deploy the CRD:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ kubectl create -f deploy/crds/cache.example.com_memcacheds_crd.yaml
+</code></pre></div><p>Once this is done, there are two ways to run the operator:</p>
+<ul>
+<li>As a pod inside a Kubernetes cluster</li>
+<li>As a go program outside the cluster using <code>operator-sdk</code></li>
+</ul>
+<h4 id="1-run-as-a-pod-inside-a-kubernetes-cluster">1. Run as a pod inside a Kubernetes cluster</h4>
+<p>Running as a pod inside a Kubernetes cluster is preferred for production use.</p>
+<p>Build the memcached-operator image and push it to a registry:</p>
+<pre><code>$ operator-sdk build quay.io/example/memcached-operator:v0.0.1
+$ docker push quay.io/example/memcached-operator:v0.0.1
+</code></pre><p>Kubernetes deployment manifests are generated in <code>deploy/operator.yaml</code>. The
+deployment image in this file needs to be modified from the placeholder
+<code>REPLACE_IMAGE</code> to the previous built image. To do this run:</p>
+<pre><code>$ sed -i 's|REPLACE_IMAGE|quay.io/example/memcached-operator:v0.0.1|g' deploy/operator.yaml
+</code></pre><p><strong>Note</strong>
+If you are performing these steps on OSX, use the following <code>sed</code> commands instead:</p>
+<pre><code>$ sed -i &quot;&quot; 's|REPLACE_IMAGE|quay.io/example/memcached-operator:v0.0.1|g' deploy/operator.yaml
+</code></pre><p>Deploy the memcached-operator:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ kubectl create -f deploy/service_account.yaml
+$ kubectl create -f deploy/role.yaml
+$ kubectl create -f deploy/role_binding.yaml
+$ kubectl create -f deploy/operator.yaml
+</code></pre></div><p>Verify that the memcached-operator is up and running:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ kubectl get deployment
+NAME                     DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+memcached-operator       <span style="color:#0000cf;font-weight:bold">1</span>         <span style="color:#0000cf;font-weight:bold">1</span>         <span style="color:#0000cf;font-weight:bold">1</span>            <span style="color:#0000cf;font-weight:bold">1</span>           1m
+</code></pre></div><h4 id="2-run-outside-the-cluster">2. Run outside the cluster</h4>
+<p>This method is preferred during the development cycle to speed up deployment and testing.</p>
+<p><strong>Note</strong>: Ensure that <a href="https://ansible-runner.readthedocs.io/en/latest/install.html">Ansible Runner</a> and <a href="https://github.com/ansible/ansible-runner-http">Ansible Runner
+HTTP Plugin</a> is installed or else you will see
+unexpected errors from Ansible Runner when a Custom Resource is created.</p>
+<p>It is also important that the <code>role</code> path referenced in <code>watches.yaml</code> exists
+on your machine. Since we are normally used to using a container where the Role
+is put on disk for us, we need to manually copy our role to the configured
+Ansible Roles path (e.g <code>/etc/ansible/roles</code>.</p>
+<p>Run the operator locally with the default Kubernetes config file present at
+<code>$HOME/.kube/config</code>:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ operator-sdk run --local
+INFO<span style="color:#ce5c00;font-weight:bold">[</span>0000<span style="color:#ce5c00;font-weight:bold">]</span> Go Version: go1.10
+INFO<span style="color:#ce5c00;font-weight:bold">[</span>0000<span style="color:#ce5c00;font-weight:bold">]</span> Go OS/Arch: darwin/amd64
+INFO<span style="color:#ce5c00;font-weight:bold">[</span>0000<span style="color:#ce5c00;font-weight:bold">]</span> operator-sdk Version: 0.0.5+git
+</code></pre></div><p>Run the operator locally with a provided Kubernetes config file:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ operator-sdk run --local --kubeconfig<span style="color:#ce5c00;font-weight:bold">=</span>config
+INFO<span style="color:#ce5c00;font-weight:bold">[</span>0000<span style="color:#ce5c00;font-weight:bold">]</span> Go Version: go1.10
+INFO<span style="color:#ce5c00;font-weight:bold">[</span>0000<span style="color:#ce5c00;font-weight:bold">]</span> Go OS/Arch: darwin/amd64
+INFO<span style="color:#ce5c00;font-weight:bold">[</span>0000<span style="color:#ce5c00;font-weight:bold">]</span> operator-sdk Version: 0.0.5+git
+</code></pre></div><h3 id="create-a-memcached-cr">Create a Memcached CR</h3>
+<p>Modify <code>deploy/crds/cache.example.com_v1alpha1_memcached_cr.yaml</code> as shown and create a <code>Memcached</code> custom resource:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ cat deploy/crds/cache.example.com_v1alpha1_memcached_cr.yaml
+apiVersion: <span style="color:#4e9a06">&#34;cache.example.com/v1alpha1&#34;</span>
+kind: <span style="color:#4e9a06">&#34;Memcached&#34;</span>
+metadata:
+  name: <span style="color:#4e9a06">&#34;example-memcached&#34;</span>
+spec:
+  size: <span style="color:#0000cf;font-weight:bold">3</span>
+
+$ kubectl apply -f deploy/crds/cache.example.com_v1alpha1_memcached_cr.yaml
+</code></pre></div><p>Ensure that the memcached-operator creates the deployment for the CR:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ kubectl get deployment
+NAME                     DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+memcached-operator       <span style="color:#0000cf;font-weight:bold">1</span>         <span style="color:#0000cf;font-weight:bold">1</span>         <span style="color:#0000cf;font-weight:bold">1</span>            <span style="color:#0000cf;font-weight:bold">1</span>           2m
+example-memcached        <span style="color:#0000cf;font-weight:bold">3</span>         <span style="color:#0000cf;font-weight:bold">3</span>         <span style="color:#0000cf;font-weight:bold">3</span>            <span style="color:#0000cf;font-weight:bold">3</span>           1m
+</code></pre></div><p>Check the pods to confirm 3 replicas were created:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ kubectl get pods
+NAME                                  READY     STATUS    RESTARTS   AGE
+example-memcached-6fd7c98d8-7dqdr     1/1       Running   <span style="color:#0000cf;font-weight:bold">0</span>          1m
+example-memcached-6fd7c98d8-g5k7v     1/1       Running   <span style="color:#0000cf;font-weight:bold">0</span>          1m
+example-memcached-6fd7c98d8-m7vn7     1/1       Running   <span style="color:#0000cf;font-weight:bold">0</span>          1m
+memcached-operator-7cc7cfdf86-vvjqk   2/2       Running   <span style="color:#0000cf;font-weight:bold">0</span>          2m
+</code></pre></div><h3 id="view-the-ansible-logs">View the Ansible logs</h3>
+<p>In order to see the logs from a particular you can run:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">kubectl logs deployment/memcached-operator
+</code></pre></div><p>The logs contain the information about the Ansible run and will make it much easier to debug issues within your Ansible tasks.
+Note that the logs will contain much more detailed information about the Ansible Operator&rsquo;s internals and interface with Kubernetes as well.</p>
+<p>Also, you can use the environment variable <code>ANSIBLE_DEBUG_LOGS</code> set as <code>True</code> to check the full Ansible result in the logs in order to be able to debug it.</p>
+<p><strong>Example</strong></p>
+<p>In the <code>deploy/operator.yaml</code>:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">...<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span>- <span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>ANSIBLE_DEBUG_LOGS<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">value</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#34;True&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span>...<span style="color:#f8f8f8;text-decoration:underline">
+</span></code></pre></div><h3 id="additional-ansible-debug">Additional Ansible Debug</h3>
+<p>Occasionally while developing additional debug in the Operator logs is nice to have.
+Using the memcached operator as an example, we can simply add the
+<code>&quot;ansible.operator-sdk/verbosity&quot;</code> annotation to the Custom
+Resource with the desired verbosity.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#204a87;font-weight:bold">apiVersion</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#34;cache.example.com/v1alpha1&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span><span style="color:#204a87;font-weight:bold">kind</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#34;Memcached&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span><span style="color:#204a87;font-weight:bold">metadata</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#34;example-memcached&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">annotations</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">&#34;ansible.operator-sdk/verbosity&#34;: </span><span style="color:#4e9a06">&#34;4&#34;</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span><span style="color:#204a87;font-weight:bold">spec</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">size</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#0000cf;font-weight:bold">4</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></code></pre></div><h3 id="update-the-size">Update the size</h3>
+<p>Change the <code>spec.size</code> field in the memcached CR from 3 to 4 and apply the
+change:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ cat deploy/crds/cache.example.com_v1alpha1_memcached_cr.yaml
+apiVersion: <span style="color:#4e9a06">&#34;cache.example.com/v1alpha1&#34;</span>
+kind: <span style="color:#4e9a06">&#34;Memcached&#34;</span>
+metadata:
+  name: <span style="color:#4e9a06">&#34;example-memcached&#34;</span>
+spec:
+  size: <span style="color:#0000cf;font-weight:bold">4</span>
+
+$ kubectl apply -f deploy/crds/cache.example.com_v1alpha1_memcached_cr.yaml
+</code></pre></div><p>Confirm that the operator changes the deployment size:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ kubectl get deployment
+NAME                 DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+example-memcached    <span style="color:#0000cf;font-weight:bold">4</span>         <span style="color:#0000cf;font-weight:bold">4</span>         <span style="color:#0000cf;font-weight:bold">4</span>            <span style="color:#0000cf;font-weight:bold">4</span>           5m
+</code></pre></div><h3 id="cleanup">Cleanup</h3>
+<p>Clean up the resources:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ kubectl delete -f deploy/crds/cache.example.com_v1alpha1_memcached_cr.yaml
+$ kubectl delete -f deploy/operator.yaml
+$ kubectl delete -f deploy/role_binding.yaml
+$ kubectl delete -f deploy/role.yaml
+$ kubectl delete -f deploy/service_account.yaml
+$ kubectl delete -f deploy/crds/cache.example.com_memcacheds_crd.yaml
+</code></pre></div><p><strong>NOTE</strong> Additional CR/CRD&rsquo;s can be added to the project by running, for example, the command :<code>operator-sdk add api --api-version=cache.example.com/v1alpha1 --kind=AppService</code>
+For more information, refer <a href="/docs/cli/operator-sdk_add_api">cli</a> doc.</p>
+
+	
+	
+	<div class="text-muted mt-5 pt-3 border-top">Last modified January 1, 0001
+</div>
+</div>
+
+
+          </main>
+        </div>
+      </div>
+      <div class="row flex-xl-nowrap">
+        
+<footer class="of-footer-main">
+  <div class="of-footer-main__meta">
+    <img src="/build/images/logo.svg" alt="">
+    <p class="of-footer-main__meta__text">The Operator Framework is an open source toolkit to manage Kubernetes nativeapplications, called Operators, in an effective, automated, and scalable way.</p>
+    <ul class="of-link-list of-link-list--secondary">
+      <li class="of-link-list__li"><a class="of-link-list__a" href="#">Operator SDK</a></li>
+      <li class="of-link-list__li"><a class="of-link-list__a" href="#">Operator Lifecycle Manager</a></li>
+      <li class="of-link-list__li"><a class="of-link-list__a" class="of-link of-link--external" href="#">OperatorHub</a></li>
+    </ul>
+  </div>
+  <div class="of-footer-main__social">
+    <h4 class="of-heading of-heading--sm">Connect with us!</h4>
+      
+        
+        
+    <ul class="of-link-list">
+      
+        <li class="of-link-list__li">
+          <a class="of-link-list__a" href="https://groups.google.com/forum/#!forum/operator-framework" aria-label="Forum">
+            <i class="fas fa-comment"></i>
+          </a>
+        </li>
+      
+        <li class="of-link-list__li">
+          <a class="of-link-list__a" href="https://github.com/operator-framework/operator-sdk" aria-label="github">
+            <i class="fab fa-github"></i>
+          </a>
+        </li>
+      
+</ul>
+
+      
+    
+
+  </div>
+  <div class="of-footer-main__copyright">
+    <p>Copyright &copy; 2020</p>
+    <ul class="of-link-list">
+      <li class="of-link-list__li"><a href="https://www.redhat.com/en/about/privacy-policy">Privacy Statement</a></li>
+      
+    </ul>
+  </div>
+</footer>
+</body>
+</html>
+
+      </div>
+    </div>
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+<script src="/js/main.min.29b0315468c00226fa6f4556a9cebc0ac4fe1ce1457a01b22c0a06b329877383.js" integrity="sha256-KbAxVGjAAib6b0VWqc68CsT&#43;HOFFegGyLAoGsymHc4M=" crossorigin="anonymous"></script>
+
+
+
+  </body>
+</html>

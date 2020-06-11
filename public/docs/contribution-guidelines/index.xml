@@ -1,0 +1,465 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Operator SDK – How to Contribute</title>
+    <link>/docs/contribution-guidelines/</link>
+    <description>Recent content in How to Contribute on Operator SDK</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	  <atom:link href="/docs/contribution-guidelines/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>Docs: Development Environment</title>
+      <link>/docs/contribution-guidelines/developer-guide/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/contribution-guidelines/developer-guide/</guid>
+      <description>
+        
+        
+        &lt;p&gt;This document explains how to setup your dev environment.&lt;/p&gt;
+&lt;h2 id=&#34;prerequisites&#34;&gt;Prerequisites&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://git-scm.com/downloads&#34;&gt;git&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/dl/&#34;&gt;go&lt;/a&gt; version v1.13+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;download-operator-sdk&#34;&gt;Download Operator SDK&lt;/h2&gt;
+&lt;p&gt;Go to the &lt;a href=&#34;https://github.com/operator-framework/operator-sdk&#34;&gt;Operator SDK repo&lt;/a&gt; and follow the &lt;a href=&#34;https://help.github.com/en/articles/fork-a-repo&#34;&gt;fork guide&lt;/a&gt; to fork, clone, and setup the local operator-sdk repository.&lt;/p&gt;
+&lt;h2 id=&#34;build-the-operator-sdk-cli&#34;&gt;Build the Operator SDK CLI&lt;/h2&gt;
+&lt;p&gt;Build the Operator SDK CLI &lt;code&gt;operator-sdk&lt;/code&gt; binary:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ make install
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then, now you are able to test and use the operator-sdk build using the source code.&lt;/p&gt;
+&lt;h2 id=&#34;testing&#34;&gt;Testing&lt;/h2&gt;
+&lt;p&gt;The SDK includes many tests that are run as part of CI.
+To build the binary and run all tests (assuming you have a correctly configured environment),
+you can simple run:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ make test-ci
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;If you simply want to run the unit tests, you can run:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ make &lt;span style=&#34;color:#204a87&#34;&gt;test&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;For more information on running testing and correctly configuring your environment,
+refer to the &lt;a href=&#34;../testing/running-the-tests&#34;&gt;&lt;code&gt;Running the Tests Locally&lt;/code&gt;&lt;/a&gt; document. To incorporate code changes in your development environment see the &lt;a href=&#34;../testing/local-changes&#34;&gt;&lt;code&gt;Testing changes Locally&lt;/code&gt;&lt;/a&gt; document.&lt;/p&gt;
+&lt;p&gt;To run the lint checks done in the CI locally, run:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ make lint
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt; Note that for it is required to install &lt;code&gt;golangci-lint&lt;/code&gt; locally. For more info see its &lt;a href=&#34;https://github.com/golangci/golangci-lint#install&#34;&gt;doc&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;how-the-operator-sdk-binaries-are-built&#34;&gt;How the operator-sdk binaries are built&lt;/h2&gt;
+&lt;p&gt;In the release process, the script &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/release.sh&#34;&gt;.release.sh&lt;/a&gt; is executed and it will call the &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/Makefile&#34;&gt;makefile&lt;/a&gt; target &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/Makefile#L113&#34;&gt;make release&lt;/a&gt;. To know more about the release process, see the &lt;a href=&#34;release&#34;&gt;doc&lt;/a&gt; also see &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/releases&#34;&gt;operator-sdk releases&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt; The Deploy stage (configured in &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/.travis.yml&#34;&gt;.travis.yml &lt;/a&gt;) builds also execute the same &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/Makefile&#34;&gt;makefile&lt;/a&gt; targets. This stage is executed against the master branch when a Pull Request is merged.&lt;/p&gt;
+&lt;h2 id=&#34;how-to-test-the-build-of-operator-sdk-binaries&#34;&gt;How to test the build of operator-sdk binaries&lt;/h2&gt;
+&lt;p&gt;Follow these steps to execute the Travis &lt;code&gt;Deploy&lt;/code&gt; stage against your branch to demonstrate that the merge build will complete as expected.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Enable the Travis in your fork repository. For more info see &lt;a href=&#34;https://docs.travis-ci.com/user/tutorial/#to-get-started-with-travis-ci-using-github&#34;&gt;&lt;code&gt;To get started with Travis CI using GitHub&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Create image repos in quay (or another registry that supports multi-arch images) for ansible, helm, and scorecard proxy. For each image type, you need repos for the manifest list and one for each architecture (e.g. &lt;code&gt;ansible-operator&lt;/code&gt;, &lt;code&gt;ansible-operator-amd64&lt;/code&gt;, &lt;code&gt;ansible-operator-s390x&lt;/code&gt;, etc.)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt; Be sure to make each repository public.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Set the following environment variables in the Travis settings for your fork:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ANSIBLE_IMAGE&lt;/code&gt; docker image name (e.g. &lt;code&gt;quay.io/joelanford/ansible-operator&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;HELM_IMAGE&lt;/code&gt; same as above, but for helm&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;SCORECARD_PROXY_IMAGE&lt;/code&gt; same as above, but for scorecard proxy&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;DOCKER_USERNAME&lt;/code&gt; credentials for your repo&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;DOCKER_PASSWORD&lt;/code&gt; credentials for your repo&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;DOCKER_CLI_EXPERIMENTAL&lt;/code&gt;  set to &lt;code&gt;enabled&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;COVERALLS_TOKEN&lt;/code&gt;  token to integrate the project with &lt;code&gt;https://coveralls.io/&lt;/code&gt;. So, enable your fork in &lt;code&gt;https://coveralls.io/&lt;/code&gt; and generate a token to allow it.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Make a commit with &lt;code&gt;[travis deploy]&lt;/code&gt; in the commit message on the branch with the changes.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Check the travis build for your branch in your fork (not the PR build in the operator-sdk repo, since we don&amp;rsquo;t allow PRs to build images in the &lt;code&gt;operator-framework&lt;/code&gt; quay repo.)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt; Post a link in the Pull Request to the Travis build page showing successful &lt;code&gt;Deploy&lt;/code&gt; and &lt;code&gt;Deploy multi-arch manifest lists&lt;/code&gt; stages with your changes.&lt;/p&gt;
+&lt;p&gt;See the project &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/README.md&#34;&gt;README&lt;/a&gt; for more details.&lt;/p&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Release Guide</title>
+      <link>/docs/contribution-guidelines/release/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/contribution-guidelines/release/</guid>
+      <description>
+        
+        
+        &lt;p&gt;Making an Operator SDK release involves:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Updating &lt;code&gt;CHANGELOG.md&lt;/code&gt; and migration guide.&lt;/li&gt;
+&lt;li&gt;Tagging and signing a git commit and pushing the tag to GitHub.&lt;/li&gt;
+&lt;li&gt;Building a release binary and signing the binary&lt;/li&gt;
+&lt;li&gt;Creating a release by uploading binary, signature, and &lt;code&gt;CHANGELOG.md&lt;/code&gt; updates for the release to GitHub.&lt;/li&gt;
+&lt;li&gt;Creating a patch version branch of the form &lt;code&gt;v1.2.x&lt;/code&gt; for major and minor releases.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Releases can only be performed by &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/MAINTAINERS&#34;&gt;maintainers&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;dependency-and-platform-support&#34;&gt;Dependency and platform support&lt;/h2&gt;
+&lt;h3 id=&#34;go-version&#34;&gt;Go version&lt;/h3&gt;
+&lt;p&gt;Release binaries will be built with the Go compiler version specified in the Operator SDK&amp;rsquo;s &lt;a href=&#34;../../install-operator-sdk#prerequisites&#34;&gt;prerequisites section&lt;/a&gt;.&lt;/p&gt;
+&lt;h3 id=&#34;kubernetes-versions&#34;&gt;Kubernetes versions&lt;/h3&gt;
+&lt;p&gt;As the Operator SDK interacts directly with the Kubernetes API, certain API features are assumed to exist in the target cluster. The currently supported Kubernetes version will always be listed in the SDK &lt;a href=&#34;../../install-operator-sdk#prerequisites&#34;&gt;prerequisites section&lt;/a&gt;.&lt;/p&gt;
+&lt;h3 id=&#34;operating-systems-and-architectures&#34;&gt;Operating systems and architectures&lt;/h3&gt;
+&lt;p&gt;Release binaries will be built for the &lt;code&gt;x86_64&lt;/code&gt; architecture for MacOS Darwin platform and for the following GNU Linux architectures: &lt;code&gt;x86_64&lt;/code&gt;, &lt;code&gt;ppc64le&lt;/code&gt;, &lt;code&gt;s390x&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Base images for ansible-operator, helm-operator, and scorecard-proxy will be built for the following GNU Linux architectures: &lt;code&gt;x86_64&lt;/code&gt;, &lt;code&gt;ppc64le&lt;/code&gt;, &lt;code&gt;s390x&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Support for the Windows platform is not on the roadmap at this time.&lt;/p&gt;
+&lt;h2 id=&#34;binaries-and-signatures&#34;&gt;Binaries and signatures&lt;/h2&gt;
+&lt;p&gt;Binaries will be signed using a maintainers&amp;rsquo; verified GitHub PGP key. Both binary and signature will be uploaded to the release. Ensure you import maintainer keys to verify release binaries.&lt;/p&gt;
+&lt;h2 id=&#34;release-tags&#34;&gt;Release tags&lt;/h2&gt;
+&lt;p&gt;Every release will have a corresponding git semantic version tag beginning with &lt;code&gt;v&lt;/code&gt;, ex. &lt;code&gt;v1.2.3&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Make sure you&amp;rsquo;ve &lt;a href=&#34;https://github.com/settings/keys&#34;&gt;uploaded your GPG key&lt;/a&gt; and configured git to &lt;a href=&#34;https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work&#34;&gt;use that signing key&lt;/a&gt; either globally or for the Operator SDK repository. Tagging will be handled by &lt;code&gt;release.sh&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; the email the key is issued for must be the email you use for git.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ git config &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;[&lt;/span&gt;--global&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;]&lt;/span&gt; user.signingkey &lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;$GPG_KEY_ID&lt;/span&gt;&lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;&lt;/span&gt;
+$ git config &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;[&lt;/span&gt;--global&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;]&lt;/span&gt; user.email &lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;$GPG_EMAIL&lt;/span&gt;&lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Also, make sure that you setup the git gpg config as follows.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ cat ~/.gnupg/gpg.conf
+default-key &lt;span style=&#34;color:#000&#34;&gt;$GPG_KEY_ID&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt; If you do a release from an OSX machine, you need to configure &lt;code&gt;gnu-gpg&lt;/code&gt; to sign the release&amp;rsquo;s tag:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Install the requirements by running: &lt;code&gt;brew install gpg2 gnupg pinentry-mac&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Append the following to your ~/.bash_profile or ~/.bashrc or ~/.zshrc&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;export GPG_TTY=`tty`
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;Restart your Terminal or source your ~/.*rc file&lt;/li&gt;
+&lt;li&gt;Then, make sure git uses gpg2 and not gpg&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ git config --global gpg.program gpg2 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;To make sure gpg2 itself is working&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ &lt;span style=&#34;color:#204a87&#34;&gt;echo&lt;/span&gt; &lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;test&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;|&lt;/span&gt; gpg2 --clearsign
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;github-release-information&#34;&gt;GitHub release information&lt;/h2&gt;
+&lt;h3 id=&#34;locking-down-branches&#34;&gt;Locking down branches&lt;/h3&gt;
+&lt;p&gt;Once a release PR has been made and all tests pass, the SDK&amp;rsquo;s &lt;code&gt;master&lt;/code&gt; branch should be locked so commits cannot happen between the release PR and release tag push. To lock down &lt;code&gt;master&lt;/code&gt;:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Go to &lt;code&gt;Settings -&amp;gt; Branches&lt;/code&gt; in the SDK repo.&lt;/li&gt;
+&lt;li&gt;Under &lt;code&gt;Branch protection rules&lt;/code&gt;, click &lt;code&gt;Edit&lt;/code&gt; on the &lt;code&gt;master&lt;/code&gt; rule.&lt;/li&gt;
+&lt;li&gt;In section &lt;code&gt;Protect matching branches&lt;/code&gt; of the &lt;code&gt;Rule settings&lt;/code&gt; box, increase the number of required approving reviewers to its maximum allowed value.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Now only administrators (maintainers) should be able to force merge PRs. Make sure everyone in the relevant Slack channel is aware of the release so they do not force merge by accident.&lt;/p&gt;
+&lt;p&gt;Unlock &lt;code&gt;master&lt;/code&gt; after the release has completed (after step 3 is complete) by changing the number of required approving reviewers back to 1.&lt;/p&gt;
+&lt;h3 id=&#34;releasing&#34;&gt;Releasing&lt;/h3&gt;
+&lt;p&gt;The GitHub &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/releases&#34;&gt;&lt;code&gt;Releases&lt;/code&gt; tab&lt;/a&gt; in the operator-sdk repo is where all SDK releases live. To create a GitHub release:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Go to the SDK &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/releases&#34;&gt;&lt;code&gt;Releases&lt;/code&gt; tab&lt;/a&gt; and click the &lt;code&gt;Draft a new release&lt;/code&gt; button in the top right corner.&lt;/li&gt;
+&lt;li&gt;Select the tag version &lt;code&gt;v1.3.0&lt;/code&gt;, and set the title to &lt;code&gt;v1.3.0&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Copy and paste any &lt;code&gt;CHANGELOG.md&lt;/code&gt; under the &lt;code&gt;v1.3.0&lt;/code&gt; header that have any notes into the description form (see &lt;a href=&#34;#release-notes&#34;&gt;below&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;Attach all binaries and &lt;code&gt;.asc&lt;/code&gt; signature files to the release by dragging and dropping them.&lt;/li&gt;
+&lt;li&gt;Click the &lt;code&gt;Publish release&lt;/code&gt; button.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; if this is a pre-release, make sure to check the &lt;code&gt;This is a pre-release&lt;/code&gt; box under the file attachment frame. If you are not sure what this means, ask another maintainer.&lt;/p&gt;
+&lt;h4 id=&#34;release-notes&#34;&gt;Release notes&lt;/h4&gt;
+&lt;p&gt;GitHub release notes should thoroughly describe changes made to code, documentation, and design of the SDK. PR links should be included wherever possible.&lt;/p&gt;
+&lt;p&gt;The following sections, often directly copied from our &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/CHANGELOG.md&#34;&gt;changelog&lt;/a&gt;, are used as release notes:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-Markdown&#34; data-lang=&#34;Markdown&#34;&gt;[Version as title, ex. v1.2.3]
+
+&lt;span style=&#34;color:#800080;font-weight:bold&#34;&gt;### Added
+&lt;/span&gt;&lt;span style=&#34;color:#800080;font-weight:bold&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;-&lt;/span&gt; [Short description of feature added] (#PR)
+...
+
+&lt;span style=&#34;color:#800080;font-weight:bold&#34;&gt;### Changed
+&lt;/span&gt;&lt;span style=&#34;color:#800080;font-weight:bold&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;-&lt;/span&gt; [Short description of change made] (#PR)
+...
+
+&lt;span style=&#34;color:#800080;font-weight:bold&#34;&gt;### Deprecated
+&lt;/span&gt;&lt;span style=&#34;color:#800080;font-weight:bold&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;-&lt;/span&gt; [Short description of feature deprecated] (#PR)
+...
+
+&lt;span style=&#34;color:#800080;font-weight:bold&#34;&gt;### Removed
+&lt;/span&gt;&lt;span style=&#34;color:#800080;font-weight:bold&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;-&lt;/span&gt; [Short description of feature removed] (#PR)
+...
+
+&lt;span style=&#34;color:#800080;font-weight:bold&#34;&gt;### Bug Fixes
+&lt;/span&gt;&lt;span style=&#34;color:#800080;font-weight:bold&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;-&lt;/span&gt; [Short description of bug and fix] (#PR)
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;release-signing&#34;&gt;Release Signing&lt;/h2&gt;
+&lt;p&gt;When a new release is created, the tag for the commit it signed with a maintainers&amp;rsquo; gpg key and
+the binaries for the release are also signed by the same key. All keys used by maintainers will
+be available via public PGP keyservers such as pool.sks-keyservers.net.&lt;/p&gt;
+&lt;p&gt;For new maintainers who have not done a release and do not have their PGP key on a public
+keyserver, output your armored public key using this command:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ gpg --armor --export &lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;$GPG_EMAIL&lt;/span&gt;&lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;&lt;/span&gt; &amp;gt; mykey.asc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then, copy and paste the content of the outputted file into the &lt;code&gt;Submit a key&lt;/code&gt; section on
+pool.sks-keyservers.net or any other public keyserver that synchronizes
+the key to other public keyservers. Once that is done, other people can download your public
+key and you are ready to sign releases.&lt;/p&gt;
+&lt;h2 id=&#34;verifying-a-release&#34;&gt;Verifying a release&lt;/h2&gt;
+&lt;p&gt;To verify a git tag, use this command:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ git verify-tag --verbose &lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;$TAG_NAME&lt;/span&gt;&lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;If you do not have the mantainers public key on your machine, you will get an error message similiar to this:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;git verify-tag --verbose &lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;$TAG_NAME&lt;/span&gt;&lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;&lt;/span&gt;
+object 61e0c23e9d2e217f8d95ac104a8f2545c102b5c3
+&lt;span style=&#34;color:#204a87&#34;&gt;type&lt;/span&gt; commit
+tag v0.6.0
+tagger Ish Shah &amp;lt;ishah@redhat.com&amp;gt; &lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;1552688145&lt;/span&gt; -0700
+
+Operator SDK v0.6.0
+gpg: Signature made Fri Mar &lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;15&lt;/span&gt; 23:15:45 &lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;2019&lt;/span&gt; CET
+gpg:                using RSA key &amp;lt;KEY_ID&amp;gt;
+gpg: Can&lt;span style=&#34;color:#a40000&#34;&gt;&amp;#39;&lt;/span&gt;t check signature: No public key
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;To download the key, use the following command, replacing &lt;code&gt;$KEY_ID&lt;/code&gt; with the RSA key string provided in the output of the previous command:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ gpg --recv-key &lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;$KEY_ID&lt;/span&gt;&lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;To verify a release binary using the provided asc files see the &lt;a href=&#34;../../install-operator-sdk&#34;&gt;installation guide.&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;release-steps&#34;&gt;Release steps&lt;/h2&gt;
+&lt;p&gt;These steps describe how to conduct a release of the SDK, upgrading from &lt;code&gt;v1.2.0&lt;/code&gt; to &lt;code&gt;v1.3.0&lt;/code&gt;. Replace these versions with the current and new version you are releasing, respectively.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; &lt;code&gt;master&lt;/code&gt; should be frozen between steps 1 and 3 so that all commits will be either in the new release or have a pre-release version, ex. &lt;code&gt;v1.2.0+git&lt;/code&gt;. Otherwise commits might be built into a release that shouldn&amp;rsquo;t or have an incorrect version, which makes debugging user issues difficult.&lt;/p&gt;
+&lt;h3 id=&#34;patch-release-only-cherry-picking-to-a-release-branch&#34;&gt;(Patch release only) Cherry-picking to a release branch&lt;/h3&gt;
+&lt;p&gt;As more than one patch may be created per minor release, branch names of the form &lt;code&gt;v1.3.x&lt;/code&gt; are created after a minor version is released. Bug fixes will be merged into the release branch only after testing.&lt;/p&gt;
+&lt;p&gt;Add fixes to the release branch by doing the following:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ git checkout v1.3.x
+$ git checkout -b release-v1.3.1
+$ git cherry-pick &lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;$GIT_COMMIT_HASH&lt;/span&gt;&lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;# Usually from master&lt;/span&gt;
+$ git push origin release-v1.3.1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Create a PR from &lt;code&gt;release-v1.3.1&lt;/code&gt; to &lt;code&gt;v1.3.x&lt;/code&gt;. Once CI passes and your PR is merged, continue to step 1.&lt;/p&gt;
+&lt;h3 id=&#34;1-create-a-pr-for-release-version-changelogmd-and-migration-guide-updates&#34;&gt;1. Create a PR for release version, CHANGELOG.md, and migration guide updates&lt;/h3&gt;
+&lt;p&gt;Once all PR&amp;rsquo;s needed for a release have been merged, branch from &lt;code&gt;master&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ git checkout master
+$ git pull
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;If making a patch release, check out the corresponding minor version branch:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ git checkout v1.2.x
+$ git pull
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Create a new branch to push release commits:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ git checkout -b release-v1.3.0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Run the CHANGELOG and migration guide generator:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ &lt;span style=&#34;color:#000&#34;&gt;GEN_CHANGELOG_TAG&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;=&lt;/span&gt;v1.3.0 make gen-changelog
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Commit the following changes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;version/version.go&lt;/code&gt;: update &lt;code&gt;Version&lt;/code&gt; to &lt;code&gt;v1.3.0&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;internal/scaffold/go_mod.go&lt;/code&gt;, change the &lt;code&gt;require&lt;/code&gt; line version for &lt;code&gt;github.com/operator-framework/operator-sdk&lt;/code&gt; from &lt;code&gt;master&lt;/code&gt; to &lt;code&gt;v1.3.0&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;internal/scaffold/helm/go_mod.go&lt;/code&gt;: same as for &lt;code&gt;internal/scaffold/go_mod.go&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;internal/scaffold/ansible/go_mod.go&lt;/code&gt;: same as for &lt;code&gt;internal/scaffold/go_mod.go&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;doc/user/install-operator-sdk.md&lt;/code&gt;: update the linux and macOS URLs to point to the new release URLs.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;CHANGELOG.md&lt;/code&gt;: commit changes (updated by changelog generation).&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;website/content/en/docs/migration/v1.3.0.md&lt;/code&gt;: commit changes (created by changelog generation).&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;changelog/fragments/*&lt;/code&gt;: commit deleted fragment files (deleted by changelog generation).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;(Non-patch releases only)&lt;/em&gt; Lock down the master branch to prevent further commits between this and step 4. See &lt;a href=&#34;#locking-down-branches&#34;&gt;this section&lt;/a&gt; for steps to do so.&lt;/p&gt;
+&lt;p&gt;Create and merge a new PR for &lt;code&gt;release-v1.3.0&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 id=&#34;2-create-a-release-tag-binaries-and-signatures&#34;&gt;2. Create a release tag, binaries, and signatures&lt;/h3&gt;
+&lt;p&gt;The top-level &lt;code&gt;release.sh&lt;/code&gt; script will take care of verifying versions in files described in step 1, and tagging and verifying the tag, as well as building binaries and generating signatures by calling &lt;code&gt;make release&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Call the script with the only argument being the new SDK version:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ ./release.sh v1.3.0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt; The &lt;code&gt;./release.sh&lt;/code&gt; script requires &lt;code&gt;GNU sed&lt;/code&gt; and the &lt;code&gt;GNU make&lt;/code&gt; instead of the default installed sed. Install them with: &lt;code&gt;brew install gnu-sed&lt;/code&gt; and &lt;code&gt;brew install make&lt;/code&gt;, then ensure they are present in your &lt;code&gt;$PATH&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Release binaries and signatures will be in &lt;code&gt;build/&lt;/code&gt;. Both binary and signature file names contain version, architecture, and platform information; signature file names correspond to the binary they were generated from suffixed with &lt;code&gt;.asc&lt;/code&gt;. For example, signature file &lt;code&gt;operator-sdk-v1.3.0-x86_64-apple-darwin.asc&lt;/code&gt; was generated from a binary named &lt;code&gt;operator-sdk-v1.3.0-x86_64-apple-darwin&lt;/code&gt;. To verify binaries and tags, see the &lt;a href=&#34;#verifying-a-release&#34;&gt;verification section&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; you must have both &lt;a href=&#34;https://help.github.com/en/articles/telling-git-about-your-signing-key&#34;&gt;&lt;code&gt;git&lt;/code&gt;&lt;/a&gt; and &lt;a href=&#34;https://lists.gnupg.org/pipermail/gnupg-users/2001-September/010163.html&#34;&gt;&lt;code&gt;gpg&lt;/code&gt;&lt;/a&gt; default PGP keys set locally for &lt;code&gt;release.sh&lt;/code&gt; to run without error. Additionally you must add your PGP key to a &lt;a href=&#34;#release-signing&#34;&gt;public-key-server&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Push tag &lt;code&gt;v1.3.0&lt;/code&gt; upstream:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ git push --tags
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Once this tag passes CI, go to step 3. For more info on tagging, see the &lt;a href=&#34;#release-tags&#34;&gt;release tags section&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; If CI fails for some reason, you will have to revert the tagged commit, re-commit, and make a new PR.&lt;/p&gt;
+&lt;h3 id=&#34;3-create-a-pr-for-post-release-version-updates&#34;&gt;3. Create a PR for post-release version updates&lt;/h3&gt;
+&lt;p&gt;Check out a new branch from master (or use your &lt;code&gt;release-v1.3.0&lt;/code&gt; branch) and commit the following changes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;version/version.go&lt;/code&gt;: update &lt;code&gt;Version&lt;/code&gt; to &lt;code&gt;v1.3.0+git&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;internal/scaffold/go_mod.go&lt;/code&gt;, change the &lt;code&gt;require&lt;/code&gt; line version for &lt;code&gt;github.com/operator-framework/operator-sdk&lt;/code&gt; from &lt;code&gt;v1.3.0&lt;/code&gt; to &lt;code&gt;master&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;internal/scaffold/helm/go_mod.go&lt;/code&gt;: same as for &lt;code&gt;internal/scaffold/go_mod.go&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;internal/scaffold/ansible/go_mod.go&lt;/code&gt;: same as for &lt;code&gt;internal/scaffold/go_mod.go&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Create a new PR for this branch, targetting the &lt;code&gt;master&lt;/code&gt; branch. Once this PR passes CI and is merged, &lt;code&gt;master&lt;/code&gt; can be unfrozen.&lt;/p&gt;
+&lt;p&gt;If the release is for a patch version (e.g. &lt;code&gt;v1.3.1&lt;/code&gt;), an identical PR should be created, targetting the  &lt;code&gt;v1.3.x&lt;/code&gt; branch. Once this PR passes CI and is merged, &lt;code&gt;v1.3.x&lt;/code&gt; can be unfrozen.&lt;/p&gt;
+&lt;h3 id=&#34;4-releasing-binaries-signatures-and-release-notes&#34;&gt;4. Releasing binaries, signatures, and release notes&lt;/h3&gt;
+&lt;p&gt;&lt;em&gt;(Non-patch releases only)&lt;/em&gt; Unlock the master branch. See &lt;a href=&#34;#locking-down-branches&#34;&gt;this section&lt;/a&gt; for steps to do so.&lt;/p&gt;
+&lt;p&gt;The final step is to upload binaries, their signature files, and release notes from &lt;code&gt;CHANGELOG.md&lt;/code&gt; for &lt;code&gt;v1.3.0&lt;/code&gt;. See &lt;a href=&#34;#releasing&#34;&gt;this section&lt;/a&gt; for steps to do so.&lt;/p&gt;
+&lt;h3 id=&#34;5-making-a-new-release-branch&#34;&gt;5. Making a new release branch&lt;/h3&gt;
+&lt;p&gt;If you have created a new major or minor release, you need to make a new branch for it. To do this, checkout the tag that you created and make a new branch that matches the version you released with &lt;code&gt;x&lt;/code&gt; in the position of the patch number. For example, to make a new release branch after &lt;code&gt;v1.3.0&lt;/code&gt; and push it to the repo, you would follow these steps:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-console&#34; data-lang=&#34;console&#34;&gt;$ git checkout tags/v1.3.0
+Note: checking out &#39;tags/v1.3.0&#39;.
+...
+$ git checkout -b v1.3.x
+Switched to a new branch &#39;v1.3.x&#39;
+$ git push origin v1.3.x
+Total 0 (delta 0), reused 0 (delta 0)
+remote:
+remote: Create a pull request for &#39;v1.3.x&#39; on GitHub by visiting:
+remote:      https://github.com/operator-framework/operator-sdk/pull/new/v1.3.x
+remote:
+To github.com:operator-framework/operator-sdk.git
+ * [new branch]      v1.3.x -&amp;gt; v1.3.x
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Now that the branch exists, you need to make the post-release PR for the new release branch. To do this, simply follow the same steps as in &lt;a href=&#34;#3-create-a-pr-for-post-release-version-and-changelogmd-updates&#34;&gt;step 3&lt;/a&gt; with the addition of changing the branch name in the &lt;code&gt;go.mod&lt;/code&gt; scaffold from &lt;code&gt;master&lt;/code&gt; to the new branch (for example, &lt;code&gt;v1.3.x&lt;/code&gt;). Then, make the PR against the new branch.&lt;/p&gt;
+&lt;h3 id=&#34;6-updating-the-homebrew-formula&#34;&gt;6. Updating the Homebrew formula&lt;/h3&gt;
+&lt;p&gt;We support installing via &lt;a href=&#34;https://brew.sh/&#34;&gt;Homebrew&lt;/a&gt;, so we need to update the operator-sdk &lt;a href=&#34;https://github.com/Homebrew/homebrew-core/blob/master/Formula/operator-sdk.rb&#34;&gt;Homebrew formula&lt;/a&gt; once the release is cut. Follow the instructions below, or for more detailed ones on the Homebrew contribution &lt;a href=&#34;https://github.com/Homebrew/homebrew-core/blob/master/CONTRIBUTING.md#to-submit-a-version-upgrade-for-the-foo-formula&#34;&gt;README&lt;/a&gt;, to open a PR against the &lt;a href=&#34;https://github.com/Homebrew/homebrew-core&#34;&gt;repository&lt;/a&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker run -t -d linuxbrew/brew:latest
+docker exec -it &amp;lt;CONTAINER_ID&amp;gt; /bin/bash`
+# Run the following commands in the container.
+git config --global github.name &amp;lt;GITHUB-USERNAME&amp;gt;
+git config --global github.token &amp;lt;GITHUB-TOKEN&amp;gt;
+# Replace the release version of the newly cut release.
+OPERATORSDKURL=https://github.com/operator-framework/operator-sdk/archive/&amp;lt;RELEASE-VERSION&amp;gt;.tar.gz
+curl $OPERATORSDKURL -o operator-sdk
+# Calculate the SHA256
+OPERATORSUM=&amp;quot;$(sha256sum operator-sdk | cut -d &#39; &#39; -f 1)&amp;quot;
+brew bump-formula-pr --strict --url=$OPERATORSDKURL --sha256=$OPERATORSUM operator-sdk
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Note: If there were any changes made to the CLI commands, make sure to look at the existing tests, in case they need updating.&lt;/p&gt;
+&lt;p&gt;You&amp;rsquo;ve now fully released a new version of the Operator SDK. Good work! Make sure to follow the post-release steps below.&lt;/p&gt;
+&lt;h3 id=&#34;post-release-updating-the-operator-sdk-samples-repo&#34;&gt;(Post-release) Updating the operator-sdk-samples repo&lt;/h3&gt;
+&lt;p&gt;Many releases change SDK API&amp;rsquo;s and conventions, which are not reflected in the &lt;a href=&#34;https://github.com/operator-framework/operator-sdk-samples&#34;&gt;operator-sdk-samples repo&lt;/a&gt;. The samples repo should be updated and versioned after each SDK major/minor release with the same tag, ex. &lt;code&gt;v1.3.0&lt;/code&gt;, so users can refer to the correct operator code for that release.&lt;/p&gt;
+&lt;p&gt;The release process for the samples repo is simple:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Make changes to all relevant operators (at least those referenced by SDK docs) based on API changes for the new SDK release.&lt;/li&gt;
+&lt;li&gt;Ensure the operators build and run as expected (see each operator&amp;rsquo;s docs).&lt;/li&gt;
+&lt;li&gt;Once all API changes are in &lt;code&gt;master&lt;/code&gt;, create a release tag locally:
+&lt;pre&gt;&lt;code class=&#34;language-console&#34; data-lang=&#34;console&#34;&gt;$ git checkout master &amp;amp;&amp;amp; git pull
+$ VER=&amp;quot;v1.3.0&amp;quot;
+$ git tag --sign --message &amp;quot;Operator SDK Samples $VER&amp;quot; &amp;quot;$VER&amp;quot;
+$ git push --tags
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;post-release-updating-the-release-notes&#34;&gt;(Post-release) Updating the release notes&lt;/h3&gt;
+&lt;p&gt;Add the following line to the top of the GitHub release notes for &lt;code&gt;v1.3.0&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-md&#34; data-lang=&#34;md&#34;&gt;**NOTE:** ensure the &lt;span style=&#34;color:#4e9a06&#34;&gt;`v1.3.0`&lt;/span&gt; tag is referenced when referring to sample code in the [&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;SDK Operator samples repo&lt;/span&gt;](&lt;span style=&#34;color:#c4a000&#34;&gt;https://github.com/operator-framework/operator-sdk-samples/tree/v1.3.0&lt;/span&gt;) for this release. Links in SDK documentation are currently set to the samples repo &lt;span style=&#34;color:#4e9a06&#34;&gt;`master`&lt;/span&gt; branch.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Reporting Issues</title>
+      <link>/docs/contribution-guidelines/reporting-issues/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/contribution-guidelines/reporting-issues/</guid>
+      <description>
+        
+        
+        &lt;p&gt;If any part of the operator-sdk project has bugs or documentation mistakes, please let us know by &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/issues/new&#34;&gt;opening an issue&lt;/a&gt;. We treat bugs and mistakes very seriously and believe no issue is too small. Before creating a bug report, please check that an issue reporting the same problem does not already exist.&lt;/p&gt;
+&lt;p&gt;To make the bug report accurate and easy to understand, please try to create bug reports that are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Specific. Include as much details as possible: which version, what environment, what configuration, etc.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Reproducible. Include the steps to reproduce the problem. We understand some issues might be hard to reproduce, please include the steps that might lead to the problem.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Isolated. Please try to isolate and reproduce the bug with minimum dependencies. It would significantly slow down the speed to fix a bug if too many dependencies are involved in a bug report. Debugging external systems that rely on operator-sdk is out of scope, but we are happy to provide guidance in the right direction or help with using operator-sdk itself.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Unique. Do not duplicate existing bug report.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Scoped. One bug per report. Do not follow up with another bug inside one report.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;It may be worthwhile to read &lt;a href=&#34;http://fantasai.inkedblade.net/style/talks/filing-good-bugs/&#34;&gt;Elika Etemad’s article on filing good bug reports&lt;/a&gt; before creating a bug report.&lt;/p&gt;
+&lt;p&gt;We might ask for further information to locate a bug. A duplicated bug report will be closed.&lt;/p&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Testing</title>
+      <link>/docs/contribution-guidelines/testing/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/contribution-guidelines/testing/</guid>
+      <description>
+        
+        
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Testing Changes Locally</title>
+      <link>/docs/contribution-guidelines/local-changes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/contribution-guidelines/local-changes/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;testing-changes-locally&#34;&gt;Testing Changes Locally&lt;/h2&gt;
+&lt;p&gt;If your changes are in the SDK commands then you just need to run &lt;code&gt;make install&lt;/code&gt; to be able to use an SDK binary built from the source code and then test locally it. Also, see that you can run &lt;code&gt;operator-sdk version&lt;/code&gt; to check what is the commit used to built it.&lt;/p&gt;
+&lt;p&gt;However, If the change performed is NOT in the scaffold files or sdk commands then, is required to build an new image with the changes done to test it locally in a POC operator project. In this way, by using this dev image in an operator project locally we will be able to check the changes made for the Ansible/Helm based-operator. And then, for the GO based-operators, will be required ensure that you are import your version of code implementation to be used in the POC operator project were it will be checked.&lt;/p&gt;
+&lt;h3 id=&#34;for-ansible&#34;&gt;For Ansible&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Update the &lt;code&gt;ANSIBLE_BASE_IMAGE&lt;/code&gt; var in the &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/Makefile&#34;&gt;Makefile&lt;/a&gt; to generate an image for your repository (quay.io or docker.hub.io). See:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Replace:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;quay.io/operator-framework/ansible-operator
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;With (eg):&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;quay.io/my-repo-user/ansible-operator
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;Build the image locally by running &lt;code&gt;make image-build-ansible&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Push your new image. (E.g &lt;code&gt;docker push quay.io/my-repo-user/ansible-operator:dev&lt;/code&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt; Ensure that you configured the repo, &lt;code&gt;quay.io/my-repo-user/ansible-operator&lt;/code&gt;, to be public.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Update the &lt;code&gt;Dockerfile&lt;/code&gt; of your POC project to test your changes with the new image as follows.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;FROM quay.io/my-repo-user/ansible-operator:dev
+
+COPY watches.yaml ${HOME}/watches.yaml
+COPY roles/ ${HOME}/roles/
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;for-helm&#34;&gt;For Helm&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Update the &lt;code&gt;HELM_BASE_IMAGE&lt;/code&gt; var in the &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/Makefile&#34;&gt;Makefile&lt;/a&gt; to generate an image for your repository (quay.io or docker.hub.io). See:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Replace:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;quay.io/operator-framework/helm-operator
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;With (eg):&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;quay.io/my-repo-user/helm-operator
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;Build the image locally by running &lt;code&gt;make image-build-helm&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Push your new image. (E.g &lt;code&gt;docker push quay.io/my-repo-user/helm-operator:dev&lt;/code&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt; Ensure that you configured the repo, &lt;code&gt;quay.io/my-repo-user/helm-operator&lt;/code&gt;, to be public.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Update the &lt;code&gt;Dockerfile&lt;/code&gt; of your POC project to test your changes with the new image as follows.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;FROM quay.io/my-repo-user/helm-operator:dev
+
+COPY watches.yaml ${HOME}/watches.yaml
+COPY helm-charts/ ${HOME}/helm-charts/
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;for-go&#34;&gt;For Go&lt;/h3&gt;
+&lt;p&gt;Following an example over how to test the changes made from a source code of a fork PR.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Update the &lt;code&gt;go.mod&lt;/code&gt; file of the POC operator project with a replace for the fork. See:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;require (
+	...
+	github.com/operator-framework/operator-sdk v0.0.0
+	...
+)
+
+// # Add a replace to the fork and branch with the changes
+replace github.com/operator-framework/operator-sdk =&amp;gt; github.com/&amp;lt;fork&amp;gt;/operator-sdk &amp;lt;branch&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Build and serve the docs locally</title>
+      <link>/docs/contribution-guidelines/local-docs/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/contribution-guidelines/local-docs/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;prerequisites&#34;&gt;Prerequisites&lt;/h2&gt;
+&lt;p&gt;Clone the repository:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ git clone https://github.com/operator-framework/operator-sdk/
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The docs are built with &lt;a href=&#34;&#34;&gt;Hugo&lt;/a&gt; which can be installed along with the
+required extensions by following the &lt;a href=&#34;https://www.docsy.dev/docs/getting-started/#prerequisites-and-installation&#34;&gt;docsy install
+guide&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;We use &lt;code&gt;git submodules&lt;/code&gt; to install the docsy theme. From the
+&lt;code&gt;operator-sdk&lt;/code&gt; directory, update the submodules to install the theme.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ git submodule update --init --recursive
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;build-and-serve&#34;&gt;Build and Serve&lt;/h2&gt;
+&lt;p&gt;You can build and serve your docs to localhost:1313. From the &lt;code&gt;website&lt;/code&gt;
+directory run:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;hugo server
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Any changes will be included in real time.&lt;/p&gt;
+
+      </description>
+    </item>
+    
+  </channel>
+</rss>

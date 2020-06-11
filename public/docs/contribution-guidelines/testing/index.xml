@@ -1,0 +1,256 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Operator SDK – Testing</title>
+    <link>/docs/contribution-guidelines/testing/</link>
+    <description>Recent content in Testing on Operator SDK</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	  <atom:link href="/docs/contribution-guidelines/testing/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>Docs: Running Tests</title>
+      <link>/docs/contribution-guidelines/testing/running-the-tests/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/contribution-guidelines/testing/running-the-tests/</guid>
+      <description>
+        
+        
+        &lt;p&gt;The operator-sdk is automatically tested with a variety of tests anytime
+a pull request is made. The E2E tests ensure that the operator-sdk acts as intended by
+simulating how a typical user might use the SDK. The automated tests test each PR and run in
+Travis CI, and Travis CI has a couple of features to simplify the E2E tests that we run. For
+a more in depth description of the tests that Travis runs, please read the &lt;a href=&#34;../travis-build&#34;&gt;Travis Build&lt;/a&gt; doc.
+This doc will talk about how to run the tests locally as well.&lt;/p&gt;
+&lt;h2 id=&#34;running-the-tests-locally&#34;&gt;Running the Tests Locally&lt;/h2&gt;
+&lt;p&gt;To run the tests locally, the tests either need access to a remote Kubernetes cluster or a
+local Kubernetes instance running on the machine.&lt;/p&gt;
+&lt;h3 id=&#34;remote-kubernetes-instance&#34;&gt;Remote Kubernetes Instance&lt;/h3&gt;
+&lt;p&gt;To run the tests on a remote cluster, the tests need access to a remote Kubernetes cluster
+running Kubernetes 1.11.3 or higher as well as a docker image repo to push the operator image to,
+such as &lt;a href=&#34;https://quay.io&#34;&gt;&lt;code&gt;quay.io&lt;/code&gt;&lt;/a&gt;. Your kubeconfig must be located at &lt;code&gt;$HOME/.kube/config&lt;/code&gt; and certain
+tests will not run on remote clusters. See &lt;a href=&#34;#running-the-tests&#34;&gt;Running the Tests&lt;/a&gt; for more details.&lt;/p&gt;
+&lt;h3 id=&#34;local-minikube-or-kind&#34;&gt;Local minikube or kind&lt;/h3&gt;
+&lt;p&gt;Two other options for testing are &lt;a href=&#34;https://github.com/kubernetes/minikube&#34;&gt;minikube&lt;/a&gt; and &lt;a href=&#34;https://github.com/kubernetes-sigs/kind&#34;&gt;kind&lt;/a&gt;.&lt;/p&gt;
+&lt;h4 id=&#34;minikube&#34;&gt;minikube&lt;/h4&gt;
+&lt;p&gt;To start the minikube cluster, download and install the proper &lt;a href=&#34;https://github.com/kubernetes/minikube/releases&#34;&gt;binary&lt;/a&gt; for your system and run these commands:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;# K8S_VERSION determines which Kubernetes cluster version minikube will provision.&lt;/span&gt;
+$ minikube start --kubernetes-version &lt;span style=&#34;color:#4e9a06&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;K8S_VERSION&lt;/span&gt;&lt;span style=&#34;color:#4e9a06&#34;&gt;}&lt;/span&gt;
+$ &lt;span style=&#34;color:#204a87&#34;&gt;eval&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;$(&lt;/span&gt;minikube docker-env&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;kind&#34;&gt;kind&lt;/h4&gt;
+&lt;p&gt;To start the kind cluster, either run &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/hack/ci/setup-k8s.sh&#34;&gt;&lt;code&gt;hack/ci/setup-k8s.sh&lt;/code&gt;&lt;/a&gt; then:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ &lt;span style=&#34;color:#204a87&#34;&gt;export&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;KUBECONFIG&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;$(&lt;/span&gt;kind get kubeconfig-path --name&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;kind&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;)&lt;/span&gt;&lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Or you can download and install the proper &lt;a href=&#34;https://github.com/kubernetes-sigs/kind/releases&#34;&gt;binary&lt;/a&gt; for your system and run these commands:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;# K8S_VERSION determines which Kubernetes image version kind will use to provision the cluster.&lt;/span&gt;
+$ kind create cluster --image&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;docker.io/kindest/node:&lt;/span&gt;&lt;span style=&#34;color:#4e9a06&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;K8S_VERSION&lt;/span&gt;&lt;span style=&#34;color:#4e9a06&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;&lt;/span&gt;
+$ &lt;span style=&#34;color:#204a87&#34;&gt;export&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;KUBECONFIG&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;$(&lt;/span&gt;kind get kubeconfig-path --name&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;kind&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;)&lt;/span&gt;&lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;running-the-tests&#34;&gt;Running the tests&lt;/h2&gt;
+&lt;p&gt;All the tests are run through the &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/Makefile&#34;&gt;&lt;code&gt;Makefile&lt;/code&gt;&lt;/a&gt;. This is a brief description of all makefile test instructions:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;test&lt;/code&gt; - Runs the unit tests (&lt;code&gt;test-unit&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;test-ci&lt;/code&gt; - Runs markdown, sanity, and unit tests, installs the SDK binary, and runs the SDK subcommand and all E2E tests.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;test-sanity&lt;/code&gt; - Runs sanity checks.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;test-unit&lt;/code&gt; - Runs unit tests.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;test-subcommand&lt;/code&gt; - Runs subcommand tests.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;test-e2e&lt;/code&gt; - Runs all E2E tests (&lt;code&gt;test-e2e-go&lt;/code&gt;, &lt;code&gt;test-e2e-ansible&lt;/code&gt;, &lt;code&gt;test-e2e-ansible-molecule&lt;/code&gt;, and &lt;code&gt;test-e2e-helm&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;test-e2e-go&lt;/code&gt; - Runs the go E2E test.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;test-e2e-ansible&lt;/code&gt; - Runs the ansible E2E test.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;test-e2e-ansible-molecule&lt;/code&gt; - Runs the ansible molecule E2E test.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;test-e2e-helm&lt;/code&gt; - Runs the helm E2E test.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;test-markdown&lt;/code&gt; - Runs the markdown checks&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For more info on what these tests actually do, please see the &lt;a href=&#34;../travis-build&#34;&gt;Travis Build&lt;/a&gt; doc.&lt;/p&gt;
+&lt;p&gt;Some of the tests will run using the kube config in &lt;code&gt;$HOME/.kube/config&lt;/code&gt; (others may check the &lt;code&gt;KUBECONFIG&lt;/code&gt; env var first)
+and the operator images will be built and stored in you local docker registry.&lt;/p&gt;
+&lt;h3 id=&#34;go-e2e-test-flags&#34;&gt;Go E2E test flags&lt;/h3&gt;
+&lt;p&gt;The &lt;code&gt;make test-e2e-go&lt;/code&gt; command accepts an &lt;code&gt;ARGS&lt;/code&gt; variable containing flags that will be passed to &lt;code&gt;go test&lt;/code&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;-image-name&lt;/code&gt; string - Sets the operator test image tag to be built and used in testing. Defaults to &amp;ldquo;quay.io/example/memcached-operator:v0.0.1&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-local-repo&lt;/code&gt; string - Sets the path to the local SDK repo being tested. Defaults to the path of the SDK repo containing e2e tests. This is useful for testing customized e2e code.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;An example of using &lt;code&gt;ARGS&lt;/code&gt; is in the note below.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;: Some of these tests, specifically the ansible (&lt;code&gt;test-e2e-ansible&lt;/code&gt;), helm (&lt;code&gt;test-e2e-helm&lt;/code&gt;), and Go (&lt;code&gt;test-e2e-go&lt;/code&gt;) tests,
+only work when the cluster shares the local docker registry, as is the case with &lt;code&gt;oc cluster up&lt;/code&gt; and &lt;code&gt;minikube&lt;/code&gt; after running &lt;code&gt;eval $(minikube docker-env)&lt;/code&gt;.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ kind load docker-image &amp;lt;image-tag&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;For each image built or used by the kind cluster.&lt;/p&gt;
+&lt;p&gt;All other tests will run correctly on a remote cluster if &lt;code&gt;$HOME/.kube/config&lt;/code&gt; points to the remote cluster and your
+&lt;code&gt;KUBECONFIG&lt;/code&gt; env var is either empty or is set to the path of a kubeconfig for the remote cluster.&lt;/p&gt;
+&lt;h2 id=&#34;cleanup-of-the-go-e2e-tests&#34;&gt;Cleanup of the Go E2E Tests&lt;/h2&gt;
+&lt;p&gt;The E2E tests create a new project using the operator-sdk to run in the provided
+cluster. The tests are designed to cleanup everything that gets created, but some errors
+during the go tests can cause these cleanups to fail (the ansible and helm E2E tests should
+always clean up correctly). For example, if a segfault occurs or a user kills the
+testing process, the cleanup functions for the go tests will not run. To manually clean up a test:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Delete the CRD (&lt;code&gt;kubectl delete crd memcacheds.cache.example.com&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;Delete the namespaces that the tests run in, which also deletes any resources created within the namespaces. The namespaces start with &lt;code&gt;memcached-memcached-group&lt;/code&gt; or &lt;code&gt;main&lt;/code&gt; and are appended with a unix timestamp (seconds since Jan 1 1970). The kubectl command can be used to delete namespaces: &lt;code&gt;kubectl delete namespace $NAMESPACE&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Travis CI</title>
+      <link>/docs/contribution-guidelines/testing/travis-build/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/contribution-guidelines/testing/travis-build/</guid>
+      <description>
+        
+        
+        &lt;p&gt;Travis is set to run one every push to a branch or PR.
+The results of the builds can be found &lt;a href=&#34;https://travis-ci.org/operator-framework/operator-sdk/branches&#34;&gt;here&lt;/a&gt; for branches and &lt;a href=&#34;https://travis-ci.org/operator-framework/operator-sdk/pull_requests&#34;&gt;here&lt;/a&gt; for PRs.&lt;/p&gt;
+&lt;h2 id=&#34;test-workflow&#34;&gt;Test Workflow&lt;/h2&gt;
+&lt;p&gt;In Travis CI, 4 jobs are run to test the sdk:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#go-tests&#34;&gt;Go&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#ansible-tests&#34;&gt;Ansible&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#helm-tests&#34;&gt;Helm&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#markdown&#34;&gt;Markdown&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;before-install-for-go-ansible-and-helm&#34;&gt;Before Install for Go, Ansible, and Helm&lt;/h3&gt;
+&lt;p&gt;For the Go, Ansible, and Helm tests, the &lt;code&gt;before_install&lt;/code&gt; and &lt;code&gt;install&lt;/code&gt; stages are the same:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Check if non documentation files have been updated.
+&lt;ul&gt;
+&lt;li&gt;If only documentation has been updated, skip these tests.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Run &lt;code&gt;make tidy&lt;/code&gt; to ensure &lt;code&gt;go.mod&lt;/code&gt; and &lt;code&gt;go.sum&lt;/code&gt; are up-to-date.&lt;/li&gt;
+&lt;li&gt;Build and install the sdk using &lt;code&gt;make install&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Install ansible using &lt;code&gt;sudo pip install ansible&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Run the &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/hack/ci/setup-k8s.sh&#34;&gt;&lt;code&gt;hack/ci/setup-k8s.sh&lt;/code&gt;&lt;/a&gt; script, which spins up a &lt;a href=&#34;https://kind.sigs.k8s.io/&#34;&gt;kind&lt;/a&gt; Kubernetes cluster of a particular version by configuring docker, and downloads the &lt;code&gt;kubectl&lt;/code&gt; of the same version.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The Go, Ansible, and Helm tests then differ in what tests they run.&lt;/p&gt;
+&lt;h3 id=&#34;go-tests&#34;&gt;Go Tests&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Run some basic &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/hack/tests/sanity-check.sh&#34;&gt;sanity checks&lt;/a&gt;.
+&lt;ol&gt;
+&lt;li&gt;Run &lt;code&gt;go vet&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Check that all source files have a license.&lt;/li&gt;
+&lt;li&gt;Check that all error messages start with a lower case alphabetical character and do not end with punctuation, and log messages start with an upper case alphabetical character.&lt;/li&gt;
+&lt;li&gt;Make sure the repo is in a clean state (this is particularly useful for making sure &lt;code&gt;go.mod&lt;/code&gt; and &lt;code&gt;go.sum&lt;/code&gt; are up-to-date after running &lt;code&gt;make tidy&lt;/code&gt;).&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;Run unit tests.
+&lt;ol&gt;
+&lt;li&gt;Run &lt;code&gt;make test&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;Run &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/hack/tests/subcommand.sh&#34;&gt;subcommand tests&lt;/a&gt;.
+&lt;ol&gt;
+&lt;li&gt;Run &lt;code&gt;test local&lt;/code&gt; with no flags enabled.&lt;/li&gt;
+&lt;li&gt;Run &lt;code&gt;test local&lt;/code&gt; with most configuration flags enabled.&lt;/li&gt;
+&lt;li&gt;Run &lt;code&gt;test local&lt;/code&gt; in single namespace mode.&lt;/li&gt;
+&lt;li&gt;Run &lt;code&gt;test local&lt;/code&gt; with &lt;code&gt;--up-local&lt;/code&gt; flag.&lt;/li&gt;
+&lt;li&gt;Run &lt;code&gt;test local&lt;/code&gt; with both &lt;code&gt;--up-local&lt;/code&gt; and &lt;code&gt;--kubeconfig&lt;/code&gt; flags.&lt;/li&gt;
+&lt;li&gt;Create all test resources with kubectl and run &lt;code&gt;test local&lt;/code&gt; with &lt;code&gt;--no-setup&lt;/code&gt; flag.&lt;/li&gt;
+&lt;li&gt;Run &lt;code&gt;scorecard&lt;/code&gt; subcommand and check that expected score matches actual score.&lt;/li&gt;
+&lt;li&gt;Run &lt;code&gt;scorecard&lt;/code&gt; subcommand with json output enabled and verify the output.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;Run &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/hack/tests/e2e-go.sh&#34;&gt;go e2e tests&lt;/a&gt;.
+&lt;ol&gt;
+&lt;li&gt;Scaffold a project using &lt;code&gt;hack/tests/scaffolding/e2e-go-scaffold.sh&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Build &lt;code&gt;memcached-operator&lt;/code&gt; image to be used in tests&lt;/li&gt;
+&lt;li&gt;Run scaffolded project e2e tests using &lt;code&gt;operator-sdk run --local&lt;/code&gt;
+&lt;ol&gt;
+&lt;li&gt;Run cluster test (namespace is auto-generated and deleted by test framework).
+&lt;ol&gt;
+&lt;li&gt;Deploy operator and required resources to the cluster.&lt;/li&gt;
+&lt;li&gt;Run the leader election test.
+&lt;ol&gt;
+&lt;li&gt;Verify that operator deployment is ready.&lt;/li&gt;
+&lt;li&gt;Verify that leader configmap specifies 1 leader and that the memcached operator has 2 pods (configuration for this is done in step 4.1).&lt;/li&gt;
+&lt;li&gt;Delete current leader and wait for memcached-operator deployment to become ready again.&lt;/li&gt;
+&lt;li&gt;Verify that leader configmap specifies 1 leader and that the memcached-operator has 2 pods.&lt;/li&gt;
+&lt;li&gt;Verify that the name of the new leader is different from the name of the old leader.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;Run the memcached scale test.
+&lt;ol&gt;
+&lt;li&gt;Create memcached CR specifying a desired cluster size of 3 and wait until memcached cluster is of size 3.&lt;/li&gt;
+&lt;li&gt;Increase desired cluster size to 4 and wait until memcached cluster is of size 4.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;Run the memcached metrics test.
+&lt;ol&gt;
+&lt;li&gt;Make sure the metrics Service was created.&lt;/li&gt;
+&lt;li&gt;Get metrics via proxy pod and make sure they are present.&lt;/li&gt;
+&lt;li&gt;Perform linting of the existing metrics.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;Run the memcached custom resource metrics test.
+&lt;ol&gt;
+&lt;li&gt;Make sure the metrics Service was created.&lt;/li&gt;
+&lt;li&gt;Get metrics via proxy pod and make sure they are present.&lt;/li&gt;
+&lt;li&gt;Perform linting of the existing metrics.&lt;/li&gt;
+&lt;li&gt;Perform checks on each custom resource generated metric and makes sure the name, type, value, labels and metric are correct.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;Run local test (namespace is auto-generated and deleted by test framework).
+&lt;ol&gt;
+&lt;li&gt;Start operator using the &lt;code&gt;run --local&lt;/code&gt; subcommand.&lt;/li&gt;
+&lt;li&gt;Run memcached scale test (described in step 4.3.1.3)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;Run &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/test/e2e/tls_util_test.go&#34;&gt;TLS library tests&lt;/a&gt;.
+&lt;ol&gt;
+&lt;li&gt;This test runs multiple simple tests of the operator-sdk&amp;rsquo;s TLS library. The tests run in parallel and each tests runs in its own namespace.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;ansible-tests&#34;&gt;Ansible tests&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Run &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/hack/tests/e2e-ansible-molecule.sh&#34;&gt;ansible molecule tests&lt;/a&gt;. (`make test-e2e-ansible-molecule)
+&lt;ol&gt;
+&lt;li&gt;Create and configure a new ansible type memcached-operator.&lt;/li&gt;
+&lt;li&gt;Create cluster resources.&lt;/li&gt;
+&lt;li&gt;Run &lt;code&gt;operator-sdk test local&lt;/code&gt; to run ansible molecule tests&lt;/li&gt;
+&lt;li&gt;Change directory to &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/tree/master/test/ansible&#34;&gt;&lt;code&gt;test/ansible&lt;/code&gt;&lt;/a&gt; and run &lt;code&gt;operator-sdk test local&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;: All created resources, including the namespace, are deleted using a bash trap when the test finishes&lt;/p&gt;
+&lt;h3 id=&#34;helm-tests&#34;&gt;Helm Tests&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Run &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/hack/tests/e2e-helm.sh&#34;&gt;helm e2e tests&lt;/a&gt;.
+&lt;ol&gt;
+&lt;li&gt;Create base helm operator project by running &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/hack/image/helm/scaffold-helm-image.go&#34;&gt;&lt;code&gt;hack/image/helm/scaffold-helm-image.go&lt;/code&gt;&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Build base helm operator image.&lt;/li&gt;
+&lt;li&gt;Create and configure a new helm type nginx-operator.&lt;/li&gt;
+&lt;li&gt;Create cluster resources.&lt;/li&gt;
+&lt;li&gt;Wait for operator to be ready.&lt;/li&gt;
+&lt;li&gt;Create nginx CR and wait for it to be ready.&lt;/li&gt;
+&lt;li&gt;Scale up the dependent deployment and verify the operator reconciles it back down.&lt;/li&gt;
+&lt;li&gt;Scale up the CR and verify the dependent deployment scales up accordingly.&lt;/li&gt;
+&lt;li&gt;Delete nginx CR and verify that finalizer (which writes a message in the operator logs) ran.&lt;/li&gt;
+&lt;li&gt;Run &lt;code&gt;operator-sdk migrate&lt;/code&gt; to add go source to the operator (see this &lt;a href=&#34;../../../golang/quickstart#a-note-on-dependency-management&#34;&gt;note&lt;/a&gt; on dependency management first).&lt;/li&gt;
+&lt;li&gt;Run &lt;code&gt;operator-sdk build&lt;/code&gt; to compile the new binary and build a new image.&lt;/li&gt;
+&lt;li&gt;Re-run steps 4-9 to test the migrated operator.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;: All created resources, including the namespace, are deleted using a bash trap when the test finishes&lt;/p&gt;
+&lt;h3 id=&#34;markdown&#34;&gt;Markdown&lt;/h3&gt;
+&lt;p&gt;The markdown test does not create a new cluster and runs in a barebones Travis VM configured only for &lt;code&gt;bash&lt;/code&gt;. This allows documentation PRs to pass quickly, as they don&amp;rsquo;t require code tests. The markdown checker uses a precompiled version of &lt;a href=&#34;https://github.com/crawford/marker&#34;&gt;&lt;code&gt;marker&lt;/code&gt;&lt;/a&gt; stored in &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/hack/ci/marker&#34;&gt;&lt;code&gt;hack/ci/marker&lt;/code&gt;&lt;/a&gt; to check the validity and correctness of the links in all markdown files in the &lt;code&gt;doc&lt;/code&gt; directory.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;: There is currently a bug in marker that causes link with underscores (&lt;code&gt;_&lt;/code&gt;) to not be checked correctly.&lt;/p&gt;
+
+      </description>
+    </item>
+    
+  </channel>
+</rss>

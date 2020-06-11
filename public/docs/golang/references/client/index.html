@@ -1,0 +1,1405 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="generator" content="Hugo 0.69.2" />
+
+<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+
+<link rel="shortcut icon" href="/favicons/favicon.ico" >
+<link rel="apple-touch-icon" href="/favicons/apple-touch-icon-180x180.png" sizes="180x180">
+<link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">
+<link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicons/android-36x36.png" sizes="36x36">
+<link rel="icon" type="image/png" href="/favicons/android-48x48.png" sizes="48x48">
+<link rel="icon" type="image/png" href="/favicons/android-72x72.png" sizes="72x72">
+<link rel="icon" type="image/png" href="/favicons/android-96x96.png" sizes="96x96">
+<link rel="icon" type="image/png" href="/favicons/android-144x144.png" sizes="144x144">
+<link rel="icon" type="image/png" href="/favicons/android-192x192.png" sizes="192x192">
+
+<title>Using the Controller Runtime Client API with Operator SDK | Operator SDK</title><meta property="og:title" content="Using the Controller Runtime Client API with Operator SDK" />
+<meta property="og:description" content="Overview The controller-runtime library provides various abstractions to watch and reconcile resources in a Kubernetes cluster via CRUD (Create, Update, Delete, as well as Get and List in this case) operations. Operators use at least one controller to perform a coherent set of tasks within a cluster, usually through a combination of CRUD operations. The Operator SDK uses controller-runtime&rsquo;s Client interface, which provides the interface for these operations.
+controller-runtime defines several interfaces used for cluster interaction:" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/docs/golang/references/client/" />
+
+<meta itemprop="name" content="Using the Controller Runtime Client API with Operator SDK">
+<meta itemprop="description" content="Overview The controller-runtime library provides various abstractions to watch and reconcile resources in a Kubernetes cluster via CRUD (Create, Update, Delete, as well as Get and List in this case) operations. Operators use at least one controller to perform a coherent set of tasks within a cluster, usually through a combination of CRUD operations. The Operator SDK uses controller-runtime&rsquo;s Client interface, which provides the interface for these operations.
+controller-runtime defines several interfaces used for cluster interaction:">
+
+<meta itemprop="wordCount" content="1949">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Using the Controller Runtime Client API with Operator SDK"/>
+<meta name="twitter:description" content="Overview The controller-runtime library provides various abstractions to watch and reconcile resources in a Kubernetes cluster via CRUD (Create, Update, Delete, as well as Get and List in this case) operations. Operators use at least one controller to perform a coherent set of tasks within a cluster, usually through a combination of CRUD operations. The Operator SDK uses controller-runtime&rsquo;s Client interface, which provides the interface for these operations.
+controller-runtime defines several interfaces used for cluster interaction:"/>
+
+
+
+
+
+<link rel="preload" href="/scss/main.min.2156b902b150b9e3872e1d22ac593d6651f390478d18ef3c04a45ca6b90d637b.css" as="style">
+<link href="/scss/main.min.2156b902b150b9e3872e1d22ac593d6651f390478d18ef3c04a45ca6b90d637b.css" rel="stylesheet" integrity="">
+
+
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+
+
+  </head>
+  <body class="td-page">
+    <header>
+      <header class="of-header-main">
+    <a href="/" class="of-brand">
+      <picture class="of-brand__picture">
+        <source srcset="/build/images/logo.svg" media="(min-width: 992px)">
+        <img src="/build/images/logo-sm.svg" alt="">  
+      </picture> 
+        </a>
+    <nav class="of-nav-main nav-collapse">
+      <ul class="of-nav-main__items menu-items">
+        <li class="of-nav-main__item"><a class="of-link-list__a " href="/">Home</a></li>
+        
+    
+    <li class="of-nav-main__item"><a class="of-link-list__a" href="/build/" title="Build">Build</a></li>
+    
+    <li class="of-nav-main__item"><a class="of-link-list__a" href="/docs/" title="Documentation">Documentation</a></li>
+    
+    </ul>
+    </nav>
+   
+    <div class="of-header-main__search">
+		
+
+    </div>
+  </header>
+    </header>
+    <div class="container-fluid td-outer">
+      <div class="td-main">
+        <div class="row flex-xl-nowrap">
+          <div class="col-12 col-md-3 col-xl-2 td-sidebar d-print-none">
+            
+
+
+
+
+<div id="td-sidebar-menu" class="td-sidebar__inner">
+  
+  <nav class="collapse td-sidebar-nav pt-2 pl-4" id="td-section-nav">
+    
+    
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/" class="align-left pl-0 pr-2 td-sidebar-link td-sidebar-link__section">Documentation</a>
+  </li>
+  <ul>
+    <li class="collapse show" id="docs">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsinstall-operator-sdk" href="/docs/install-operator-sdk/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuilderquickstart" href="/docs/kubebuilder/quickstart/">Quickstart</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/ansible/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Ansible Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsansible">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibleinstallation" href="/docs/ansible/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblequickstart" href="/docs/ansible/quickstart/">Quickstart</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibletesting-guide" href="/docs/ansible/testing-guide/">Testing with Molecule</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibledevelopment-tips" href="/docs/ansible/development-tips/">Development Tips</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/ansible/reference/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsansiblereference">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceadvanced_options" href="/docs/ansible/reference/advanced_options/">Advanced Options</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceapb-migration-guide" href="/docs/ansible/reference/apb-migration-guide/">APB Migration</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencedependent-watches" href="/docs/ansible/reference/dependent-watches/">Dependent Watches</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencefinalizers" href="/docs/ansible/reference/finalizers/">Finalizers</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceinformation-flow-ansible-operator" href="/docs/ansible/reference/information-flow-ansible-operator/">Information Flow</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceretroactively-owned-resources" href="/docs/ansible/reference/retroactively-owned-resources/">Retroactively Owned Resources</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencescaffolding" href="/docs/ansible/reference/scaffolding/">Scaffolding</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencewatches" href="/docs/ansible/reference/watches/">Watches</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibledevwebhooks" href="/docs/ansible/dev/webhooks/"></a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/" class="align-left pl-0 pr-2 td-sidebar-link td-sidebar-link__section">Golang Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse show" id="docsgolang">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolanginstallation" href="/docs/golang/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangquickstart" href="/docs/golang/quickstart/">Quickstart</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangunit-testing" href="/docs/golang/unit-testing/">Unit Testing</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolange2e-tests" href="/docs/golang/e2e-tests/">Writing E2E Tests</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/monitoring/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Monitoring</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangmonitoring">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangmonitoringprometheus" href="/docs/golang/monitoring/prometheus/">With Prometheus</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangmonitoringservice-monitor" href="/docs/golang/monitoring/service-monitor/">Using Prometheus Operator ServiceMonitor CRD</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/olm-integration/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Integrating with OLM</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangolm-integration">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationcsv-annotations" href="/docs/golang/olm-integration/csv-annotations/">CSV Code Annotations</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationgenerating-a-csv" href="/docs/golang/olm-integration/generating-a-csv/">Generating ClusterServiceVersion&#39;s</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationolm-cli" href="/docs/golang/olm-integration/olm-cli/">Running with OLM</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationbundle-cli" href="/docs/golang/olm-integration/bundle-cli/">Working with Bundles</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/references/" class="align-left pl-0 pr-2 active td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse show" id="docsgolangreferences">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page  active" id="m-docsgolangreferencesclient" href="/docs/golang/references/client/">Controller Runtime Client API</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesevent-filtering" href="/docs/golang/references/event-filtering/">Using Predicates for Event Filtering</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferenceslogging" href="/docs/golang/references/logging/">Logging</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesproject_layout" href="/docs/golang/references/project_layout/">Project Layout</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/helm/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Helm Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docshelm">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelminstallation" href="/docs/helm/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmquickstart" href="/docs/helm/quickstart/">Quickstart</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/helm/reference/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docshelmreference">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferenceadvanced_features" href="/docs/helm/reference/advanced_features/">Advanced Features</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferencescaffolding" href="/docs/helm/reference/scaffolding/">Scaffolding</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferencewatches" href="/docs/helm/reference/watches/">Watches</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/scorecard/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Scorecard</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsscorecard">
+      
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/cli/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">CLI Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscli">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk" href="/docs/cli/operator-sdk/">operator-sdk</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add" href="/docs/cli/operator-sdk_add/">operator-sdk add</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_api" href="/docs/cli/operator-sdk_add_api/">operator-sdk add api</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_controller" href="/docs/cli/operator-sdk_add_controller/">operator-sdk add controller</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_crd" href="/docs/cli/operator-sdk_add_crd/">operator-sdk add crd</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_build" href="/docs/cli/operator-sdk_build/">operator-sdk build</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle" href="/docs/cli/operator-sdk_bundle/">operator-sdk bundle</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle_create" href="/docs/cli/operator-sdk_bundle_create/">operator-sdk bundle create</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle_validate" href="/docs/cli/operator-sdk_bundle_validate/">operator-sdk bundle validate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_cleanup" href="/docs/cli/operator-sdk_cleanup/">operator-sdk cleanup</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion" href="/docs/cli/operator-sdk_completion/">operator-sdk completion</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion_bash" href="/docs/cli/operator-sdk_completion_bash/">operator-sdk completion bash</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion_zsh" href="/docs/cli/operator-sdk_completion_zsh/">operator-sdk completion zsh</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate" href="/docs/cli/operator-sdk_generate/">operator-sdk generate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_crds" href="/docs/cli/operator-sdk_generate_crds/">operator-sdk generate crds</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_csv" href="/docs/cli/operator-sdk_generate_csv/">operator-sdk generate csv</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_k8s" href="/docs/cli/operator-sdk_generate_k8s/">operator-sdk generate k8s</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_migrate" href="/docs/cli/operator-sdk_migrate/">operator-sdk migrate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_new" href="/docs/cli/operator-sdk_new/">operator-sdk new</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm" href="/docs/cli/operator-sdk_olm/">operator-sdk olm</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_install" href="/docs/cli/operator-sdk_olm_install/">operator-sdk olm install</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_status" href="/docs/cli/operator-sdk_olm_status/">operator-sdk olm status</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_uninstall" href="/docs/cli/operator-sdk_olm_uninstall/">operator-sdk olm uninstall</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_print-deps" href="/docs/cli/operator-sdk_print-deps/">operator-sdk print-deps</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_run" href="/docs/cli/operator-sdk_run/">operator-sdk run</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_scorecard" href="/docs/cli/operator-sdk_scorecard/">operator-sdk scorecard</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_test" href="/docs/cli/operator-sdk_test/">operator-sdk test</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_test_local" href="/docs/cli/operator-sdk_test_local/">operator-sdk test local</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_version" href="/docs/cli/operator-sdk_version/">operator-sdk version</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/contribution-guidelines/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Contribution Guidelines</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscontribution-guidelines">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesdeveloper-guide" href="/docs/contribution-guidelines/developer-guide/">Development Environment</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesrelease" href="/docs/contribution-guidelines/release/">Release Guide</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesreporting-issues" href="/docs/contribution-guidelines/reporting-issues/">Reporting Issues</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/contribution-guidelines/testing/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Testing</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscontribution-guidelinestesting">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinestestingrunning-the-tests" href="/docs/contribution-guidelines/testing/running-the-tests/">Running Tests</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinestestingtravis-build" href="/docs/contribution-guidelines/testing/travis-build/">Travis CI</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelineslocal-changes" href="/docs/contribution-guidelines/local-changes/">Local Changes</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelineslocal-docs" href="/docs/contribution-guidelines/local-docs/">Local Docs</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrating-existing-apis" href="/docs/migrating-existing-apis/">Migrating Existing K8S APIs</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/migration/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Migration Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsmigration">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrationv010-migration-guide" href="/docs/migration/v0.1.0-migration-guide/">Migration</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrationversion-upgrade-guide" href="/docs/migration/version-upgrade-guide/">Version Upgrade</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsoperator-scope" href="/docs/operator-scope/">Operator Scope</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsversioning" href="/docs/versioning/">Versioning</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsfaq" href="/docs/faq/">FAQ</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuilderadvanced-topics" href="/docs/kubebuilder/advanced-topics/"></a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuildermigrationproject_migration_guide" href="/docs/kubebuilder/migration/project_migration_guide/"></a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+  </nav>
+</div>
+
+
+
+
+          </div>
+
+          <main class="col-12 col-md-9 col-xl-8 pl-md-5" role="main">
+            
+  
+
+            
+            
+<div class="td-content">
+	<h1>Using the Controller Runtime Client API with Operator SDK</h1>
+	
+	<h2 id="overview">Overview</h2>
+<p>The <a href="https://github.com/kubernetes-sigs/controller-runtime"><code>controller-runtime</code></a> library provides various abstractions to watch and reconcile resources in a Kubernetes cluster via CRUD (Create, Update, Delete, as well as Get and List in this case) operations. Operators use at least one controller to perform a coherent set of tasks within a cluster, usually through a combination of CRUD operations. The Operator SDK uses controller-runtime&rsquo;s <a href="https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg/client#Client">Client</a> interface, which provides the interface for these operations.</p>
+<p>controller-runtime defines several interfaces used for cluster interaction:</p>
+<ul>
+<li><code>client.Client</code>: implementers perform CRUD operations on a Kubernetes cluster.</li>
+<li><code>manager.Manager</code>: manages shared dependencies, such as Caches and Clients.</li>
+<li><code>reconcile.Reconciler</code>: compares provided state with actual cluster state and updates the cluster on finding state differences using a Client.</li>
+</ul>
+<p>Clients are the focus of this document. A separate document will discuss Managers.</p>
+<h2 id="client-usage">Client Usage</h2>
+<h3 id="default-client">Default Client</h3>
+<p>The SDK relies on a <code>manager.Manager</code> to create a <code>client.Client</code> interface that performs Create, Update, Delete, Get, and List operations within a <code>reconcile.Reconciler</code>'s Reconcile function. The SDK will generate code to create a Manager, which holds a Cache and a Client to be used in CRUD operations and communicate with the API server. By default a Controller&rsquo;s Reconciler will be populated with the Manager&rsquo;s Client which is a <a href="https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg/client#DelegatingClient">split-client</a>.</p>
+<p><code>pkg/controller/&lt;kind&gt;/&lt;kind&gt;_controller.go</code>:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">newReconciler</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">mgr</span> <span style="color:#000">manager</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Manager</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Reconciler</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">ReconcileKind</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">mgr</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GetClient</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">scheme</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">mgr</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GetScheme</span><span style="color:#000;font-weight:bold">()}</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">ReconcileKind</span> <span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#8f5902;font-style:italic">// Populated above from a manager.Manager.
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">client</span> <span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Client</span>
+	<span style="color:#000">scheme</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Scheme</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>A split client reads (Get and List) from the Cache and writes (Create, Update, Delete) to the API server. Reading from the Cache significantly reduces request load on the API server; as long as the Cache is updated by the API server, read operations are eventually consistent.</p>
+<h3 id="non-default-client">Non-default Client</h3>
+<p>An operator developer may wish to create their own Client that serves read requests(Get List) from the API server instead of the cache, for example. controller-runtime provides a <a href="https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg/client#New">constructor</a> for Clients:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8f5902;font-style:italic">// New returns a new Client using the provided config and Options.
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">New</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">config</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">rest</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Config</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">options</span> <span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Options</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Client</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">error</span><span style="color:#000;font-weight:bold">)</span>
+</code></pre></div><p><code>client.Options</code> allow the caller to specify how the new Client should communicate with the API server.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8f5902;font-style:italic">// Options are creation options for a Client
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">Options</span> <span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#8f5902;font-style:italic">// Scheme, if provided, will be used to map go structs to GroupVersionKinds
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">Scheme</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Scheme</span>
+
+	<span style="color:#8f5902;font-style:italic">// Mapper, if provided, will be used to map GroupVersionKinds to Resources
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">Mapper</span> <span style="color:#000">meta</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">RESTMapper</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>Example:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+    <span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/client/config&#34;</span>
+    <span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/client&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#000">cfg</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">config</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GetConfig</span><span style="color:#000;font-weight:bold">()</span>
+<span style="color:#ce5c00;font-weight:bold">...</span>
+<span style="color:#000">c</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">New</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">cfg</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Options</span><span style="color:#000;font-weight:bold">{})</span>
+<span style="color:#ce5c00;font-weight:bold">...</span>
+</code></pre></div><p><strong>Note</strong>: defaults are set by <code>client.New</code> when Options are empty. The default <a href="https://github.com/kubernetes-sigs/controller-runtime/blob/master/pkg/client/client.go#L51">scheme</a> will have the <a href="https://godoc.org/k8s.io/api/core/v1">core</a> Kubernetes resource types registered. The caller <em>must</em> set a scheme that has custom operator types registered for the new Client to recognize these types.</p>
+<p>Creating a new Client is not usually necessary nor advised, as the default Client is sufficient for most use cases.</p>
+<h3 id="reconcile-and-the-client-api">Reconcile and the Client API</h3>
+<p>A Reconciler implements the <a href="https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg/reconcile#Reconciler"><code>reconcile.Reconciler</code></a> interface, which exposes the Reconcile method. Reconcilers are added to a corresponding Controller for a Kind; Reconcile is called in response to cluster or external Events, with a <code>reconcile.Request</code> object argument, to read and write cluster state by the Controller, and returns a <code>reconcile.Result</code>. SDK Reconcilers have access to a Client in order to make Kubernetes API calls.</p>
+<p><strong>Note</strong>: For those familiar with the SDK&rsquo;s old project semantics, <a href="https://github.com/operator-framework/operator-sdk/blob/master/doc/design/milestone-0.0.2/action-api.md#handler">Handle</a> received resource events and reconciled state for multiple resource types, whereas Reconcile receives resource events and reconciles state for a single resource type.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8f5902;font-style:italic">// ReconcileKind reconciles a Kind object
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">ReconcileKind</span> <span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#8f5902;font-style:italic">// client, initialized using mgr.Client() above, is a split client
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// that reads objects from the cache and writes to the apiserver
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">client</span> <span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Client</span>
+
+	<span style="color:#8f5902;font-style:italic">// scheme defines methods for serializing and deserializing API objects,
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// a type registry for converting group, version, and kind information
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// to and from Go schemas, and mappings between Go schemas of different
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// versions. A scheme is the foundation for a versioned API and versioned
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// configuration over time.
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">scheme</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Scheme</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#8f5902;font-style:italic">// Reconcile watches for Events and reconciles cluster state with desired
+</span><span style="color:#8f5902;font-style:italic">// state defined in the method body.
+</span><span style="color:#8f5902;font-style:italic">// The Controller will requeue the Request to be processed again if an error
+</span><span style="color:#8f5902;font-style:italic">// is non-nil or Result.Requeue is true, otherwise upon completion it will
+</span><span style="color:#8f5902;font-style:italic">// remove the work from the queue.
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">ReconcileKind</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Reconcile</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">request</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Request</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">error</span><span style="color:#000;font-weight:bold">)</span>
+</code></pre></div><p>Reconcile is where Controller business logic lives, i.e. where Client API calls are made via <code>ReconcileKind.client</code>. A <code>client.Client</code> implementer performs the following operations:</p>
+<h4 id="get">Get</h4>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8f5902;font-style:italic">// Get retrieves an API object for a given object key from the Kubernetes cluster
+</span><span style="color:#8f5902;font-style:italic">// and stores it in obj.
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">c</span> <span style="color:#000">Client</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctx</span> <span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Context</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">key</span> <span style="color:#000">ObjectKey</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">obj</span> <span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Object</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">error</span>
+</code></pre></div><p><strong>Note</strong>: An <code>ObjectKey</code> is simply a <code>client</code> package alias for <a href="https://godoc.org/k8s.io/apimachinery/pkg/types#NamespacedName"><code>types.NamespacedName</code></a>.</p>
+<p>Example:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+	<span style="color:#4e9a06">&#34;context&#34;</span>
+	<span style="color:#4e9a06">&#34;github.com/example-org/app-operator/pkg/apis/cache/v1alpha1&#34;</span>
+	<span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/reconcile&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">ReconcileApp</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Reconcile</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">request</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Request</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">error</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#ce5c00;font-weight:bold">...</span>
+
+	<span style="color:#000">app</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">v1alpha1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">App</span><span style="color:#000;font-weight:bold">{}</span>
+	<span style="color:#000">ctx</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">()</span>
+	<span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">request</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NamespacedName</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">app</span><span style="color:#000;font-weight:bold">)</span>
+
+	<span style="color:#ce5c00;font-weight:bold">...</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><h4 id="list">List</h4>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8f5902;font-style:italic">// List retrieves a list of objects for a given namespace and list options
+</span><span style="color:#8f5902;font-style:italic">// and stores the list in obj.
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">c</span> <span style="color:#000">Client</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">List</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctx</span> <span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Context</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">list</span> <span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Object</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">opts</span> <span style="color:#ce5c00;font-weight:bold">...</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ListOption</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">error</span>
+</code></pre></div><p>A <code>client.ListOption</code> is an interface that sets <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#ListOptions"><code>client.ListOptions</code></a> fields. A <code>client.ListOption</code> is created by using one of the provided implementations: <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#MatchingLabels"><code>MatchingLabels</code></a>, <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#MatchingFields"><code>MatchingFields</code></a>, <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#InNamespace"><code>InNamespace</code></a>.</p>
+<p>Example:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+	<span style="color:#4e9a06">&#34;context&#34;</span>
+	<span style="color:#4e9a06">&#34;fmt&#34;</span>
+	<span style="color:#4e9a06">&#34;k8s.io/api/core/v1&#34;</span>
+	<span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/client&#34;</span>
+	<span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/reconcile&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">ReconcileApp</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Reconcile</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">request</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Request</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">error</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#ce5c00;font-weight:bold">...</span>
+
+	<span style="color:#8f5902;font-style:italic">// Return all pods in the request namespace with a label of `app=&lt;name&gt;`
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// and phase `Running`.
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">podList</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">v1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">PodList</span><span style="color:#000;font-weight:bold">{}</span>
+	<span style="color:#000">opts</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ListOption</span><span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">InNamespace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">request</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NamespacedName</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Namespace</span><span style="color:#000;font-weight:bold">),</span>
+		<span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MatchingLabels</span><span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">&#34;app&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">request</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NamespacedName</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Name</span><span style="color:#000;font-weight:bold">},</span>
+		<span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MatchingFields</span><span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">&#34;status.phase&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;Running&#34;</span><span style="color:#000;font-weight:bold">},</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000">ctx</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">()</span>
+	<span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">List</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">podList</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">opts</span><span style="color:#ce5c00;font-weight:bold">...</span><span style="color:#000;font-weight:bold">)</span>
+
+	<span style="color:#ce5c00;font-weight:bold">...</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><h4 id="create">Create</h4>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8f5902;font-style:italic">// Create saves the object obj in the Kubernetes cluster.
+</span><span style="color:#8f5902;font-style:italic">// Returns an error
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">c</span> <span style="color:#000">Client</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Create</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctx</span> <span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Context</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">obj</span> <span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Object</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">opts</span> <span style="color:#ce5c00;font-weight:bold">...</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">CreateOption</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">error</span>
+</code></pre></div><p>A <code>client.CreateOption</code> is an interface that sets <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#CreateOptions"><code>client.CreateOptions</code></a> fields. A <code>client.CreateOption</code> is created by using one of the provided implementations: <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#DryRunAll"><code>DryRunAll</code></a>, <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#ForceOwnership"><code>ForceOwnership</code></a>. Generally these options are not needed.</p>
+<p>Example:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+	<span style="color:#4e9a06">&#34;context&#34;</span>
+	<span style="color:#4e9a06">&#34;k8s.io/api/apps/v1&#34;</span>
+	<span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/reconcile&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">ReconcileApp</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Reconcile</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">request</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Request</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">error</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#ce5c00;font-weight:bold">...</span>
+
+	<span style="color:#000">app</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">v1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Deployment</span><span style="color:#000;font-weight:bold">{</span> <span style="color:#8f5902;font-style:italic">// Any cluster object you want to create.
+</span><span style="color:#8f5902;font-style:italic"></span>		<span style="color:#ce5c00;font-weight:bold">...</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000">ctx</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">()</span>
+	<span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Create</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">app</span><span style="color:#000;font-weight:bold">)</span>
+
+	<span style="color:#ce5c00;font-weight:bold">...</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><h4 id="update">Update</h4>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8f5902;font-style:italic">// Update updates the given obj in the Kubernetes cluster. obj must be a
+</span><span style="color:#8f5902;font-style:italic">// struct pointer so that obj can be updated with the content returned
+</span><span style="color:#8f5902;font-style:italic">// by the API server. Update does *not* update the resource&#39;s status
+</span><span style="color:#8f5902;font-style:italic">// subresource
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">c</span> <span style="color:#000">Client</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Update</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctx</span> <span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Context</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">obj</span> <span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Object</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">opts</span> <span style="color:#ce5c00;font-weight:bold">...</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">UpdateOption</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">error</span>
+</code></pre></div><p>A <code>client.UpdateOption</code> is an interface that sets <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#UpdateOptions"><code>client.UpdateOptions</code></a> fields. A <code>client.UpdateOption</code> is created by using one of the provided implementations: <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#DryRunAll"><code>DryRunAll</code></a>, <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#ForceOwnership"><code>ForceOwnership</code></a>. Generally these options are not needed.</p>
+<p>Example:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+	<span style="color:#4e9a06">&#34;context&#34;</span>
+	<span style="color:#4e9a06">&#34;k8s.io/api/apps/v1&#34;</span>
+	<span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/reconcile&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">ReconcileApp</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Reconcile</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">request</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Request</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">error</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#ce5c00;font-weight:bold">...</span>
+
+	<span style="color:#000">dep</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">v1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Deployment</span><span style="color:#000;font-weight:bold">{}</span>
+	<span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">request</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NamespacedName</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">dep</span><span style="color:#000;font-weight:bold">)</span>
+
+	<span style="color:#ce5c00;font-weight:bold">...</span>
+
+	<span style="color:#000">ctx</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">()</span>
+	<span style="color:#000">dep</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Spec</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Selector</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MatchLabels</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#34;is_running&#34;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#4e9a06">&#34;true&#34;</span>
+	<span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Update</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">dep</span><span style="color:#000;font-weight:bold">)</span>
+
+	<span style="color:#ce5c00;font-weight:bold">...</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><h4 id="patch">Patch</h4>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8f5902;font-style:italic">// Patch patches the given obj in the Kubernetes cluster. obj must be a
+</span><span style="color:#8f5902;font-style:italic">// struct pointer so that obj can be updated with the content returned by the Server.
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">c</span> <span style="color:#000">Client</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Patch</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctx</span> <span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Context</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">obj</span> <span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Object</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">patch</span> <span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Patch</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">opts</span> <span style="color:#ce5c00;font-weight:bold">...</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">UpdateOption</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">error</span>
+</code></pre></div><p>A <code>client.PatchOption</code> is an interface that sets <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#PatchOption"><code>client.PatchOptions</code></a> fields. A <code>client.PatchOption</code> is created by using one of the provided implementations: <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#DryRunAll"><code>DryRunAll</code></a>, <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#ForceOwnership"><code>ForceOwnership</code></a>. Generally these options are not needed.</p>
+<p>Example:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+	<span style="color:#4e9a06">&#34;context&#34;</span>
+	<span style="color:#4e9a06">&#34;k8s.io/api/apps/v1&#34;</span>
+	<span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/client&#34;</span>
+	<span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/reconcile&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">ReconcileApp</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Reconcile</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">request</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Request</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">error</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#ce5c00;font-weight:bold">...</span>
+
+	<span style="color:#000">dep</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">v1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Deployment</span><span style="color:#000;font-weight:bold">{}</span>
+	<span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">request</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NamespacedName</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">dep</span><span style="color:#000;font-weight:bold">)</span>
+
+	<span style="color:#ce5c00;font-weight:bold">...</span>
+
+	<span style="color:#000">ctx</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">()</span>
+	<span style="color:#8f5902;font-style:italic">// A merge patch will preserve other fields modified at runtime.
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">patch</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MergeFrom</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">dep</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">DeepCopy</span><span style="color:#000;font-weight:bold">())</span>
+	<span style="color:#000">dep</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Spec</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Selector</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MatchLabels</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#34;is_running&#34;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#4e9a06">&#34;true&#34;</span>
+	<span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Patch</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">dep</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">patch</span><span style="color:#000;font-weight:bold">)</span>
+
+	<span style="color:#ce5c00;font-weight:bold">...</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><h5 id="updating-status-subresource">Updating Status Subresource</h5>
+<p>When updating the <a href="https://kubernetes.io/docs/tasks/access-kubernetes-api/custom-resources/custom-resource-definitions/#status-subresource">status subresource</a> from the client, the <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#StatusWriter"><code>StatusWriter</code></a> must be used. The status subresource is retrieved with <code>Status()</code> and updated with <code>Update()</code> or patched with <code>Patch()</code>.</p>
+<p><code>Update()</code> takes variadic <code>client.UpdateOption</code>'s, and <code>Patch()</code> takes variadic <code>client.PatchOption</code>'s. See <a href="#update"><code>Client.Update()</code></a> and <a href="#patch"><code>Client.Patch()</code></a> for more details. Generally these options are not needed.</p>
+<h5 id="status">Status</h5>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8f5902;font-style:italic">// Status() returns a StatusWriter object that can be used to update the
+</span><span style="color:#8f5902;font-style:italic">// object&#39;s status subresource
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">c</span> <span style="color:#000">Client</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Status</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">StatusWriter</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">error</span><span style="color:#000;font-weight:bold">)</span>
+</code></pre></div><p>Example:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+	<span style="color:#4e9a06">&#34;context&#34;</span>
+	<span style="color:#000">cachev1alpha1</span> <span style="color:#4e9a06">&#34;github.com/example-inc/memcached-operator/pkg/apis/cache/v1alpha1&#34;</span>
+	<span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/reconcile&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">ReconcileApp</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Reconcile</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">request</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Request</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">error</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#ce5c00;font-weight:bold">...</span>
+
+	<span style="color:#000">ctx</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">()</span>
+	<span style="color:#000">mem</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">cachev1alpha1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Memcached</span><span style="color:#000;font-weight:bold">{}</span>
+	<span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">request</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NamespacedName</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">mem</span><span style="color:#000;font-weight:bold">)</span>
+
+	<span style="color:#ce5c00;font-weight:bold">...</span>
+
+	<span style="color:#8f5902;font-style:italic">// Update
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">mem</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Status</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Nodes</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">&#34;pod1&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;pod2&#34;</span><span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Status</span><span style="color:#000;font-weight:bold">().</span><span style="color:#000">Update</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">mem</span><span style="color:#000;font-weight:bold">)</span>
+
+	<span style="color:#ce5c00;font-weight:bold">...</span>
+
+	<span style="color:#8f5902;font-style:italic">// Patch
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">patch</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MergeFrom</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">mem</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">DeepCopy</span><span style="color:#000;font-weight:bold">())</span>
+	<span style="color:#000">mem</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Status</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Nodes</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">&#34;pod1&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;pod2&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;pod3&#34;</span><span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Status</span><span style="color:#000;font-weight:bold">().</span><span style="color:#000">Patch</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">mem</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">patch</span><span style="color:#000;font-weight:bold">)</span>
+
+	<span style="color:#ce5c00;font-weight:bold">...</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><h4 id="delete">Delete</h4>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8f5902;font-style:italic">// Delete deletes the given obj from Kubernetes cluster.
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">c</span> <span style="color:#000">Client</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Delete</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctx</span> <span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Context</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">obj</span> <span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Object</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">opts</span> <span style="color:#ce5c00;font-weight:bold">...</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">DeleteOption</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">error</span>
+</code></pre></div><p>A <code>client.DeleteOption</code> is an interface that sets <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#DeleteOptions"><code>client.DeleteOptions</code></a> fields. A <code>client.DeleteOption</code> is created by using one of the provided implementations: <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#GracePeriodSeconds"><code>GracePeriodSeconds</code></a>, <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#Preconditions"><code>Preconditions</code></a>, <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#PropagationPolicy"><code>PropagationPolicy</code></a>.</p>
+<p>Example:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+	<span style="color:#4e9a06">&#34;context&#34;</span>
+	<span style="color:#4e9a06">&#34;k8s.io/api/core/v1&#34;</span>
+	<span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/client&#34;</span>
+	<span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/reconcile&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">ReconcileApp</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Reconcile</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">request</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Request</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">error</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#ce5c00;font-weight:bold">...</span>
+
+	<span style="color:#000">pod</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">v1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Pod</span><span style="color:#000;font-weight:bold">{}</span>
+	<span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">request</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NamespacedName</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">pod</span><span style="color:#000;font-weight:bold">)</span>
+
+	<span style="color:#ce5c00;font-weight:bold">...</span>
+
+	<span style="color:#000">ctx</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">()</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">pod</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Status</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Phase</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">v1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">PodUnknown</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#8f5902;font-style:italic">// Delete the pod after 5 seconds.
+</span><span style="color:#8f5902;font-style:italic"></span>		<span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Delete</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">pod</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GracePeriodSeconds</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">5</span><span style="color:#000;font-weight:bold">))</span>
+		<span style="color:#ce5c00;font-weight:bold">...</span>
+	<span style="color:#000;font-weight:bold">}</span>
+
+	<span style="color:#ce5c00;font-weight:bold">...</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><h4 id="deleteallof">DeleteAllOf</h4>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8f5902;font-style:italic">// DeleteAllOf deletes all objects of the given type matching the given options.
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">c</span> <span style="color:#000">Client</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">DeleteAllOf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctx</span> <span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Context</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">obj</span> <span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Object</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">opts</span> <span style="color:#ce5c00;font-weight:bold">...</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">DeleteAllOfOption</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">error</span>
+</code></pre></div><p>A <code>client.DeleteAllOfOption</code> is an interface that sets <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#DeleteAllOfOptions"><code>client.DeleteAllOfOptions</code></a> fields. A <code>client.DeleteAllOfOption</code> wraps a <a href="#list"><code>client.ListOption</code></a> and <a href="#delete"><code>client.DeleteOption</code></a>.</p>
+<p>Example:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+	<span style="color:#4e9a06">&#34;context&#34;</span>
+	<span style="color:#4e9a06">&#34;fmt&#34;</span>
+	<span style="color:#4e9a06">&#34;k8s.io/api/core/v1&#34;</span>
+	<span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/client&#34;</span>
+	<span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/reconcile&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">ReconcileApp</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Reconcile</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">request</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Request</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">error</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#ce5c00;font-weight:bold">...</span>
+
+	<span style="color:#8f5902;font-style:italic">// Delete all pods in the request namespace with a label of `app=&lt;name&gt;`
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// and phase `Failed`.
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">pod</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">v1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Pod</span><span style="color:#000;font-weight:bold">{}</span>
+	<span style="color:#000">opts</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">DeleteAllOfOption</span><span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">InNamespace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">request</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NamespacedName</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Namespace</span><span style="color:#000;font-weight:bold">),</span>
+		<span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MatchingLabels</span><span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">&#34;app&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">request</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NamespacedName</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Name</span><span style="color:#000;font-weight:bold">},</span>
+		<span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MatchingFields</span><span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">&#34;status.phase&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;Failed&#34;</span><span style="color:#000;font-weight:bold">},</span>
+		<span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GracePeriodSeconds</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">5</span><span style="color:#000;font-weight:bold">),</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000">ctx</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">()</span>
+	<span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">DeleteAllOf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">pod</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">opts</span><span style="color:#ce5c00;font-weight:bold">...</span><span style="color:#000;font-weight:bold">)</span>
+
+	<span style="color:#ce5c00;font-weight:bold">...</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><h3 id="example-usage">Example usage</h3>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+	<span style="color:#4e9a06">&#34;context&#34;</span>
+	<span style="color:#4e9a06">&#34;reflect&#34;</span>
+
+	<span style="color:#000">appv1alpha1</span> <span style="color:#4e9a06">&#34;github.com/example-org/app-operator/pkg/apis/app/v1alpha1&#34;</span>
+
+	<span style="color:#000">appsv1</span> <span style="color:#4e9a06">&#34;k8s.io/api/apps/v1&#34;</span>
+	<span style="color:#000">corev1</span> <span style="color:#4e9a06">&#34;k8s.io/api/core/v1&#34;</span>
+	<span style="color:#4e9a06">&#34;k8s.io/apimachinery/pkg/api/errors&#34;</span>
+	<span style="color:#000">metav1</span> <span style="color:#4e9a06">&#34;k8s.io/apimachinery/pkg/apis/meta/v1&#34;</span>
+	<span style="color:#4e9a06">&#34;k8s.io/apimachinery/pkg/labels&#34;</span>
+	<span style="color:#4e9a06">&#34;k8s.io/apimachinery/pkg/runtime&#34;</span>
+	<span style="color:#4e9a06">&#34;k8s.io/apimachinery/pkg/types&#34;</span>
+	<span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/client&#34;</span>
+	<span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/controller/controllerutil&#34;</span>
+	<span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/reconcile&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">ReconcileApp</span> <span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">client</span> <span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Client</span>
+	<span style="color:#000">scheme</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Scheme</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">ReconcileApp</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Reconcile</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">request</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Request</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">error</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+
+	<span style="color:#8f5902;font-style:italic">// Fetch the App instance.
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">app</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">appv1alpha1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">App</span><span style="color:#000;font-weight:bold">{}</span>
+	<span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">request</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NamespacedName</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">app</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">errors</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">IsNotFound</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">err</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#204a87;font-weight:bold">nil</span>
+		<span style="color:#000;font-weight:bold">}</span>
+		<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#000">err</span>
+	<span style="color:#000;font-weight:bold">}</span>
+
+	<span style="color:#8f5902;font-style:italic">// Check if the deployment already exists, if not create a new deployment.
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">found</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">appsv1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Deployment</span><span style="color:#000;font-weight:bold">{}</span>
+	<span style="color:#000">err</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">types</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NamespacedName</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">Name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">app</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Name</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Namespace</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">app</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Namespace</span><span style="color:#000;font-weight:bold">},</span> <span style="color:#000">found</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+	 	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">errors</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">IsNotFound</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">err</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#8f5902;font-style:italic">// Define and create a new deployment.
+</span><span style="color:#8f5902;font-style:italic"></span>			<span style="color:#000">dep</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">deploymentForApp</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">app</span><span style="color:#000;font-weight:bold">)</span>
+			<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Create</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">dep</span><span style="color:#000;font-weight:bold">);</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+				<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#000">err</span>
+			<span style="color:#000;font-weight:bold">}</span>
+			<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">Requeue</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">true</span><span style="color:#000;font-weight:bold">},</span> <span style="color:#204a87;font-weight:bold">nil</span>
+		<span style="color:#000;font-weight:bold">}</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#000">err</span>			
+		<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000;font-weight:bold">}</span>
+
+	<span style="color:#8f5902;font-style:italic">// Ensure the deployment size is the same as the spec.
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">size</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">app</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Spec</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Size</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">found</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Spec</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Replicas</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#000">size</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">found</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Spec</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Replicas</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">size</span>
+		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Update</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">found</span><span style="color:#000;font-weight:bold">);</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#000">err</span>
+		<span style="color:#000;font-weight:bold">}</span>
+		<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">Requeue</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">true</span><span style="color:#000;font-weight:bold">},</span> <span style="color:#204a87;font-weight:bold">nil</span>
+	<span style="color:#000;font-weight:bold">}</span>
+
+	<span style="color:#8f5902;font-style:italic">// Update the App status with the pod names.
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// List the pods for this app&#39;s deployment.
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">podList</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">corev1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">PodList</span><span style="color:#000;font-weight:bold">{}</span>
+	<span style="color:#000">listOpts</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ListOption</span><span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">InNamespace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">app</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Namespace</span><span style="color:#000;font-weight:bold">),</span>
+		<span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MatchingLabels</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">labelsForApp</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">app</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Name</span><span style="color:#000;font-weight:bold">)),</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">List</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">podList</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">listOpts</span><span style="color:#ce5c00;font-weight:bold">...</span><span style="color:#000;font-weight:bold">);</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#000">err</span>
+	<span style="color:#000;font-weight:bold">}</span>
+
+	<span style="color:#8f5902;font-style:italic">// Update status.Nodes if needed.
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">podNames</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">getPodNames</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">podList</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Items</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">!</span><span style="color:#000">reflect</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">DeepEqual</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">podNames</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">app</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Status</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Nodes</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">app</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Status</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Nodes</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">podNames</span>
+		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Status</span><span style="color:#000;font-weight:bold">().</span><span style="color:#000">Update</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">app</span><span style="color:#000;font-weight:bold">);</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#000">err</span>
+		<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000;font-weight:bold">}</span>
+
+	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#204a87;font-weight:bold">nil</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#8f5902;font-style:italic">// deploymentForApp returns a app Deployment object.
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">ReconcileKind</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">deploymentForApp</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">m</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">appv1alpha1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">App</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">appsv1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Deployment</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">lbls</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">labelsForApp</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Name</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000">replicas</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Spec</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Size</span>
+
+	<span style="color:#000">dep</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">appsv1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Deployment</span><span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">ObjectMeta</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">metav1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ObjectMeta</span><span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#000">Name</span><span style="color:#000;font-weight:bold">:</span>      <span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Name</span><span style="color:#000;font-weight:bold">,</span>
+			<span style="color:#000">Namespace</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Namespace</span><span style="color:#000;font-weight:bold">,</span>
+		<span style="color:#000;font-weight:bold">},</span>
+		<span style="color:#000">Spec</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">appsv1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">DeploymentSpec</span><span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#000">Replicas</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">replicas</span><span style="color:#000;font-weight:bold">,</span>
+			<span style="color:#000">Selector</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">metav1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">LabelSelector</span><span style="color:#000;font-weight:bold">{</span>
+				<span style="color:#000">MatchLabels</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">lbls</span><span style="color:#000;font-weight:bold">,</span>
+			<span style="color:#000;font-weight:bold">},</span>
+			<span style="color:#000">Template</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">corev1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">PodTemplateSpec</span><span style="color:#000;font-weight:bold">{</span>
+				<span style="color:#000">ObjectMeta</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">metav1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ObjectMeta</span><span style="color:#000;font-weight:bold">{</span>
+					<span style="color:#000">Labels</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">lbls</span><span style="color:#000;font-weight:bold">,</span>
+				<span style="color:#000;font-weight:bold">},</span>
+				<span style="color:#000">Spec</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">corev1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">PodSpec</span><span style="color:#000;font-weight:bold">{</span>
+					<span style="color:#000">Containers</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#000">corev1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Container</span><span style="color:#000;font-weight:bold">{{</span>
+						<span style="color:#000">Image</span><span style="color:#000;font-weight:bold">:</span>   <span style="color:#4e9a06">&#34;app:alpine&#34;</span><span style="color:#000;font-weight:bold">,</span>
+						<span style="color:#000">Name</span><span style="color:#000;font-weight:bold">:</span>    <span style="color:#4e9a06">&#34;app&#34;</span><span style="color:#000;font-weight:bold">,</span>
+						<span style="color:#000">Command</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">&#34;app&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;-a=64&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;-b&#34;</span><span style="color:#000;font-weight:bold">},</span>
+						<span style="color:#000">Ports</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#000">corev1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ContainerPort</span><span style="color:#000;font-weight:bold">{{</span>
+							<span style="color:#000">ContainerPort</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">10000</span><span style="color:#000;font-weight:bold">,</span>
+							<span style="color:#000">Name</span><span style="color:#000;font-weight:bold">:</span>          <span style="color:#4e9a06">&#34;app&#34;</span><span style="color:#000;font-weight:bold">,</span>
+						<span style="color:#000;font-weight:bold">}},</span>
+					<span style="color:#000;font-weight:bold">}},</span>
+				<span style="color:#000;font-weight:bold">},</span>
+			<span style="color:#000;font-weight:bold">},</span>
+		<span style="color:#000;font-weight:bold">},</span>
+	<span style="color:#000;font-weight:bold">}</span>
+
+	<span style="color:#8f5902;font-style:italic">// Set App instance as the owner and controller.
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// NOTE: calling SetControllerReference, and setting owner references in
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// general, is important as it allows deleted objects to be garbage collected.
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">controllerutil</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">SetControllerReference</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">m</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">dep</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">scheme</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">dep</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#8f5902;font-style:italic">// labelsForApp creates a simple set of labels for App.
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">labelsForApp</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">name</span> <span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">map</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">]</span><span style="color:#204a87;font-weight:bold">string</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">map</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">]</span><span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">&#34;app_name&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;app&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;app_cr&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">name</span><span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div>
+	
+	
+	<div class="text-muted mt-5 pt-3 border-top">Last modified January 1, 0001
+</div>
+</div>
+
+
+          </main>
+        </div>
+      </div>
+      <div class="row flex-xl-nowrap">
+        
+<footer class="of-footer-main">
+  <div class="of-footer-main__meta">
+    <img src="/build/images/logo.svg" alt="">
+    <p class="of-footer-main__meta__text">The Operator Framework is an open source toolkit to manage Kubernetes nativeapplications, called Operators, in an effective, automated, and scalable way.</p>
+    <ul class="of-link-list of-link-list--secondary">
+      <li class="of-link-list__li"><a class="of-link-list__a" href="#">Operator SDK</a></li>
+      <li class="of-link-list__li"><a class="of-link-list__a" href="#">Operator Lifecycle Manager</a></li>
+      <li class="of-link-list__li"><a class="of-link-list__a" class="of-link of-link--external" href="#">OperatorHub</a></li>
+    </ul>
+  </div>
+  <div class="of-footer-main__social">
+    <h4 class="of-heading of-heading--sm">Connect with us!</h4>
+      
+        
+        
+    <ul class="of-link-list">
+      
+        <li class="of-link-list__li">
+          <a class="of-link-list__a" href="https://groups.google.com/forum/#!forum/operator-framework" aria-label="Forum">
+            <i class="fas fa-comment"></i>
+          </a>
+        </li>
+      
+        <li class="of-link-list__li">
+          <a class="of-link-list__a" href="https://github.com/operator-framework/operator-sdk" aria-label="github">
+            <i class="fab fa-github"></i>
+          </a>
+        </li>
+      
+</ul>
+
+      
+    
+
+  </div>
+  <div class="of-footer-main__copyright">
+    <p>Copyright &copy; 2020</p>
+    <ul class="of-link-list">
+      <li class="of-link-list__li"><a href="https://www.redhat.com/en/about/privacy-policy">Privacy Statement</a></li>
+      
+    </ul>
+  </div>
+</footer>
+</body>
+</html>
+
+      </div>
+    </div>
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+<script src="/js/main.min.29b0315468c00226fa6f4556a9cebc0ac4fe1ce1457a01b22c0a06b329877383.js" integrity="sha256-KbAxVGjAAib6b0VWqc68CsT&#43;HOFFegGyLAoGsymHc4M=" crossorigin="anonymous"></script>
+
+
+
+  </body>
+</html>

@@ -1,0 +1,1551 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="generator" content="Hugo 0.69.2" />
+
+<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+
+<link rel="shortcut icon" href="/favicons/favicon.ico" >
+<link rel="apple-touch-icon" href="/favicons/apple-touch-icon-180x180.png" sizes="180x180">
+<link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">
+<link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicons/android-36x36.png" sizes="36x36">
+<link rel="icon" type="image/png" href="/favicons/android-48x48.png" sizes="48x48">
+<link rel="icon" type="image/png" href="/favicons/android-72x72.png" sizes="72x72">
+<link rel="icon" type="image/png" href="/favicons/android-96x96.png" sizes="96x96">
+<link rel="icon" type="image/png" href="/favicons/android-144x144.png" sizes="144x144">
+<link rel="icon" type="image/png" href="/favicons/android-192x192.png" sizes="192x192">
+
+<title>Golang Based Operator Quickstart | Operator SDK</title><meta property="og:title" content="Golang Based Operator Quickstart" />
+<meta property="og:description" content="This guide walks through an example of building a simple memcached-operator using the operator-sdk CLI tool and controller-runtime library API.
+Create a new project Use the CLI to create a new memcached-operator project:
+$ mkdir -p $HOME/projects $ cd $HOME/projects $ operator-sdk new memcached-operator --repo=github.com/example-inc/memcached-operator $ cd memcached-operator To learn about the project directory structure, see project layout doc.
+A note on dependency management operator-sdk new generates a go.mod file to be used with Go modules." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/docs/golang/quickstart/" />
+
+<meta itemprop="name" content="Golang Based Operator Quickstart">
+<meta itemprop="description" content="This guide walks through an example of building a simple memcached-operator using the operator-sdk CLI tool and controller-runtime library API.
+Create a new project Use the CLI to create a new memcached-operator project:
+$ mkdir -p $HOME/projects $ cd $HOME/projects $ operator-sdk new memcached-operator --repo=github.com/example-inc/memcached-operator $ cd memcached-operator To learn about the project directory structure, see project layout doc.
+A note on dependency management operator-sdk new generates a go.mod file to be used with Go modules.">
+
+<meta itemprop="wordCount" content="3850">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Golang Based Operator Quickstart"/>
+<meta name="twitter:description" content="This guide walks through an example of building a simple memcached-operator using the operator-sdk CLI tool and controller-runtime library API.
+Create a new project Use the CLI to create a new memcached-operator project:
+$ mkdir -p $HOME/projects $ cd $HOME/projects $ operator-sdk new memcached-operator --repo=github.com/example-inc/memcached-operator $ cd memcached-operator To learn about the project directory structure, see project layout doc.
+A note on dependency management operator-sdk new generates a go.mod file to be used with Go modules."/>
+
+
+
+
+
+<link rel="preload" href="/scss/main.min.2156b902b150b9e3872e1d22ac593d6651f390478d18ef3c04a45ca6b90d637b.css" as="style">
+<link href="/scss/main.min.2156b902b150b9e3872e1d22ac593d6651f390478d18ef3c04a45ca6b90d637b.css" rel="stylesheet" integrity="">
+
+
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+
+
+  </head>
+  <body class="td-page">
+    <header>
+      <header class="of-header-main">
+    <a href="/" class="of-brand">
+      <picture class="of-brand__picture">
+        <source srcset="/build/images/logo.svg" media="(min-width: 992px)">
+        <img src="/build/images/logo-sm.svg" alt="">  
+      </picture> 
+        </a>
+    <nav class="of-nav-main nav-collapse">
+      <ul class="of-nav-main__items menu-items">
+        <li class="of-nav-main__item"><a class="of-link-list__a " href="/">Home</a></li>
+        
+    
+    <li class="of-nav-main__item"><a class="of-link-list__a" href="/build/" title="Build">Build</a></li>
+    
+    <li class="of-nav-main__item"><a class="of-link-list__a" href="/docs/" title="Documentation">Documentation</a></li>
+    
+    </ul>
+    </nav>
+   
+    <div class="of-header-main__search">
+		
+
+    </div>
+  </header>
+    </header>
+    <div class="container-fluid td-outer">
+      <div class="td-main">
+        <div class="row flex-xl-nowrap">
+          <div class="col-12 col-md-3 col-xl-2 td-sidebar d-print-none">
+            
+
+
+
+
+<div id="td-sidebar-menu" class="td-sidebar__inner">
+  
+  <nav class="collapse td-sidebar-nav pt-2 pl-4" id="td-section-nav">
+    
+    
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/" class="align-left pl-0 pr-2 td-sidebar-link td-sidebar-link__section">Documentation</a>
+  </li>
+  <ul>
+    <li class="collapse show" id="docs">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsinstall-operator-sdk" href="/docs/install-operator-sdk/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuilderquickstart" href="/docs/kubebuilder/quickstart/">Quickstart</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/ansible/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Ansible Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsansible">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibleinstallation" href="/docs/ansible/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblequickstart" href="/docs/ansible/quickstart/">Quickstart</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibletesting-guide" href="/docs/ansible/testing-guide/">Testing with Molecule</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibledevelopment-tips" href="/docs/ansible/development-tips/">Development Tips</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/ansible/reference/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsansiblereference">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceadvanced_options" href="/docs/ansible/reference/advanced_options/">Advanced Options</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceapb-migration-guide" href="/docs/ansible/reference/apb-migration-guide/">APB Migration</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencedependent-watches" href="/docs/ansible/reference/dependent-watches/">Dependent Watches</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencefinalizers" href="/docs/ansible/reference/finalizers/">Finalizers</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceinformation-flow-ansible-operator" href="/docs/ansible/reference/information-flow-ansible-operator/">Information Flow</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceretroactively-owned-resources" href="/docs/ansible/reference/retroactively-owned-resources/">Retroactively Owned Resources</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencescaffolding" href="/docs/ansible/reference/scaffolding/">Scaffolding</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencewatches" href="/docs/ansible/reference/watches/">Watches</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibledevwebhooks" href="/docs/ansible/dev/webhooks/"></a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/" class="align-left pl-0 pr-2 active td-sidebar-link td-sidebar-link__section">Golang Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse show" id="docsgolang">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolanginstallation" href="/docs/golang/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page  active" id="m-docsgolangquickstart" href="/docs/golang/quickstart/">Quickstart</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangunit-testing" href="/docs/golang/unit-testing/">Unit Testing</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolange2e-tests" href="/docs/golang/e2e-tests/">Writing E2E Tests</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/monitoring/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Monitoring</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangmonitoring">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangmonitoringprometheus" href="/docs/golang/monitoring/prometheus/">With Prometheus</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangmonitoringservice-monitor" href="/docs/golang/monitoring/service-monitor/">Using Prometheus Operator ServiceMonitor CRD</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/olm-integration/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Integrating with OLM</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangolm-integration">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationcsv-annotations" href="/docs/golang/olm-integration/csv-annotations/">CSV Code Annotations</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationgenerating-a-csv" href="/docs/golang/olm-integration/generating-a-csv/">Generating ClusterServiceVersion&#39;s</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationolm-cli" href="/docs/golang/olm-integration/olm-cli/">Running with OLM</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationbundle-cli" href="/docs/golang/olm-integration/bundle-cli/">Working with Bundles</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/references/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangreferences">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesclient" href="/docs/golang/references/client/">Controller Runtime Client API</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesevent-filtering" href="/docs/golang/references/event-filtering/">Using Predicates for Event Filtering</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferenceslogging" href="/docs/golang/references/logging/">Logging</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesproject_layout" href="/docs/golang/references/project_layout/">Project Layout</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/helm/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Helm Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docshelm">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelminstallation" href="/docs/helm/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmquickstart" href="/docs/helm/quickstart/">Quickstart</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/helm/reference/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docshelmreference">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferenceadvanced_features" href="/docs/helm/reference/advanced_features/">Advanced Features</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferencescaffolding" href="/docs/helm/reference/scaffolding/">Scaffolding</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferencewatches" href="/docs/helm/reference/watches/">Watches</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/scorecard/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Scorecard</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsscorecard">
+      
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/cli/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">CLI Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscli">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk" href="/docs/cli/operator-sdk/">operator-sdk</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add" href="/docs/cli/operator-sdk_add/">operator-sdk add</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_api" href="/docs/cli/operator-sdk_add_api/">operator-sdk add api</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_controller" href="/docs/cli/operator-sdk_add_controller/">operator-sdk add controller</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_crd" href="/docs/cli/operator-sdk_add_crd/">operator-sdk add crd</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_build" href="/docs/cli/operator-sdk_build/">operator-sdk build</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle" href="/docs/cli/operator-sdk_bundle/">operator-sdk bundle</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle_create" href="/docs/cli/operator-sdk_bundle_create/">operator-sdk bundle create</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle_validate" href="/docs/cli/operator-sdk_bundle_validate/">operator-sdk bundle validate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_cleanup" href="/docs/cli/operator-sdk_cleanup/">operator-sdk cleanup</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion" href="/docs/cli/operator-sdk_completion/">operator-sdk completion</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion_bash" href="/docs/cli/operator-sdk_completion_bash/">operator-sdk completion bash</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion_zsh" href="/docs/cli/operator-sdk_completion_zsh/">operator-sdk completion zsh</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate" href="/docs/cli/operator-sdk_generate/">operator-sdk generate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_crds" href="/docs/cli/operator-sdk_generate_crds/">operator-sdk generate crds</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_csv" href="/docs/cli/operator-sdk_generate_csv/">operator-sdk generate csv</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_k8s" href="/docs/cli/operator-sdk_generate_k8s/">operator-sdk generate k8s</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_migrate" href="/docs/cli/operator-sdk_migrate/">operator-sdk migrate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_new" href="/docs/cli/operator-sdk_new/">operator-sdk new</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm" href="/docs/cli/operator-sdk_olm/">operator-sdk olm</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_install" href="/docs/cli/operator-sdk_olm_install/">operator-sdk olm install</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_status" href="/docs/cli/operator-sdk_olm_status/">operator-sdk olm status</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_uninstall" href="/docs/cli/operator-sdk_olm_uninstall/">operator-sdk olm uninstall</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_print-deps" href="/docs/cli/operator-sdk_print-deps/">operator-sdk print-deps</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_run" href="/docs/cli/operator-sdk_run/">operator-sdk run</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_scorecard" href="/docs/cli/operator-sdk_scorecard/">operator-sdk scorecard</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_test" href="/docs/cli/operator-sdk_test/">operator-sdk test</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_test_local" href="/docs/cli/operator-sdk_test_local/">operator-sdk test local</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_version" href="/docs/cli/operator-sdk_version/">operator-sdk version</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/contribution-guidelines/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Contribution Guidelines</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscontribution-guidelines">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesdeveloper-guide" href="/docs/contribution-guidelines/developer-guide/">Development Environment</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesrelease" href="/docs/contribution-guidelines/release/">Release Guide</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesreporting-issues" href="/docs/contribution-guidelines/reporting-issues/">Reporting Issues</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/contribution-guidelines/testing/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Testing</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscontribution-guidelinestesting">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinestestingrunning-the-tests" href="/docs/contribution-guidelines/testing/running-the-tests/">Running Tests</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinestestingtravis-build" href="/docs/contribution-guidelines/testing/travis-build/">Travis CI</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelineslocal-changes" href="/docs/contribution-guidelines/local-changes/">Local Changes</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelineslocal-docs" href="/docs/contribution-guidelines/local-docs/">Local Docs</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrating-existing-apis" href="/docs/migrating-existing-apis/">Migrating Existing K8S APIs</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/migration/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Migration Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsmigration">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrationv010-migration-guide" href="/docs/migration/v0.1.0-migration-guide/">Migration</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrationversion-upgrade-guide" href="/docs/migration/version-upgrade-guide/">Version Upgrade</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsoperator-scope" href="/docs/operator-scope/">Operator Scope</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsversioning" href="/docs/versioning/">Versioning</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsfaq" href="/docs/faq/">FAQ</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuilderadvanced-topics" href="/docs/kubebuilder/advanced-topics/"></a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuildermigrationproject_migration_guide" href="/docs/kubebuilder/migration/project_migration_guide/"></a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+  </nav>
+</div>
+
+
+
+
+          </div>
+
+          <main class="col-12 col-md-9 col-xl-8 pl-md-5" role="main">
+            
+  
+
+            
+            
+<div class="td-content">
+	<h1>Golang Based Operator Quickstart</h1>
+	
+	<p>This guide walks through an example of building a simple memcached-operator using the operator-sdk CLI tool and controller-runtime library API.</p>
+<h2 id="create-a-new-project">Create a new project</h2>
+<p>Use the CLI to create a new memcached-operator project:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ mkdir -p <span style="color:#000">$HOME</span>/projects
+$ <span style="color:#204a87">cd</span> <span style="color:#000">$HOME</span>/projects
+$ operator-sdk new memcached-operator --repo<span style="color:#ce5c00;font-weight:bold">=</span>github.com/example-inc/memcached-operator
+$ <span style="color:#204a87">cd</span> memcached-operator
+</code></pre></div><p>To learn about the project directory structure, see <a href="/docs/golang/project_layout/">project layout</a> doc.</p>
+<h4 id="a-note-on-dependency-management">A note on dependency management</h4>
+<p><code>operator-sdk new</code> generates a <code>go.mod</code> file to be used with <a href="https://github.com/golang/go/wiki/Modules">Go modules</a>. The <code>--repo=&lt;path&gt;</code> flag is required when creating a project outside of <code>$GOPATH/src</code>, as scaffolded files require a valid module path. Ensure you activate module support before using the SDK. From the <a href="https://github.com/golang/go/wiki/Modules">Go modules Wiki</a>:</p>
+<blockquote>
+<p>You can activate module support in one of two ways:</p>
+<ul>
+<li>Invoke the go command in a directory with a valid go.mod file in the current directory or any parent of it and the environment variable GO111MODULE unset (or explicitly set to auto).</li>
+<li>Invoke the go command with GO111MODULE=on environment variable set.</li>
+</ul>
+</blockquote>
+<h5 id="vendoring">Vendoring</h5>
+<p>By default <code>--vendor=false</code>, so an operator&rsquo;s dependencies are downloaded and cached in the Go modules cache. Calls to <code>go {build,clean,get,install,list,run,test}</code> by <code>operator-sdk</code> subcommands will use an external modules directory. Execute <code>go help modules</code> for more information.</p>
+<p>The Operator SDK can create a <a href="https://blog.gopheracademy.com/advent-2015/vendor-folder/"><code>vendor</code></a> directory for Go dependencies if the project is initialized with <code>--vendor=true</code>.</p>
+<h4 id="operator-scope">Operator scope</h4>
+<p>Read the <a href="/docs/operator-scope/">operator scope</a> documentation on how to run your operator as namespace-scoped vs cluster-scoped.</p>
+<h3 id="manager">Manager</h3>
+<p>The main program for the operator <code>cmd/manager/main.go</code> initializes and runs the <a href="https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg/manager#Manager">Manager</a>.</p>
+<p>The Manager will automatically register the scheme for all custom resources defined under <code>pkg/apis/...</code> and run all controllers under <code>pkg/controller/...</code>.</p>
+<p>The Manager can restrict the namespace that all controllers will watch for resources:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#000">mgr</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">manager</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">New</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">cfg</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">manager</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Options</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">Namespace</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">namespace</span><span style="color:#000;font-weight:bold">})</span>
+</code></pre></div><p>By default this will be the namespace that the operator is running in. To watch all namespaces leave the namespace option empty:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#000">mgr</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">manager</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">New</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">cfg</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">manager</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Options</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">Namespace</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;&#34;</span><span style="color:#000;font-weight:bold">})</span>
+</code></pre></div><p>It is also possible to use the <a href="https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg/cache#MultiNamespacedCacheBuilder">MultiNamespacedCacheBuilder</a> to watch a specific set of namespaces:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">namespaces</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#204a87;font-weight:bold">string</span> <span style="color:#8f5902;font-style:italic">// List of Namespaces
+</span><span style="color:#8f5902;font-style:italic">// Create a new Cmd to provide shared dependencies and start components
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000">mgr</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">manager</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">New</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">cfg</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">manager</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Options</span><span style="color:#000;font-weight:bold">{</span>
+   <span style="color:#000">NewCache</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">cache</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MultiNamespacedCacheBuilder</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">namespaces</span><span style="color:#000;font-weight:bold">),</span>
+   <span style="color:#000">MapperProvider</span><span style="color:#000;font-weight:bold">:</span>     <span style="color:#000">restmapper</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NewDynamicRESTMapper</span><span style="color:#000;font-weight:bold">,</span>
+   <span style="color:#000">MetricsBindAddress</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Sprintf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;%s:%d&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">metricsHost</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">metricsPort</span><span style="color:#000;font-weight:bold">),</span>
+<span style="color:#000;font-weight:bold">})</span>
+</code></pre></div><p>By default the main program will set the manager&rsquo;s namespace using the value of <code>WATCH_NAMESPACE</code> env defined in <code>deploy/operator.yaml</code>.</p>
+<h2 id="add-a-new-custom-resource-definition">Add a new Custom Resource Definition</h2>
+<p>Add a new Custom Resource Definition(CRD) API called Memcached, with APIVersion <code>cache.example.com/v1alpha1</code> and Kind <code>Memcached</code>.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ operator-sdk add api --api-version<span style="color:#ce5c00;font-weight:bold">=</span>cache.example.com/v1alpha1 --kind<span style="color:#ce5c00;font-weight:bold">=</span>Memcached
+</code></pre></div><p>This will scaffold the Memcached resource API under <code>pkg/apis/cache/v1alpha1/...</code>.</p>
+<h3 id="define-the-spec-and-status">Define the spec and status</h3>
+<p>Modify the spec and status of the <code>Memcached</code> Custom Resource(CR) at <code>pkg/apis/cache/v1alpha1/memcached_types.go</code>:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">MemcachedSpec</span> <span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#8f5902;font-style:italic">// Size is the size of the memcached deployment
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">Size</span> <span style="color:#204a87;font-weight:bold">int32</span> <span style="color:#4e9a06">`json:&#34;size&#34;`</span>
+<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">MemcachedStatus</span> <span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#8f5902;font-style:italic">// Nodes are the names of the memcached pods
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">Nodes</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#204a87;font-weight:bold">string</span> <span style="color:#4e9a06">`json:&#34;nodes&#34;`</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>After modifying the <code>*_types.go</code> file always run the following command to update the generated code for that resource type:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ operator-sdk generate k8s
+</code></pre></div><h3 id="updating-crd-manifests">Updating CRD manifests</h3>
+<p>Now that <code>MemcachedSpec</code> and <code>MemcachedStatus</code> have fields and possibly annotations, the CRD corresponding to the API&rsquo;s group and kind must be updated. To do so, run the following command:</p>
+<pre><code class="language-console" data-lang="console">$ operator-sdk generate crds
+</code></pre><p><strong>Notes:</strong></p>
+<ul>
+<li>Your CRD <em>must</em> specify exactly one <a href="https://kubernetes.io/docs/tasks/access-kubernetes-api/custom-resources/custom-resource-definition-versioning/#writing-reading-and-updating-versioned-customresourcedefinition-objects">storage version</a>. Use the <code>+kubebuilder:storageversion</code> <a href="https://book.kubebuilder.io/reference/markers/crd.html">marker</a> to indicate the GVK that should be used to store data by the API server. This marker should be in a comment above your <code>Memcached</code> type.</li>
+</ul>
+<h4 id="openapi-validation">OpenAPI validation</h4>
+<p>OpenAPIv3 schemas are added to CRD manifests in the <code>spec.validation</code> block when the manifests are generated. This validation block allows Kubernetes to validate the properties in a Memcached Custom Resource when it is created or updated.</p>
+<p>Markers (annotations) are available to configure validations for your API. These markers will always have a <code>+kubebuilder:validation</code> prefix. For example, adding an enum type specification can be done by adding the following marker:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8f5902;font-style:italic">// +kubebuilder:validation:Enum=Lion;Wolf;Dragon
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">Alias</span> <span style="color:#204a87;font-weight:bold">string</span>
+</code></pre></div><p>Usage of markers in API code is discussed in the kubebuilder <a href="https://book.kubebuilder.io/reference/generating-crd.html">CRD generation</a> and <a href="https://book.kubebuilder.io/reference/markers.html">marker</a> documentation. A full list of OpenAPIv3 validation markers can be found <a href="https://book.kubebuilder.io/reference/markers/crd.html">here</a>.</p>
+<p>To update the CRD <code>deploy/crds/cache.example.com_memcacheds_crd.yaml</code>, run the following command:</p>
+<pre><code class="language-console" data-lang="console">$ operator-sdk generate crds
+</code></pre><p>An example of the generated YAML is as follows:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-YAML" data-lang="YAML"><span style="color:#204a87;font-weight:bold">spec</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">validation</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#204a87;font-weight:bold">openAPIV3Schema</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">      </span><span style="color:#204a87;font-weight:bold">properties</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">        </span><span style="color:#204a87;font-weight:bold">spec</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">          </span><span style="color:#204a87;font-weight:bold">properties</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">            </span><span style="color:#204a87;font-weight:bold">size</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">format</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>int32<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">              </span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>integer<span style="color:#f8f8f8;text-decoration:underline">
+</span></code></pre></div><p>To learn more about OpenAPI v3.0 validation schemas in Custom Resource Definitions, refer to the <a href="https://kubernetes.io/docs/tasks/access-kubernetes-api/custom-resources/custom-resource-definitions/#specifying-a-structural-schema">Kubernetes Documentation</a>.</p>
+<h2 id="add-a-new-controller">Add a new Controller</h2>
+<p>Add a new <a href="https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg#hdr-Controller">Controller</a> to the project that will watch and reconcile the Memcached resource:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ operator-sdk add controller --api-version<span style="color:#ce5c00;font-weight:bold">=</span>cache.example.com/v1alpha1 --kind<span style="color:#ce5c00;font-weight:bold">=</span>Memcached
+</code></pre></div><p>This will scaffold a new Controller implementation under <code>pkg/controller/memcached/...</code>.</p>
+<p>For this example replace the generated Controller file <code>pkg/controller/memcached/memcached_controller.go</code> with the example <a href="https://github.com/operator-framework/operator-sdk/blob/master/example/memcached-operator/memcached_controller.go.tmpl"><code>memcached_controller.go</code></a> implementation.</p>
+<p>The example Controller executes the following reconciliation logic for each <code>Memcached</code> CR:</p>
+<ul>
+<li>Create a memcached Deployment if it doesn&rsquo;t exist</li>
+<li>Ensure that the Deployment size is the same as specified by the <code>Memcached</code> CR spec</li>
+<li>Update the <code>Memcached</code> CR status using the status writer with the names of the memcached pods</li>
+</ul>
+<p>The next two subsections explain how the Controller watches resources and how the reconcile loop is triggered. Skip to the <a href="#build-and-run-the-operator">Build</a> section to see how to build and run the operator.</p>
+<h3 id="resources-watched-by-the-controller">Resources watched by the Controller</h3>
+<p>Inspect the Controller implementation at <code>pkg/controller/memcached/memcached_controller.go</code> to see how the Controller watches resources.</p>
+<p>The first watch is for the Memcached type as the primary resource. For each Add/Update/Delete event the reconcile loop will be sent a reconcile <code>Request</code> (a namespace/name key) for that Memcached object:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">c</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Watch</span><span style="color:#000;font-weight:bold">(</span>
+  <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">source</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Kind</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">Type</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">cachev1alpha1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Memcached</span><span style="color:#000;font-weight:bold">{}},</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">handler</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">EnqueueRequestForObject</span><span style="color:#000;font-weight:bold">{})</span>
+</code></pre></div><p>The next watch is for Deployments but the event handler will map each event to a reconcile <code>Request</code> for the owner of the Deployment. Which in this case is the Memcached object for which the Deployment was created. This allows the controller to watch Deployments as a secondary resource.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">c</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Watch</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">source</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Kind</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">Type</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">appsv1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Deployment</span><span style="color:#000;font-weight:bold">{}},</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">handler</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">EnqueueRequestForOwner</span><span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">IsController</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">true</span><span style="color:#000;font-weight:bold">,</span>
+    <span style="color:#000">OwnerType</span><span style="color:#000;font-weight:bold">:</span>    <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">cachev1alpha1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Memcached</span><span style="color:#000;font-weight:bold">{},</span>
+  <span style="color:#000;font-weight:bold">})</span>
+</code></pre></div><h4 id="controller-configurations">Controller configurations</h4>
+<p>There are a number of useful configurations that can be made when initialzing a controller and declaring the watch parameters. For more details on these configurations consult the upstream <a href="https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg/controller">controller godocs</a>.</p>
+<ul>
+<li>Set the max number of concurrent Reconciles for the controller via the <a href="https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg/controller#Options"><code>MaxConcurrentReconciles</code></a>  option. Defaults to 1.
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#000">_</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">controller</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">New</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;memcached-controller&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">mgr</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">controller</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Options</span><span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">MaxConcurrentReconciles</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">2</span><span style="color:#000;font-weight:bold">,</span>
+    <span style="color:#ce5c00;font-weight:bold">...</span>
+<span style="color:#000;font-weight:bold">})</span>
+</code></pre></div></li>
+<li>Filter watch events using <a href="/docs/golang/references/event-filtering/">predicates</a></li>
+<li>Choose the type of <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/handler#hdr-EventHandlers">EventHandler</a> to change how a watch event will translate to reconcile requests for the reconcile loop. For operator relationships that are more complex than primary and secondary resources, the <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/handler#EnqueueRequestsFromMapFunc"><code>EnqueueRequestsFromMapFunc</code></a> handler can be used to transform a watch event into an arbitrary set of reconcile requests.</li>
+</ul>
+<h3 id="reconcile-loop">Reconcile loop</h3>
+<p>Every Controller has a Reconciler object with a <code>Reconcile()</code> method that implements the reconcile loop. The reconcile loop is passed the <a href="https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg/reconcile#Request"><code>Request</code></a> argument which is a Namespace/Name key used to lookup the primary resource object, Memcached, from the cache:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">ReconcileMemcached</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Reconcile</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">request</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Request</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">error</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#8f5902;font-style:italic">// Lookup the Memcached instance for this reconcile request
+</span><span style="color:#8f5902;font-style:italic"></span>  <span style="color:#000">memcached</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">cachev1alpha1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Memcached</span><span style="color:#000;font-weight:bold">{}</span>
+  <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">request</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NamespacedName</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">memcached</span><span style="color:#000;font-weight:bold">)</span>
+  <span style="color:#ce5c00;font-weight:bold">...</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>Based on the return values, <a href="https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg/reconcile#Result"><code>Result</code></a> and error, the <code>Request</code> may be requeued and the reconcile loop may be triggered again:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8f5902;font-style:italic">// Reconcile successful - don&#39;t requeue
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#204a87;font-weight:bold">nil</span>
+<span style="color:#8f5902;font-style:italic">// Reconcile failed due to error - requeue
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#000">err</span>
+<span style="color:#8f5902;font-style:italic">// Requeue for any reason other than error
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">Requeue</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">true</span><span style="color:#000;font-weight:bold">},</span> <span style="color:#204a87;font-weight:bold">nil</span>
+</code></pre></div><p>You can set the <code>Result.RequeueAfter</code> to requeue the <code>Request</code> after a grace period as well:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#4e9a06">&#34;time&#34;</span>
+
+<span style="color:#8f5902;font-style:italic">// Reconcile for any reason than error after 5 seconds
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">RequeueAfter</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">time</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Second</span><span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#0000cf;font-weight:bold">5</span><span style="color:#000;font-weight:bold">},</span> <span style="color:#204a87;font-weight:bold">nil</span>
+</code></pre></div><p><strong>Note:</strong> Returning <code>Result</code> with <code>RequeueAfter</code> set is how you can periodically reconcile a CR.</p>
+<h4 id="reconcile-result-use-cases">Reconcile Result Use Cases</h4>
+<p><strong>The following are possible reconcile loop return options.</strong></p>
+<h4 id="1-with-the-error">1. With the error:</h4>
+<p>If an error is encountered during processing the appropriate return option is to return an error.
+This results in the reconcile loop being re-triggered to run again.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#000">err</span>
+</code></pre></div><p><strong>Example:</strong></p>
+<p>In the example below a <code>reconcile.Result{}, err</code> is used when there is an error reading the object.
+As a result the request is requeued for another try.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8f5902;font-style:italic">// Fetch the Memcached instance
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000">memcached</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">cachev1alpha1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Memcached</span><span style="color:#000;font-weight:bold">{}</span>
+<span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">request</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NamespacedName</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">memcached</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">errors</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">IsNotFound</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">err</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#ce5c00;font-weight:bold">...</span>
+  <span style="color:#000;font-weight:bold">}</span>
+  <span style="color:#8f5902;font-style:italic">// Error reading the object - requeue the request.
+</span><span style="color:#8f5902;font-style:italic"></span>  <span style="color:#000">reqLogger</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Error</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">err</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;Failed to get Memcached&#34;</span><span style="color:#000;font-weight:bold">)</span>
+  <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#000">err</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><h4 id="2-without-an-error">2. Without an error:</h4>
+<p>There are several situations where although no error occured, the reconcile loop should signify
+during its return that it needs to run again.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">Requeue</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">true</span><span style="color:#000;font-weight:bold">},</span> <span style="color:#204a87;font-weight:bold">nil</span>
+</code></pre></div><p><strong>Example:</strong></p>
+<p>In the example below a <code>reconcile.Result{Requeue: true}, nil</code> is used because a new resource is being created and as such there is the potential that further processing is required. Thus, the reconcile loop needs to trigger a requeue but there is no error associated with this requeue.
+As a result the request is requeued for another try.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8f5902;font-style:italic">// Define a new deployment
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000">dep</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">deploymentForMemcached</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">memcached</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#ce5c00;font-weight:bold">...</span>
+
+<span style="color:#8f5902;font-style:italic">// Deployment created successfully - return and requeue
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">Requeue</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">true</span><span style="color:#000;font-weight:bold">},</span> <span style="color:#204a87;font-weight:bold">nil</span>
+</code></pre></div><h4 id="3-without-an-error-and-no-need-to-requeue-the-request">3. Without an error and no need to requeue the request:</h4>
+<p>In some situations, such as when the primary resource has been deleted, there is no need to
+requeue the request for another attempt</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#204a87;font-weight:bold">nil</span>
+</code></pre></div><p><strong>Example:</strong></p>
+<p>In the example below a <code>reconcile.Result{}, nil</code> is used because the Memcached resource was not found, and no further processing is required.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8f5902;font-style:italic">// Fetch the Memcached instance
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000">memcached</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">cachev1alpha1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Memcached</span><span style="color:#000;font-weight:bold">{}</span>
+<span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">request</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NamespacedName</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">memcached</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">errors</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">IsNotFound</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">err</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#8f5902;font-style:italic">// Request object not found, could have been deleted after reconcile request.
+</span><span style="color:#8f5902;font-style:italic"></span>		<span style="color:#8f5902;font-style:italic">// Owned objects are automatically garbage collected. For additional cleanup logic use finalizers.
+</span><span style="color:#8f5902;font-style:italic"></span>		<span style="color:#8f5902;font-style:italic">// Return and don&#39;t requeue
+</span><span style="color:#8f5902;font-style:italic"></span>		<span style="color:#000">reqLogger</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Info</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Memcached resource not found. Ignoring since object must be deleted&#34;</span><span style="color:#000;font-weight:bold">)</span>
+		<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#204a87;font-weight:bold">nil</span>
+	<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#ce5c00;font-weight:bold">...</span>
+</code></pre></div><p>For a guide on Reconcilers, Clients, and interacting with resource Events, see the <a href="/docs/golang/references/client/">Client API doc</a> and the <a href="https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg/reconcile#Reconciler">controller-runtime documentation over reconcile</a>.</p>
+<h2 id="build-and-run-the-operator">Build and run the operator</h2>
+<p>Before running the operator, the CRD must be registered with the Kubernetes apiserver:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ kubectl create -f deploy/crds/cache.example.com_memcacheds_crd.yaml
+</code></pre></div><p>Once this is done, there are two ways to run the operator:</p>
+<ul>
+<li>As a Deployment inside a Kubernetes cluster</li>
+<li>As Go program outside a cluster</li>
+</ul>
+<h3 id="1-run-as-a-deployment-inside-the-cluster">1. Run as a Deployment inside the cluster</h3>
+<p><strong>Note</strong>: <code>operator-sdk build</code> invokes <code>docker build</code> by default, and optionally <code>buildah bud</code>. If using <code>buildah</code>, skip to the <code>operator-sdk build</code> invocation instructions below. If using <code>docker</code>, make sure your docker daemon is running and that you can run the docker client without sudo. You can check if this is the case by running <code>docker version</code>, which should complete without errors. Follow instructions for your OS/distribution on how to start the docker daemon and configure your access permissions, if needed.</p>
+<p><strong>Note</strong>: If a <code>vendor/</code> directory is present, run</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ go mod vendor
+</code></pre></div><p>before building the memcached-operator image.</p>
+<p>Build the memcached-operator image and push it to a registry.  Make sure to modify
+<code>quay.io/example/</code> in the example below to reference a container repository that
+you have access to. You can obtain an account for storing containers at
+repository sites such quay.io or hub.docker.com:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ operator-sdk build quay.io/example/memcached-operator:v0.0.1
+$ sed -i <span style="color:#4e9a06">&#39;s|REPLACE_IMAGE|quay.io/example/memcached-operator:v0.0.1|g&#39;</span> deploy/operator.yaml
+$ docker push quay.io/example/memcached-operator:v0.0.1
+</code></pre></div><p><strong>Note</strong>
+If you are performing these steps on OSX, use the following <code>sed</code> command instead:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sed -i <span style="color:#4e9a06">&#34;&#34;</span> <span style="color:#4e9a06">&#39;s|REPLACE_IMAGE|quay.io/example/memcached-operator:v0.0.1|g&#39;</span> deploy/operator.yaml
+</code></pre></div><p>The Deployment manifest is generated at <code>deploy/operator.yaml</code>. Be sure to update the deployment image as shown above since the default is just a placeholder.</p>
+<p>Setup RBAC and deploy the memcached-operator:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ kubectl create -f deploy/service_account.yaml
+$ kubectl create -f deploy/role.yaml
+$ kubectl create -f deploy/role_binding.yaml
+$ kubectl create -f deploy/operator.yaml
+</code></pre></div><p>Verify that the memcached-operator is up and running:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ kubectl get deployment
+NAME                     DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+memcached-operator       <span style="color:#0000cf;font-weight:bold">1</span>         <span style="color:#0000cf;font-weight:bold">1</span>         <span style="color:#0000cf;font-weight:bold">1</span>            <span style="color:#0000cf;font-weight:bold">1</span>           1m
+</code></pre></div><h3 id="2-run-locally-outside-the-cluster">2. Run locally outside the cluster</h3>
+<p>This method is preferred during development cycle to deploy and test faster.</p>
+<p>Set the name of the operator in an environment variable:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#204a87">export</span> <span style="color:#000">OPERATOR_NAME</span><span style="color:#ce5c00;font-weight:bold">=</span>memcached-operator
+</code></pre></div><p>Run the operator locally with the default Kubernetes config file present at <code>$HOME/.kube/config</code>. And watch the namespace <code>default</code>:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ operator-sdk run --local --watch-namespace<span style="color:#ce5c00;font-weight:bold">=</span>default
+2018/09/30 23:10:11 Go Version: go1.10.2
+2018/09/30 23:10:11 Go OS/Arch: darwin/amd64
+2018/09/30 23:10:11 operator-sdk Version: 0.0.6+git
+2018/09/30 23:10:12 Registering Components.
+2018/09/30 23:10:12 Starting the Cmd.
+</code></pre></div><p>You can use a specific kubeconfig via the flag <code>--kubeconfig=&lt;path/to/kubeconfig&gt;</code>.</p>
+<h3 id="3-deploy-your-operator-with-the-operator-lifecycle-manager-olm">3. Deploy your Operator with the Operator Lifecycle Manager (OLM)</h3>
+<p>OLM will manage creation of most if not all resources required to run your operator, using a bit of setup from other <code>operator-sdk</code> commands. Check out the <a href="/docs/golang/olm-integration/olm-cli/">docs</a> for more information.</p>
+<h2 id="create-a-memcached-cr">Create a Memcached CR</h2>
+<p>Create the example <code>Memcached</code> CR that was generated at <code>deploy/crds/cache.example.com_v1alpha1_memcached_cr.yaml</code>:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ cat deploy/crds/cache.example.com_v1alpha1_memcached_cr.yaml
+apiVersion: <span style="color:#4e9a06">&#34;cache.example.com/v1alpha1&#34;</span>
+kind: <span style="color:#4e9a06">&#34;Memcached&#34;</span>
+metadata:
+  name: <span style="color:#4e9a06">&#34;example-memcached&#34;</span>
+spec:
+  size: <span style="color:#0000cf;font-weight:bold">3</span>
+
+$ kubectl apply -f deploy/crds/cache.example.com_v1alpha1_memcached_cr.yaml
+</code></pre></div><p>Ensure that the memcached-operator creates the deployment for the CR:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ kubectl get deployment
+NAME                     DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+memcached-operator       <span style="color:#0000cf;font-weight:bold">1</span>         <span style="color:#0000cf;font-weight:bold">1</span>         <span style="color:#0000cf;font-weight:bold">1</span>            <span style="color:#0000cf;font-weight:bold">1</span>           2m
+example-memcached        <span style="color:#0000cf;font-weight:bold">3</span>         <span style="color:#0000cf;font-weight:bold">3</span>         <span style="color:#0000cf;font-weight:bold">3</span>            <span style="color:#0000cf;font-weight:bold">3</span>           1m
+</code></pre></div><p>Check the pods and CR status to confirm the status is updated with the memcached pod names:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ kubectl get pods
+NAME                                  READY     STATUS    RESTARTS   AGE
+example-memcached-6fd7c98d8-7dqdr     1/1       Running   <span style="color:#0000cf;font-weight:bold">0</span>          1m
+example-memcached-6fd7c98d8-g5k7v     1/1       Running   <span style="color:#0000cf;font-weight:bold">0</span>          1m
+example-memcached-6fd7c98d8-m7vn7     1/1       Running   <span style="color:#0000cf;font-weight:bold">0</span>          1m
+memcached-operator-7cc7cfdf86-vvjqk   1/1       Running   <span style="color:#0000cf;font-weight:bold">0</span>          2m
+</code></pre></div><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ kubectl get memcached/example-memcached -o yaml
+apiVersion: cache.example.com/v1alpha1
+kind: Memcached
+metadata:
+  clusterName: <span style="color:#4e9a06">&#34;&#34;</span>
+  creationTimestamp: 2018-03-31T22:51:08Z
+  generation: <span style="color:#0000cf;font-weight:bold">0</span>
+  name: example-memcached
+  namespace: default
+  resourceVersion: <span style="color:#4e9a06">&#34;245453&#34;</span>
+  selfLink: /apis/cache.example.com/v1alpha1/namespaces/default/memcacheds/example-memcached
+  uid: 0026cc97-3536-11e8-bd83-0800274106a1
+spec:
+  size: <span style="color:#0000cf;font-weight:bold">3</span>
+status:
+  nodes:
+  - example-memcached-6fd7c98d8-7dqdr
+  - example-memcached-6fd7c98d8-g5k7v
+  - example-memcached-6fd7c98d8-m7vn7
+</code></pre></div><h3 id="update-the-size">Update the size</h3>
+<p>Change the <code>spec.size</code> field in the memcached CR from 3 to 4 and apply the change:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ cat deploy/crds/cache.example.com_v1alpha1_memcached_cr.yaml
+apiVersion: <span style="color:#4e9a06">&#34;cache.example.com/v1alpha1&#34;</span>
+kind: <span style="color:#4e9a06">&#34;Memcached&#34;</span>
+metadata:
+  name: <span style="color:#4e9a06">&#34;example-memcached&#34;</span>
+spec:
+  size: <span style="color:#0000cf;font-weight:bold">4</span>
+
+$ kubectl apply -f deploy/crds/cache.example.com_v1alpha1_memcached_cr.yaml
+</code></pre></div><p>Confirm that the operator changes the deployment size:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ kubectl get deployment
+NAME                 DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+example-memcached    <span style="color:#0000cf;font-weight:bold">4</span>         <span style="color:#0000cf;font-weight:bold">4</span>         <span style="color:#0000cf;font-weight:bold">4</span>            <span style="color:#0000cf;font-weight:bold">4</span>           5m
+</code></pre></div><h3 id="cleanup">Cleanup</h3>
+<p>Clean up the resources:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ kubectl delete -f deploy/crds/cache.example.com_v1alpha1_memcached_cr.yaml
+$ kubectl delete -f deploy/operator.yaml
+$ kubectl delete -f deploy/role_binding.yaml
+$ kubectl delete -f deploy/role.yaml
+$ kubectl delete -f deploy/service_account.yaml
+</code></pre></div><h2 id="advanced-topics">Advanced Topics</h2>
+<h3 id="manage-cr-status-conditions">Manage CR status conditions</h3>
+<p>An often-used pattern is to include <code>Conditions</code> in the status of custom resources. Conditions represent the latest available observations of an object&rsquo;s state (see the <a href="https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#typical-status-properties">Kubernetes API conventionsdocumentation</a> for more information).</p>
+<p>The <code>Conditions</code> field added to the <code>MemcachedStatus</code> struct simplifies the management of your CR&rsquo;s conditions. It:</p>
+<ul>
+<li>Enables callers to add and remove conditions.</li>
+<li>Ensures that there are no duplicates.</li>
+<li>Sorts the conditions deterministically to avoid unnecessary repeated reconciliations.</li>
+<li>Automatically handles the each condition&rsquo;s <code>LastTransitionTime</code>.</li>
+<li>Provides helper methods to make it easy to determine the state of a condition.</li>
+</ul>
+<p>To use conditions in your custom resource, add a Conditions field to the Status struct in <code>_types.go</code>:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+    <span style="color:#4e9a06">&#34;github.com/operator-framework/operator-sdk/pkg/status&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">MyAppStatus</span> <span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#8f5902;font-style:italic">// Conditions represent the latest available observations of an object&#39;s state
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">Conditions</span> <span style="color:#000">status</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Conditions</span> <span style="color:#4e9a06">`json:&#34;conditions&#34;`</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>Then, in your controller, you can use <a href="https://godoc.org/github.com/operator-framework/operator-sdk/pkg/status#Conditions"><code>Conditions</code></a> methods to make it easier to set and remove conditions or check their current values.</p>
+<h3 id="adding-3rd-party-resources-to-your-operator">Adding 3rd Party Resources To Your Operator</h3>
+<p>The operator&rsquo;s Manager supports the Core Kubernetes resource types as found in the client-go <a href="https://github.com/kubernetes/client-go/blob/master/kubernetes/scheme/register.go">scheme</a> package and will also register the schemes of all custom resource types defined in your project under <code>pkg/apis</code>.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+  <span style="color:#4e9a06">&#34;github.com/example-inc/memcached-operator/pkg/apis&#34;</span>
+  <span style="color:#ce5c00;font-weight:bold">...</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#8f5902;font-style:italic">// Setup Scheme for all resources
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">apis</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">AddToScheme</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">mgr</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GetScheme</span><span style="color:#000;font-weight:bold">());</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Error</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">err</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;&#34;</span><span style="color:#000;font-weight:bold">)</span>
+  <span style="color:#000">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Exit</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>To add a 3rd party resource to an operator, you must add it to the Manager&rsquo;s scheme. By creating an <code>AddToScheme()</code> method or reusing one you can easily add a resource to your scheme. An <a href="https://github.com/kubernetes/api/blob/master/apps/v1/register.go#L41">example</a> shows that you define a function and then use the <a href="https://godoc.org/k8s.io/apimachinery/pkg/runtime">runtime</a> package to create a <code>SchemeBuilder</code>.</p>
+<h4 id="register-with-the-managers-scheme">Register with the Manager&rsquo;s scheme</h4>
+<p>Call the <code>AddToScheme()</code> function for your 3rd party resource and pass it the Manager&rsquo;s scheme via <code>mgr.GetScheme()</code>
+in <code>cmd/manager/main.go</code>.</p>
+<p>Example:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+  <span style="color:#ce5c00;font-weight:bold">...</span><span style="color:#000;font-weight:bold">.</span>
+
+  <span style="color:#000">routev1</span> <span style="color:#4e9a06">&#34;github.com/openshift/api/route/v1&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">main</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#ce5c00;font-weight:bold">...</span><span style="color:#000;font-weight:bold">.</span>
+
+  <span style="color:#8f5902;font-style:italic">// Adding the routev1
+</span><span style="color:#8f5902;font-style:italic"></span>  <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">routev1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">AddToScheme</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">mgr</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GetScheme</span><span style="color:#000;font-weight:bold">());</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Error</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">err</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;&#34;</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Exit</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+  <span style="color:#000;font-weight:bold">}</span>
+
+  <span style="color:#ce5c00;font-weight:bold">...</span><span style="color:#000;font-weight:bold">.</span>
+
+  <span style="color:#8f5902;font-style:italic">// Setup all Controllers
+</span><span style="color:#8f5902;font-style:italic"></span>  <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">controller</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">AddToManager</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">mgr</span><span style="color:#000;font-weight:bold">);</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Error</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">err</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;&#34;</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Exit</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><h5 id="if-3rd-party-resource-does-not-have-addtoscheme-function">If 3rd party resource does not have <code>AddToScheme()</code> function</h5>
+<p>Use the <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/scheme#Builder">SchemeBuilder</a> package from controller-runtime to initialize a new scheme builder that can be used to register the 3rd party resource with the manager&rsquo;s scheme.</p>
+<p>Example of registering <code>DNSEndpoints</code> 3rd party resource from <code>external-dns</code>:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+  <span style="color:#ce5c00;font-weight:bold">...</span>
+    <span style="color:#4e9a06">&#34;k8s.io/apimachinery/pkg/runtime/schema&#34;</span>
+    <span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/scheme&#34;</span>
+  <span style="color:#ce5c00;font-weight:bold">...</span>
+   <span style="color:#8f5902;font-style:italic">// DNSEndoints
+</span><span style="color:#8f5902;font-style:italic"></span>   <span style="color:#000">externaldns</span> <span style="color:#4e9a06">&#34;github.com/kubernetes-incubator/external-dns/endpoint&#34;</span>
+   <span style="color:#000">metav1</span> <span style="color:#4e9a06">&#34;k8s.io/apimachinery/pkg/apis/meta/v1&#34;</span>
+ <span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">main</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#ce5c00;font-weight:bold">...</span><span style="color:#000;font-weight:bold">.</span>
+
+  <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Info</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Registering Components.&#34;</span><span style="color:#000;font-weight:bold">)</span>
+
+  <span style="color:#000">schemeBuilder</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">scheme</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Builder</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">GroupVersion</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">schema</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GroupVersion</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">Group</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;externaldns.k8s.io&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Version</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;v1alpha1&#34;</span><span style="color:#000;font-weight:bold">}}</span>
+  <span style="color:#000">schemeBuilder</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Register</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">externaldns</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">DNSEndpoint</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">externaldns</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">DNSEndpointList</span><span style="color:#000;font-weight:bold">{})</span>
+  <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">schemeBuilder</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">AddToScheme</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">mgr</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GetScheme</span><span style="color:#000;font-weight:bold">());</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Error</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">err</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;&#34;</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Exit</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+  <span style="color:#000;font-weight:bold">}</span>
+
+  <span style="color:#ce5c00;font-weight:bold">...</span><span style="color:#000;font-weight:bold">.</span>
+
+  <span style="color:#8f5902;font-style:italic">// Setup all Controllers
+</span><span style="color:#8f5902;font-style:italic"></span>  <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">controller</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">AddToManager</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">mgr</span><span style="color:#000;font-weight:bold">);</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Error</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">err</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;&#34;</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Exit</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p><strong>NOTES:</strong></p>
+<ul>
+<li>After adding new import paths to your operator project, run <code>go mod vendor</code> if a <code>vendor/</code> directory is present in the root of your project directory to fulfill these dependencies.</li>
+<li>Your 3rd party resource needs to be added before add the controller in <code>&quot;Setup all Controllers&quot;</code>.</li>
+</ul>
+<h4 id="default-metrics-exported-with-3rd-party-resource">Default Metrics exported with 3rd party resource</h4>
+<p>By default, SDK operator projects are set up to <a href="/docs/golang/metrics/operator-sdk-monitoring/">export metrics</a> through <code>addMetrics</code> in <code>cmd/manager/main.go</code>. See that it will call the <code>serveCRMetrics</code>:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">serveCRMetrics</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">cfg</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">rest</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Config</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">error</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#ce5c00;font-weight:bold">...</span>
+	<span style="color:#000">filteredGVK</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">k8sutil</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GetGVKsFromAddToScheme</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">apis</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">AddToScheme</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">err</span>
+	<span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#ce5c00;font-weight:bold">...</span>
+
+	<span style="color:#8f5902;font-style:italic">// Generate and serve custom resource specific metrics.
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">err</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">kubemetrics</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GenerateAndServeCRMetrics</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">cfg</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">ns</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">filteredGVK</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">metricsHost</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">operatorMetricsPort</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">err</span>
+	<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>The <code>kubemetrics.GenerateAndServeCRMetrics</code> function requires an RBAC rule to list all GroupVersionKinds in the list of watched namespaces, so you might need to <a href="https://github.com/operator-framework/operator-sdk/blob/v0.15.2/pkg/k8sutil/k8sutil.go#L161">filter</a> the kinds returned by <a href="https://godoc.org/github.com/operator-framework/operator-sdk/pkg/k8sutil#GetGVKsFromAddToScheme"><code>k8sutil.GetGVKsFromAddToScheme</code></a> more stringently to avoid authorization errors such as <code>Failed to list *unstructured.Unstructured</code>.</p>
+<p>In this scenario, this error may occur because your Operator RBAC roles do not include permissions to LIST the third party API schemas or the schemas which are required to them and will be added with. See that the default SDK implementation will just add the Kubernetes schemas and they will be ignored in the metrics It means that you might need to do an similar implementation to filter the third party API schemas and their dependencies added in order to provide a filtered a List of GVK(GroupVersionKind) to the  <code>GenerateAndServeCRMetrics</code> method.</p>
+<h3 id="handle-cleanup-on-deletion">Handle Cleanup on Deletion</h3>
+<p>To implement complex deletion logic, you can add a finalizer to your Custom Resource. This will prevent your Custom Resource from being
+deleted until you remove the finalizer (ie, after your cleanup logic has successfully run). For more information, see the
+<a href="https://kubernetes.io/docs/tasks/access-kubernetes-api/custom-resources/custom-resource-definitions/#finalizers">official Kubernetes documentation on finalizers</a>.</p>
+<p><strong>Example:</strong></p>
+<p>The following is a snippet from the controller file under <code>pkg/controller/memcached/memcached_controller.go</code></p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">
+<span style="color:#204a87;font-weight:bold">const</span> <span style="color:#000">memcachedFinalizer</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#4e9a06">&#34;finalizer.cache.example.com&#34;</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">ReconcileMemcached</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Reconcile</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">request</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Request</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">error</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">reqLogger</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">WithValues</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Request.Namespace&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">request</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Namespace</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;Request.Name&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">request</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Name</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000">reqLogger</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Info</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Reconciling Memcached&#34;</span><span style="color:#000;font-weight:bold">)</span>
+
+	<span style="color:#8f5902;font-style:italic">// Fetch the Memcached instance
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">memcached</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">cachev1alpha1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Memcached</span><span style="color:#000;font-weight:bold">{}</span>
+	<span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">request</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NamespacedName</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">memcached</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#8f5902;font-style:italic">// If the resource is not found, that means all of
+</span><span style="color:#8f5902;font-style:italic"></span>		<span style="color:#8f5902;font-style:italic">// the finalizers have been removed, and the memcached
+</span><span style="color:#8f5902;font-style:italic"></span>		<span style="color:#8f5902;font-style:italic">// resource has been deleted, so there is nothing left
+</span><span style="color:#8f5902;font-style:italic"></span>		<span style="color:#8f5902;font-style:italic">// to do.
+</span><span style="color:#8f5902;font-style:italic"></span>		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">apierrors</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">IsNotFound</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">err</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#204a87;font-weight:bold">nil</span>
+		<span style="color:#000;font-weight:bold">}</span>
+		<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Errorf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;could not fetch memcached instance: %s&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000;font-weight:bold">}</span>
+
+	<span style="color:#ce5c00;font-weight:bold">...</span>
+
+	<span style="color:#8f5902;font-style:italic">// Check if the Memcached instance is marked to be deleted, which is
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// indicated by the deletion timestamp being set.
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">isMemcachedMarkedToBeDeleted</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">memcached</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GetDeletionTimestamp</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">isMemcachedMarkedToBeDeleted</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">contains</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">memcached</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GetFinalizers</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">memcachedFinalizer</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#8f5902;font-style:italic">// Run finalization logic for memcachedFinalizer. If the
+</span><span style="color:#8f5902;font-style:italic"></span>			<span style="color:#8f5902;font-style:italic">// finalization logic fails, don&#39;t remove the finalizer so
+</span><span style="color:#8f5902;font-style:italic"></span>			<span style="color:#8f5902;font-style:italic">// that we can retry during the next reconciliation.
+</span><span style="color:#8f5902;font-style:italic"></span>			<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">finalizeMemcached</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">reqLogger</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">memcached</span><span style="color:#000;font-weight:bold">);</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+				<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#000">err</span>
+			<span style="color:#000;font-weight:bold">}</span>
+
+			<span style="color:#8f5902;font-style:italic">// Remove memcachedFinalizer. Once all finalizers have been
+</span><span style="color:#8f5902;font-style:italic"></span>			<span style="color:#8f5902;font-style:italic">// removed, the object will be deleted.
+</span><span style="color:#8f5902;font-style:italic"></span>			<span style="color:#000">memcached</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">SetFinalizers</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">remove</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">memcached</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GetFinalizers</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">memcachedFinalizer</span><span style="color:#000;font-weight:bold">))</span>
+			<span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Update</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">memcached</span><span style="color:#000;font-weight:bold">)</span>
+			<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+				<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#000">err</span>
+			<span style="color:#000;font-weight:bold">}</span>
+		<span style="color:#000;font-weight:bold">}</span>
+		<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#204a87;font-weight:bold">nil</span>
+	<span style="color:#000;font-weight:bold">}</span>
+
+	<span style="color:#8f5902;font-style:italic">// Add finalizer for this CR
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">!</span><span style="color:#000">contains</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">memcached</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GetFinalizers</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">memcachedFinalizer</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">addFinalizer</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">reqLogger</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">memcached</span><span style="color:#000;font-weight:bold">);</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#000">err</span>
+		<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000;font-weight:bold">}</span>
+
+	<span style="color:#ce5c00;font-weight:bold">...</span>
+
+	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#204a87;font-weight:bold">nil</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">ReconcileMemcached</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">finalizeMemcached</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">reqLogger</span> <span style="color:#000">logr</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Logger</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">m</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">cachev1alpha1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Memcached</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">error</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#8f5902;font-style:italic">// TODO(user): Add the cleanup steps that the operator
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// needs to do before the CR can be deleted. Examples
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// of finalizers include performing backups and deleting
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// resources that are not owned by this CR, like a PVC.
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">reqLogger</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Info</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Successfully finalized memcached&#34;</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">nil</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">ReconcileMemcached</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">addFinalizer</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">reqLogger</span> <span style="color:#000">logr</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Logger</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">m</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">cachev1alpha1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Memcached</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">error</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">reqLogger</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Info</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Adding Finalizer for the Memcached&#34;</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">SetFinalizers</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GetFinalizers</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">memcachedFinalizer</span><span style="color:#000;font-weight:bold">))</span>
+
+	<span style="color:#8f5902;font-style:italic">// Update CR
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Update</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">m</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">reqLogger</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Error</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">err</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;Failed to update Memcached with finalizer&#34;</span><span style="color:#000;font-weight:bold">)</span>
+		<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">err</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">nil</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">contains</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">list</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">s</span> <span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">bool</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">_</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">v</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87;font-weight:bold">range</span> <span style="color:#000">list</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">v</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">s</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">true</span>
+		<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">false</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">remove</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">list</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">s</span> <span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#204a87;font-weight:bold">string</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">i</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">v</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87;font-weight:bold">range</span> <span style="color:#000">list</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">v</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">s</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#000">list</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">list</span><span style="color:#000;font-weight:bold">[:</span><span style="color:#000">i</span><span style="color:#000;font-weight:bold">],</span> <span style="color:#000">list</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">i</span><span style="color:#ce5c00;font-weight:bold">+</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">:]</span><span style="color:#ce5c00;font-weight:bold">...</span><span style="color:#000;font-weight:bold">)</span>
+		<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">list</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><h3 id="metrics">Metrics</h3>
+<p>To learn about how metrics work in the Operator SDK read the <a href="/docs/golang/metrics/operator-sdk-monitoring/">metrics section</a> of the user documentation.</p>
+<h3 id="leader-election">Leader election</h3>
+<p>During the lifecycle of an operator it&rsquo;s possible that there may be more than 1 instance running at any given time e.g when rolling out an upgrade for the operator.
+In such a scenario it is necessary to avoid contention between multiple operator instances via leader election so that only one leader instance handles the reconciliation while the other instances are inactive but ready to take over when the leader steps down.</p>
+<p>There are two different leader election implementations to choose from, each with its own tradeoff.</p>
+<ul>
+<li><a href="https://godoc.org/github.com/operator-framework/operator-sdk/pkg/leader">Leader-for-life</a>: The leader pod only gives up leadership (via garbage collection) when it is deleted. This implementation precludes the possibility of 2 instances mistakenly running as leaders (split brain). However, this method can be subject to a delay in electing a new leader. For instance when the leader pod is on an unresponsive or partitioned node, the <a href="https://kubernetes.io/docs/reference/command-line-tools-reference/kube-controller-manager/#options"><code>pod-eviction-timeout</code></a> dictates how long it takes for the leader pod to be deleted from the node and step down (default 5m).</li>
+<li><a href="https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg/leaderelection">Leader-with-lease</a>: The leader pod periodically renews the leader lease and gives up leadership when it can&rsquo;t renew the lease. This implementation allows for a faster transition to a new leader when the existing leader is isolated, but there is a possibility of split brain in <a href="https://github.com/kubernetes/client-go/blob/30b06a83d67458700a5378239df6b96948cb9160/tools/leaderelection/leaderelection.go#L21-L24">certain situations</a>.</li>
+</ul>
+<p>By default the SDK enables the leader-for-life implementation. However you should consult the docs above for both approaches to consider the tradeoffs that make sense for your use case.</p>
+<p>The following examples illustrate how to use the two options:</p>
+<h4 id="leader-for-life">Leader for life</h4>
+<p>A call to <code>leader.Become()</code> will block the operator as it retries until it can become the leader by creating the configmap named <code>memcached-operator-lock</code>.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+  <span style="color:#ce5c00;font-weight:bold">...</span>
+  <span style="color:#4e9a06">&#34;github.com/operator-framework/operator-sdk/pkg/leader&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">main</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#ce5c00;font-weight:bold">...</span>
+  <span style="color:#000">err</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">leader</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Become</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#4e9a06">&#34;memcached-operator-lock&#34;</span><span style="color:#000;font-weight:bold">)</span>
+  <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Error</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">err</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;Failed to retry for leader lock&#34;</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Exit</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+  <span style="color:#000;font-weight:bold">}</span>
+  <span style="color:#ce5c00;font-weight:bold">...</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>If the operator is not running inside a cluster <code>leader.Become()</code> will simply return without error to skip the leader election since it can&rsquo;t detect the operator&rsquo;s namespace.</p>
+<h4 id="leader-with-lease">Leader with lease</h4>
+<p>The leader-with-lease approach can be enabled via the <a href="https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg/manager#Options">Manager Options</a> for leader election.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+  <span style="color:#ce5c00;font-weight:bold">...</span>
+  <span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/manager&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">main</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#ce5c00;font-weight:bold">...</span>
+  <span style="color:#000">opts</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">manager</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Options</span><span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#ce5c00;font-weight:bold">...</span>
+    <span style="color:#000">LeaderElection</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">true</span><span style="color:#000;font-weight:bold">,</span>
+    <span style="color:#000">LeaderElectionID</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;memcached-operator-lock&#34;</span>
+  <span style="color:#000;font-weight:bold">}</span>
+  <span style="color:#000">mgr</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">manager</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">New</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">cfg</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">opts</span><span style="color:#000;font-weight:bold">)</span>
+  <span style="color:#ce5c00;font-weight:bold">...</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>When the operator is not running in a cluster, the Manager will return an error on starting since it can&rsquo;t detect the operator&rsquo;s namespace in order to create the configmap for leader election. You can override this namespace by setting the Manager&rsquo;s <code>LeaderElectionNamespace</code> option.</p>
+
+	
+	
+	<div class="text-muted mt-5 pt-3 border-top">Last modified January 1, 0001
+</div>
+</div>
+
+
+          </main>
+        </div>
+      </div>
+      <div class="row flex-xl-nowrap">
+        
+<footer class="of-footer-main">
+  <div class="of-footer-main__meta">
+    <img src="/build/images/logo.svg" alt="">
+    <p class="of-footer-main__meta__text">The Operator Framework is an open source toolkit to manage Kubernetes nativeapplications, called Operators, in an effective, automated, and scalable way.</p>
+    <ul class="of-link-list of-link-list--secondary">
+      <li class="of-link-list__li"><a class="of-link-list__a" href="#">Operator SDK</a></li>
+      <li class="of-link-list__li"><a class="of-link-list__a" href="#">Operator Lifecycle Manager</a></li>
+      <li class="of-link-list__li"><a class="of-link-list__a" class="of-link of-link--external" href="#">OperatorHub</a></li>
+    </ul>
+  </div>
+  <div class="of-footer-main__social">
+    <h4 class="of-heading of-heading--sm">Connect with us!</h4>
+      
+        
+        
+    <ul class="of-link-list">
+      
+        <li class="of-link-list__li">
+          <a class="of-link-list__a" href="https://groups.google.com/forum/#!forum/operator-framework" aria-label="Forum">
+            <i class="fas fa-comment"></i>
+          </a>
+        </li>
+      
+        <li class="of-link-list__li">
+          <a class="of-link-list__a" href="https://github.com/operator-framework/operator-sdk" aria-label="github">
+            <i class="fab fa-github"></i>
+          </a>
+        </li>
+      
+</ul>
+
+      
+    
+
+  </div>
+  <div class="of-footer-main__copyright">
+    <p>Copyright &copy; 2020</p>
+    <ul class="of-link-list">
+      <li class="of-link-list__li"><a href="https://www.redhat.com/en/about/privacy-policy">Privacy Statement</a></li>
+      
+    </ul>
+  </div>
+</footer>
+</body>
+</html>
+
+      </div>
+    </div>
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+<script src="/js/main.min.29b0315468c00226fa6f4556a9cebc0ac4fe1ce1457a01b22c0a06b329877383.js" integrity="sha256-KbAxVGjAAib6b0VWqc68CsT&#43;HOFFegGyLAoGsymHc4M=" crossorigin="anonymous"></script>
+
+
+
+  </body>
+</html>

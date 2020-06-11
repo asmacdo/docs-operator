@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>/docs/golang/references/client/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/ansible/installation/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/golang/installation/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/helm/installation/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/install-operator-sdk/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/migration/v0.1.0-migration-guide/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/kubebuilder/quickstart/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/migration/version-upgrade-guide/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/golang/monitoring/prometheus/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/ansible/quickstart/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/golang/quickstart/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/helm/quickstart/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/golang/references/event-filtering/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/golang/monitoring/service-monitor/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/golang/references/logging/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/golang/references/project_layout/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/ansible/testing-guide/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/golang/unit-testing/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/golang/e2e-tests/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/ansible/development-tips/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/helm/reference/advanced_features/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/ansible/reference/advanced_options/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/ansible/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/ansible/reference/apb-migration-guide/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/golang/olm-integration/csv-annotations/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/ansible/reference/dependent-watches/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/ansible/reference/finalizers/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/golang/olm-integration/generating-a-csv/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/golang/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/helm/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/ansible/reference/information-flow-ansible-operator/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/ansible/reference/retroactively-owned-resources/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/golang/olm-integration/olm-cli/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/ansible/reference/scaffolding/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/helm/reference/scaffolding/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/scorecard/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/ansible/reference/watches/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/helm/reference/watches/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/golang/olm-integration/bundle-cli/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/contribution-guidelines/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/contribution-guidelines/developer-guide/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/contribution-guidelines/release/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/contribution-guidelines/reporting-issues/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/contribution-guidelines/testing/running-the-tests/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/contribution-guidelines/testing/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/contribution-guidelines/testing/travis-build/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/migrating-existing-apis/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/migration/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/operator-scope/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/versioning/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/faq/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/golang/monitoring/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/golang/olm-integration/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/ansible/reference/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/helm/reference/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/golang/references/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/ansible/dev/webhooks/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/kubebuilder/advanced-topics/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/kubebuilder/migration/project_migration_guide/</loc>
+  </url>
+  
+  <url>
+    <loc>/operator-capabilities/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/build/</loc>
+  </url>
+  
+  <url>
+    <loc>/community/</loc>
+  </url>
+  
+  <url>
+    <loc>/faq/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/contribution-guidelines/local-changes/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/contribution-guidelines/local-docs/</loc>
+  </url>
+  
+  <url>
+    <loc>/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_add/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_add_api/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_add_controller/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_add_crd/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_build/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_bundle/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_bundle_create/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_bundle_validate/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_cleanup/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_completion/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_completion_bash/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_completion_zsh/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_generate/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_generate_crds/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_generate_csv/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_generate_k8s/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_migrate/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_new/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_olm/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_olm_install/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_olm_status/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_olm_uninstall/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_print-deps/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_run/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_scorecard/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_test/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_test_local/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/cli/operator-sdk_version/</loc>
+  </url>
+  
+</urlset>

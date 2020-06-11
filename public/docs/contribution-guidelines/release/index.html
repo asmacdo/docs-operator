@@ -1,0 +1,1202 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="generator" content="Hugo 0.69.2" />
+
+<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+
+<link rel="shortcut icon" href="/favicons/favicon.ico" >
+<link rel="apple-touch-icon" href="/favicons/apple-touch-icon-180x180.png" sizes="180x180">
+<link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">
+<link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicons/android-36x36.png" sizes="36x36">
+<link rel="icon" type="image/png" href="/favicons/android-48x48.png" sizes="48x48">
+<link rel="icon" type="image/png" href="/favicons/android-72x72.png" sizes="72x72">
+<link rel="icon" type="image/png" href="/favicons/android-96x96.png" sizes="96x96">
+<link rel="icon" type="image/png" href="/favicons/android-144x144.png" sizes="144x144">
+<link rel="icon" type="image/png" href="/favicons/android-192x192.png" sizes="192x192">
+
+<title>Release Guide | Operator SDK</title><meta property="og:title" content="Release Guide" />
+<meta property="og:description" content="Making an Operator SDK release involves:
+ Updating CHANGELOG.md and migration guide. Tagging and signing a git commit and pushing the tag to GitHub. Building a release binary and signing the binary Creating a release by uploading binary, signature, and CHANGELOG.md updates for the release to GitHub. Creating a patch version branch of the form v1.2.x for major and minor releases.  Releases can only be performed by maintainers.
+Dependency and platform support Go version Release binaries will be built with the Go compiler version specified in the Operator SDK&rsquo;s prerequisites section." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/docs/contribution-guidelines/release/" />
+
+<meta itemprop="name" content="Release Guide">
+<meta itemprop="description" content="Making an Operator SDK release involves:
+ Updating CHANGELOG.md and migration guide. Tagging and signing a git commit and pushing the tag to GitHub. Building a release binary and signing the binary Creating a release by uploading binary, signature, and CHANGELOG.md updates for the release to GitHub. Creating a patch version branch of the form v1.2.x for major and minor releases.  Releases can only be performed by maintainers.
+Dependency and platform support Go version Release binaries will be built with the Go compiler version specified in the Operator SDK&rsquo;s prerequisites section.">
+
+<meta itemprop="wordCount" content="2244">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Release Guide"/>
+<meta name="twitter:description" content="Making an Operator SDK release involves:
+ Updating CHANGELOG.md and migration guide. Tagging and signing a git commit and pushing the tag to GitHub. Building a release binary and signing the binary Creating a release by uploading binary, signature, and CHANGELOG.md updates for the release to GitHub. Creating a patch version branch of the form v1.2.x for major and minor releases.  Releases can only be performed by maintainers.
+Dependency and platform support Go version Release binaries will be built with the Go compiler version specified in the Operator SDK&rsquo;s prerequisites section."/>
+
+
+
+
+
+<link rel="preload" href="/scss/main.min.2156b902b150b9e3872e1d22ac593d6651f390478d18ef3c04a45ca6b90d637b.css" as="style">
+<link href="/scss/main.min.2156b902b150b9e3872e1d22ac593d6651f390478d18ef3c04a45ca6b90d637b.css" rel="stylesheet" integrity="">
+
+
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+
+
+  </head>
+  <body class="td-page">
+    <header>
+      <header class="of-header-main">
+    <a href="/" class="of-brand">
+      <picture class="of-brand__picture">
+        <source srcset="/build/images/logo.svg" media="(min-width: 992px)">
+        <img src="/build/images/logo-sm.svg" alt="">  
+      </picture> 
+        </a>
+    <nav class="of-nav-main nav-collapse">
+      <ul class="of-nav-main__items menu-items">
+        <li class="of-nav-main__item"><a class="of-link-list__a " href="/">Home</a></li>
+        
+    
+    <li class="of-nav-main__item"><a class="of-link-list__a" href="/build/" title="Build">Build</a></li>
+    
+    <li class="of-nav-main__item"><a class="of-link-list__a" href="/docs/" title="Documentation">Documentation</a></li>
+    
+    </ul>
+    </nav>
+   
+    <div class="of-header-main__search">
+		
+
+    </div>
+  </header>
+    </header>
+    <div class="container-fluid td-outer">
+      <div class="td-main">
+        <div class="row flex-xl-nowrap">
+          <div class="col-12 col-md-3 col-xl-2 td-sidebar d-print-none">
+            
+
+
+
+
+<div id="td-sidebar-menu" class="td-sidebar__inner">
+  
+  <nav class="collapse td-sidebar-nav pt-2 pl-4" id="td-section-nav">
+    
+    
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/" class="align-left pl-0 pr-2 td-sidebar-link td-sidebar-link__section">Documentation</a>
+  </li>
+  <ul>
+    <li class="collapse show" id="docs">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsinstall-operator-sdk" href="/docs/install-operator-sdk/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuilderquickstart" href="/docs/kubebuilder/quickstart/">Quickstart</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/ansible/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Ansible Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsansible">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibleinstallation" href="/docs/ansible/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblequickstart" href="/docs/ansible/quickstart/">Quickstart</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibletesting-guide" href="/docs/ansible/testing-guide/">Testing with Molecule</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibledevelopment-tips" href="/docs/ansible/development-tips/">Development Tips</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/ansible/reference/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsansiblereference">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceadvanced_options" href="/docs/ansible/reference/advanced_options/">Advanced Options</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceapb-migration-guide" href="/docs/ansible/reference/apb-migration-guide/">APB Migration</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencedependent-watches" href="/docs/ansible/reference/dependent-watches/">Dependent Watches</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencefinalizers" href="/docs/ansible/reference/finalizers/">Finalizers</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceinformation-flow-ansible-operator" href="/docs/ansible/reference/information-flow-ansible-operator/">Information Flow</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceretroactively-owned-resources" href="/docs/ansible/reference/retroactively-owned-resources/">Retroactively Owned Resources</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencescaffolding" href="/docs/ansible/reference/scaffolding/">Scaffolding</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencewatches" href="/docs/ansible/reference/watches/">Watches</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibledevwebhooks" href="/docs/ansible/dev/webhooks/"></a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Golang Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolang">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolanginstallation" href="/docs/golang/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangquickstart" href="/docs/golang/quickstart/">Quickstart</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangunit-testing" href="/docs/golang/unit-testing/">Unit Testing</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolange2e-tests" href="/docs/golang/e2e-tests/">Writing E2E Tests</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/monitoring/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Monitoring</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangmonitoring">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangmonitoringprometheus" href="/docs/golang/monitoring/prometheus/">With Prometheus</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangmonitoringservice-monitor" href="/docs/golang/monitoring/service-monitor/">Using Prometheus Operator ServiceMonitor CRD</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/olm-integration/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Integrating with OLM</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangolm-integration">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationcsv-annotations" href="/docs/golang/olm-integration/csv-annotations/">CSV Code Annotations</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationgenerating-a-csv" href="/docs/golang/olm-integration/generating-a-csv/">Generating ClusterServiceVersion&#39;s</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationolm-cli" href="/docs/golang/olm-integration/olm-cli/">Running with OLM</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationbundle-cli" href="/docs/golang/olm-integration/bundle-cli/">Working with Bundles</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/references/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangreferences">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesclient" href="/docs/golang/references/client/">Controller Runtime Client API</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesevent-filtering" href="/docs/golang/references/event-filtering/">Using Predicates for Event Filtering</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferenceslogging" href="/docs/golang/references/logging/">Logging</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesproject_layout" href="/docs/golang/references/project_layout/">Project Layout</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/helm/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Helm Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docshelm">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelminstallation" href="/docs/helm/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmquickstart" href="/docs/helm/quickstart/">Quickstart</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/helm/reference/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docshelmreference">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferenceadvanced_features" href="/docs/helm/reference/advanced_features/">Advanced Features</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferencescaffolding" href="/docs/helm/reference/scaffolding/">Scaffolding</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferencewatches" href="/docs/helm/reference/watches/">Watches</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/scorecard/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Scorecard</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsscorecard">
+      
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/cli/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">CLI Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscli">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk" href="/docs/cli/operator-sdk/">operator-sdk</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add" href="/docs/cli/operator-sdk_add/">operator-sdk add</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_api" href="/docs/cli/operator-sdk_add_api/">operator-sdk add api</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_controller" href="/docs/cli/operator-sdk_add_controller/">operator-sdk add controller</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_crd" href="/docs/cli/operator-sdk_add_crd/">operator-sdk add crd</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_build" href="/docs/cli/operator-sdk_build/">operator-sdk build</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle" href="/docs/cli/operator-sdk_bundle/">operator-sdk bundle</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle_create" href="/docs/cli/operator-sdk_bundle_create/">operator-sdk bundle create</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle_validate" href="/docs/cli/operator-sdk_bundle_validate/">operator-sdk bundle validate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_cleanup" href="/docs/cli/operator-sdk_cleanup/">operator-sdk cleanup</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion" href="/docs/cli/operator-sdk_completion/">operator-sdk completion</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion_bash" href="/docs/cli/operator-sdk_completion_bash/">operator-sdk completion bash</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion_zsh" href="/docs/cli/operator-sdk_completion_zsh/">operator-sdk completion zsh</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate" href="/docs/cli/operator-sdk_generate/">operator-sdk generate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_crds" href="/docs/cli/operator-sdk_generate_crds/">operator-sdk generate crds</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_csv" href="/docs/cli/operator-sdk_generate_csv/">operator-sdk generate csv</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_k8s" href="/docs/cli/operator-sdk_generate_k8s/">operator-sdk generate k8s</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_migrate" href="/docs/cli/operator-sdk_migrate/">operator-sdk migrate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_new" href="/docs/cli/operator-sdk_new/">operator-sdk new</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm" href="/docs/cli/operator-sdk_olm/">operator-sdk olm</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_install" href="/docs/cli/operator-sdk_olm_install/">operator-sdk olm install</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_status" href="/docs/cli/operator-sdk_olm_status/">operator-sdk olm status</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_uninstall" href="/docs/cli/operator-sdk_olm_uninstall/">operator-sdk olm uninstall</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_print-deps" href="/docs/cli/operator-sdk_print-deps/">operator-sdk print-deps</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_run" href="/docs/cli/operator-sdk_run/">operator-sdk run</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_scorecard" href="/docs/cli/operator-sdk_scorecard/">operator-sdk scorecard</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_test" href="/docs/cli/operator-sdk_test/">operator-sdk test</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_test_local" href="/docs/cli/operator-sdk_test_local/">operator-sdk test local</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_version" href="/docs/cli/operator-sdk_version/">operator-sdk version</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/contribution-guidelines/" class="align-left pl-0 pr-2 active td-sidebar-link td-sidebar-link__section">Contribution Guidelines</a>
+  </li>
+  <ul>
+    <li class="collapse show" id="docscontribution-guidelines">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesdeveloper-guide" href="/docs/contribution-guidelines/developer-guide/">Development Environment</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page  active" id="m-docscontribution-guidelinesrelease" href="/docs/contribution-guidelines/release/">Release Guide</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesreporting-issues" href="/docs/contribution-guidelines/reporting-issues/">Reporting Issues</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/contribution-guidelines/testing/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Testing</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscontribution-guidelinestesting">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinestestingrunning-the-tests" href="/docs/contribution-guidelines/testing/running-the-tests/">Running Tests</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinestestingtravis-build" href="/docs/contribution-guidelines/testing/travis-build/">Travis CI</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelineslocal-changes" href="/docs/contribution-guidelines/local-changes/">Local Changes</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelineslocal-docs" href="/docs/contribution-guidelines/local-docs/">Local Docs</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrating-existing-apis" href="/docs/migrating-existing-apis/">Migrating Existing K8S APIs</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/migration/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Migration Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsmigration">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrationv010-migration-guide" href="/docs/migration/v0.1.0-migration-guide/">Migration</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrationversion-upgrade-guide" href="/docs/migration/version-upgrade-guide/">Version Upgrade</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsoperator-scope" href="/docs/operator-scope/">Operator Scope</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsversioning" href="/docs/versioning/">Versioning</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsfaq" href="/docs/faq/">FAQ</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuilderadvanced-topics" href="/docs/kubebuilder/advanced-topics/"></a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuildermigrationproject_migration_guide" href="/docs/kubebuilder/migration/project_migration_guide/"></a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+  </nav>
+</div>
+
+
+
+
+          </div>
+
+          <main class="col-12 col-md-9 col-xl-8 pl-md-5" role="main">
+            
+  
+
+            
+            
+<div class="td-content">
+	<h1>Release Guide</h1>
+	
+	<p>Making an Operator SDK release involves:</p>
+<ul>
+<li>Updating <code>CHANGELOG.md</code> and migration guide.</li>
+<li>Tagging and signing a git commit and pushing the tag to GitHub.</li>
+<li>Building a release binary and signing the binary</li>
+<li>Creating a release by uploading binary, signature, and <code>CHANGELOG.md</code> updates for the release to GitHub.</li>
+<li>Creating a patch version branch of the form <code>v1.2.x</code> for major and minor releases.</li>
+</ul>
+<p>Releases can only be performed by <a href="https://github.com/operator-framework/operator-sdk/blob/master/MAINTAINERS">maintainers</a>.</p>
+<h2 id="dependency-and-platform-support">Dependency and platform support</h2>
+<h3 id="go-version">Go version</h3>
+<p>Release binaries will be built with the Go compiler version specified in the Operator SDK&rsquo;s <a href="../../install-operator-sdk#prerequisites">prerequisites section</a>.</p>
+<h3 id="kubernetes-versions">Kubernetes versions</h3>
+<p>As the Operator SDK interacts directly with the Kubernetes API, certain API features are assumed to exist in the target cluster. The currently supported Kubernetes version will always be listed in the SDK <a href="../../install-operator-sdk#prerequisites">prerequisites section</a>.</p>
+<h3 id="operating-systems-and-architectures">Operating systems and architectures</h3>
+<p>Release binaries will be built for the <code>x86_64</code> architecture for MacOS Darwin platform and for the following GNU Linux architectures: <code>x86_64</code>, <code>ppc64le</code>, <code>s390x</code>.</p>
+<p>Base images for ansible-operator, helm-operator, and scorecard-proxy will be built for the following GNU Linux architectures: <code>x86_64</code>, <code>ppc64le</code>, <code>s390x</code>.</p>
+<p>Support for the Windows platform is not on the roadmap at this time.</p>
+<h2 id="binaries-and-signatures">Binaries and signatures</h2>
+<p>Binaries will be signed using a maintainers&rsquo; verified GitHub PGP key. Both binary and signature will be uploaded to the release. Ensure you import maintainer keys to verify release binaries.</p>
+<h2 id="release-tags">Release tags</h2>
+<p>Every release will have a corresponding git semantic version tag beginning with <code>v</code>, ex. <code>v1.2.3</code>.</p>
+<p>Make sure you&rsquo;ve <a href="https://github.com/settings/keys">uploaded your GPG key</a> and configured git to <a href="https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work">use that signing key</a> either globally or for the Operator SDK repository. Tagging will be handled by <code>release.sh</code>.</p>
+<p><strong>Note:</strong> the email the key is issued for must be the email you use for git.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git config <span style="color:#ce5c00;font-weight:bold">[</span>--global<span style="color:#ce5c00;font-weight:bold">]</span> user.signingkey <span style="color:#4e9a06">&#34;</span><span style="color:#000">$GPG_KEY_ID</span><span style="color:#4e9a06">&#34;</span>
+$ git config <span style="color:#ce5c00;font-weight:bold">[</span>--global<span style="color:#ce5c00;font-weight:bold">]</span> user.email <span style="color:#4e9a06">&#34;</span><span style="color:#000">$GPG_EMAIL</span><span style="color:#4e9a06">&#34;</span>
+</code></pre></div><p>Also, make sure that you setup the git gpg config as follows.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ cat ~/.gnupg/gpg.conf
+default-key <span style="color:#000">$GPG_KEY_ID</span>
+</code></pre></div><p><strong>NOTE</strong> If you do a release from an OSX machine, you need to configure <code>gnu-gpg</code> to sign the release&rsquo;s tag:</p>
+<ul>
+<li>Install the requirements by running: <code>brew install gpg2 gnupg pinentry-mac</code></li>
+<li>Append the following to your ~/.bash_profile or ~/.bashrc or ~/.zshrc</li>
+</ul>
+<pre><code>export GPG_TTY=`tty`
+</code></pre><ul>
+<li>Restart your Terminal or source your ~/.*rc file</li>
+<li>Then, make sure git uses gpg2 and not gpg</li>
+</ul>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git config --global gpg.program gpg2 
+</code></pre></div><ul>
+<li>To make sure gpg2 itself is working</li>
+</ul>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ <span style="color:#204a87">echo</span> <span style="color:#4e9a06">&#34;test&#34;</span> <span style="color:#000;font-weight:bold">|</span> gpg2 --clearsign
+</code></pre></div><h2 id="github-release-information">GitHub release information</h2>
+<h3 id="locking-down-branches">Locking down branches</h3>
+<p>Once a release PR has been made and all tests pass, the SDK&rsquo;s <code>master</code> branch should be locked so commits cannot happen between the release PR and release tag push. To lock down <code>master</code>:</p>
+<ol>
+<li>Go to <code>Settings -&gt; Branches</code> in the SDK repo.</li>
+<li>Under <code>Branch protection rules</code>, click <code>Edit</code> on the <code>master</code> rule.</li>
+<li>In section <code>Protect matching branches</code> of the <code>Rule settings</code> box, increase the number of required approving reviewers to its maximum allowed value.</li>
+</ol>
+<p>Now only administrators (maintainers) should be able to force merge PRs. Make sure everyone in the relevant Slack channel is aware of the release so they do not force merge by accident.</p>
+<p>Unlock <code>master</code> after the release has completed (after step 3 is complete) by changing the number of required approving reviewers back to 1.</p>
+<h3 id="releasing">Releasing</h3>
+<p>The GitHub <a href="https://github.com/operator-framework/operator-sdk/releases"><code>Releases</code> tab</a> in the operator-sdk repo is where all SDK releases live. To create a GitHub release:</p>
+<ol>
+<li>Go to the SDK <a href="https://github.com/operator-framework/operator-sdk/releases"><code>Releases</code> tab</a> and click the <code>Draft a new release</code> button in the top right corner.</li>
+<li>Select the tag version <code>v1.3.0</code>, and set the title to <code>v1.3.0</code>.</li>
+<li>Copy and paste any <code>CHANGELOG.md</code> under the <code>v1.3.0</code> header that have any notes into the description form (see <a href="#release-notes">below</a>).</li>
+<li>Attach all binaries and <code>.asc</code> signature files to the release by dragging and dropping them.</li>
+<li>Click the <code>Publish release</code> button.</li>
+</ol>
+<p><strong>Note:</strong> if this is a pre-release, make sure to check the <code>This is a pre-release</code> box under the file attachment frame. If you are not sure what this means, ask another maintainer.</p>
+<h4 id="release-notes">Release notes</h4>
+<p>GitHub release notes should thoroughly describe changes made to code, documentation, and design of the SDK. PR links should be included wherever possible.</p>
+<p>The following sections, often directly copied from our <a href="https://github.com/operator-framework/operator-sdk/blob/master/CHANGELOG.md">changelog</a>, are used as release notes:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Markdown" data-lang="Markdown">[Version as title, ex. v1.2.3]
+
+<span style="color:#800080;font-weight:bold">### Added
+</span><span style="color:#800080;font-weight:bold"></span><span style="color:#204a87;font-weight:bold">-</span> [Short description of feature added] (#PR)
+...
+
+<span style="color:#800080;font-weight:bold">### Changed
+</span><span style="color:#800080;font-weight:bold"></span><span style="color:#204a87;font-weight:bold">-</span> [Short description of change made] (#PR)
+...
+
+<span style="color:#800080;font-weight:bold">### Deprecated
+</span><span style="color:#800080;font-weight:bold"></span><span style="color:#204a87;font-weight:bold">-</span> [Short description of feature deprecated] (#PR)
+...
+
+<span style="color:#800080;font-weight:bold">### Removed
+</span><span style="color:#800080;font-weight:bold"></span><span style="color:#204a87;font-weight:bold">-</span> [Short description of feature removed] (#PR)
+...
+
+<span style="color:#800080;font-weight:bold">### Bug Fixes
+</span><span style="color:#800080;font-weight:bold"></span><span style="color:#204a87;font-weight:bold">-</span> [Short description of bug and fix] (#PR)
+...
+</code></pre></div><h2 id="release-signing">Release Signing</h2>
+<p>When a new release is created, the tag for the commit it signed with a maintainers&rsquo; gpg key and
+the binaries for the release are also signed by the same key. All keys used by maintainers will
+be available via public PGP keyservers such as pool.sks-keyservers.net.</p>
+<p>For new maintainers who have not done a release and do not have their PGP key on a public
+keyserver, output your armored public key using this command:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ gpg --armor --export <span style="color:#4e9a06">&#34;</span><span style="color:#000">$GPG_EMAIL</span><span style="color:#4e9a06">&#34;</span> &gt; mykey.asc
+</code></pre></div><p>Then, copy and paste the content of the outputted file into the <code>Submit a key</code> section on
+pool.sks-keyservers.net or any other public keyserver that synchronizes
+the key to other public keyservers. Once that is done, other people can download your public
+key and you are ready to sign releases.</p>
+<h2 id="verifying-a-release">Verifying a release</h2>
+<p>To verify a git tag, use this command:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ git verify-tag --verbose <span style="color:#4e9a06">&#34;</span><span style="color:#000">$TAG_NAME</span><span style="color:#4e9a06">&#34;</span>
+</code></pre></div><p>If you do not have the mantainers public key on your machine, you will get an error message similiar to this:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">git verify-tag --verbose <span style="color:#4e9a06">&#34;</span><span style="color:#000">$TAG_NAME</span><span style="color:#4e9a06">&#34;</span>
+object 61e0c23e9d2e217f8d95ac104a8f2545c102b5c3
+<span style="color:#204a87">type</span> commit
+tag v0.6.0
+tagger Ish Shah &lt;ishah@redhat.com&gt; <span style="color:#0000cf;font-weight:bold">1552688145</span> -0700
+
+Operator SDK v0.6.0
+gpg: Signature made Fri Mar <span style="color:#0000cf;font-weight:bold">15</span> 23:15:45 <span style="color:#0000cf;font-weight:bold">2019</span> CET
+gpg:                using RSA key &lt;KEY_ID&gt;
+gpg: Can<span style="color:#a40000">&#39;</span>t check signature: No public key
+</code></pre></div><p>To download the key, use the following command, replacing <code>$KEY_ID</code> with the RSA key string provided in the output of the previous command:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ gpg --recv-key <span style="color:#4e9a06">&#34;</span><span style="color:#000">$KEY_ID</span><span style="color:#4e9a06">&#34;</span>
+</code></pre></div><p>To verify a release binary using the provided asc files see the <a href="../../install-operator-sdk">installation guide.</a></p>
+<h2 id="release-steps">Release steps</h2>
+<p>These steps describe how to conduct a release of the SDK, upgrading from <code>v1.2.0</code> to <code>v1.3.0</code>. Replace these versions with the current and new version you are releasing, respectively.</p>
+<p><strong>Note:</strong> <code>master</code> should be frozen between steps 1 and 3 so that all commits will be either in the new release or have a pre-release version, ex. <code>v1.2.0+git</code>. Otherwise commits might be built into a release that shouldn&rsquo;t or have an incorrect version, which makes debugging user issues difficult.</p>
+<h3 id="patch-release-only-cherry-picking-to-a-release-branch">(Patch release only) Cherry-picking to a release branch</h3>
+<p>As more than one patch may be created per minor release, branch names of the form <code>v1.3.x</code> are created after a minor version is released. Bug fixes will be merged into the release branch only after testing.</p>
+<p>Add fixes to the release branch by doing the following:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git checkout v1.3.x
+$ git checkout -b release-v1.3.1
+$ git cherry-pick <span style="color:#4e9a06">&#34;</span><span style="color:#000">$GIT_COMMIT_HASH</span><span style="color:#4e9a06">&#34;</span> <span style="color:#8f5902;font-style:italic"># Usually from master</span>
+$ git push origin release-v1.3.1
+</code></pre></div><p>Create a PR from <code>release-v1.3.1</code> to <code>v1.3.x</code>. Once CI passes and your PR is merged, continue to step 1.</p>
+<h3 id="1-create-a-pr-for-release-version-changelogmd-and-migration-guide-updates">1. Create a PR for release version, CHANGELOG.md, and migration guide updates</h3>
+<p>Once all PR&rsquo;s needed for a release have been merged, branch from <code>master</code>:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ git checkout master
+$ git pull
+</code></pre></div><p>If making a patch release, check out the corresponding minor version branch:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ git checkout v1.2.x
+$ git pull
+</code></pre></div><p>Create a new branch to push release commits:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ git checkout -b release-v1.3.0
+</code></pre></div><p>Run the CHANGELOG and migration guide generator:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ <span style="color:#000">GEN_CHANGELOG_TAG</span><span style="color:#ce5c00;font-weight:bold">=</span>v1.3.0 make gen-changelog
+</code></pre></div><p>Commit the following changes:</p>
+<ul>
+<li><code>version/version.go</code>: update <code>Version</code> to <code>v1.3.0</code>.</li>
+<li><code>internal/scaffold/go_mod.go</code>, change the <code>require</code> line version for <code>github.com/operator-framework/operator-sdk</code> from <code>master</code> to <code>v1.3.0</code>.</li>
+<li><code>internal/scaffold/helm/go_mod.go</code>: same as for <code>internal/scaffold/go_mod.go</code>.</li>
+<li><code>internal/scaffold/ansible/go_mod.go</code>: same as for <code>internal/scaffold/go_mod.go</code>.</li>
+<li><code>doc/user/install-operator-sdk.md</code>: update the linux and macOS URLs to point to the new release URLs.</li>
+<li><code>CHANGELOG.md</code>: commit changes (updated by changelog generation).</li>
+<li><code>website/content/en/docs/migration/v1.3.0.md</code>: commit changes (created by changelog generation).</li>
+<li><code>changelog/fragments/*</code>: commit deleted fragment files (deleted by changelog generation).</li>
+</ul>
+<p><em>(Non-patch releases only)</em> Lock down the master branch to prevent further commits between this and step 4. See <a href="#locking-down-branches">this section</a> for steps to do so.</p>
+<p>Create and merge a new PR for <code>release-v1.3.0</code>.</p>
+<h3 id="2-create-a-release-tag-binaries-and-signatures">2. Create a release tag, binaries, and signatures</h3>
+<p>The top-level <code>release.sh</code> script will take care of verifying versions in files described in step 1, and tagging and verifying the tag, as well as building binaries and generating signatures by calling <code>make release</code>.</p>
+<p>Call the script with the only argument being the new SDK version:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ ./release.sh v1.3.0
+</code></pre></div><p><strong>NOTE</strong> The <code>./release.sh</code> script requires <code>GNU sed</code> and the <code>GNU make</code> instead of the default installed sed. Install them with: <code>brew install gnu-sed</code> and <code>brew install make</code>, then ensure they are present in your <code>$PATH</code>.</p>
+<p>Release binaries and signatures will be in <code>build/</code>. Both binary and signature file names contain version, architecture, and platform information; signature file names correspond to the binary they were generated from suffixed with <code>.asc</code>. For example, signature file <code>operator-sdk-v1.3.0-x86_64-apple-darwin.asc</code> was generated from a binary named <code>operator-sdk-v1.3.0-x86_64-apple-darwin</code>. To verify binaries and tags, see the <a href="#verifying-a-release">verification section</a>.</p>
+<p><strong>Note:</strong> you must have both <a href="https://help.github.com/en/articles/telling-git-about-your-signing-key"><code>git</code></a> and <a href="https://lists.gnupg.org/pipermail/gnupg-users/2001-September/010163.html"><code>gpg</code></a> default PGP keys set locally for <code>release.sh</code> to run without error. Additionally you must add your PGP key to a <a href="#release-signing">public-key-server</a>.</p>
+<p>Push tag <code>v1.3.0</code> upstream:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ git push --tags
+</code></pre></div><p>Once this tag passes CI, go to step 3. For more info on tagging, see the <a href="#release-tags">release tags section</a>.</p>
+<p><strong>Note:</strong> If CI fails for some reason, you will have to revert the tagged commit, re-commit, and make a new PR.</p>
+<h3 id="3-create-a-pr-for-post-release-version-updates">3. Create a PR for post-release version updates</h3>
+<p>Check out a new branch from master (or use your <code>release-v1.3.0</code> branch) and commit the following changes:</p>
+<ul>
+<li><code>version/version.go</code>: update <code>Version</code> to <code>v1.3.0+git</code>.</li>
+<li><code>internal/scaffold/go_mod.go</code>, change the <code>require</code> line version for <code>github.com/operator-framework/operator-sdk</code> from <code>v1.3.0</code> to <code>master</code>.</li>
+<li><code>internal/scaffold/helm/go_mod.go</code>: same as for <code>internal/scaffold/go_mod.go</code>.</li>
+<li><code>internal/scaffold/ansible/go_mod.go</code>: same as for <code>internal/scaffold/go_mod.go</code>.</li>
+</ul>
+<p>Create a new PR for this branch, targetting the <code>master</code> branch. Once this PR passes CI and is merged, <code>master</code> can be unfrozen.</p>
+<p>If the release is for a patch version (e.g. <code>v1.3.1</code>), an identical PR should be created, targetting the  <code>v1.3.x</code> branch. Once this PR passes CI and is merged, <code>v1.3.x</code> can be unfrozen.</p>
+<h3 id="4-releasing-binaries-signatures-and-release-notes">4. Releasing binaries, signatures, and release notes</h3>
+<p><em>(Non-patch releases only)</em> Unlock the master branch. See <a href="#locking-down-branches">this section</a> for steps to do so.</p>
+<p>The final step is to upload binaries, their signature files, and release notes from <code>CHANGELOG.md</code> for <code>v1.3.0</code>. See <a href="#releasing">this section</a> for steps to do so.</p>
+<h3 id="5-making-a-new-release-branch">5. Making a new release branch</h3>
+<p>If you have created a new major or minor release, you need to make a new branch for it. To do this, checkout the tag that you created and make a new branch that matches the version you released with <code>x</code> in the position of the patch number. For example, to make a new release branch after <code>v1.3.0</code> and push it to the repo, you would follow these steps:</p>
+<pre><code class="language-console" data-lang="console">$ git checkout tags/v1.3.0
+Note: checking out 'tags/v1.3.0'.
+...
+$ git checkout -b v1.3.x
+Switched to a new branch 'v1.3.x'
+$ git push origin v1.3.x
+Total 0 (delta 0), reused 0 (delta 0)
+remote:
+remote: Create a pull request for 'v1.3.x' on GitHub by visiting:
+remote:      https://github.com/operator-framework/operator-sdk/pull/new/v1.3.x
+remote:
+To github.com:operator-framework/operator-sdk.git
+ * [new branch]      v1.3.x -&gt; v1.3.x
+</code></pre><p>Now that the branch exists, you need to make the post-release PR for the new release branch. To do this, simply follow the same steps as in <a href="#3-create-a-pr-for-post-release-version-and-changelogmd-updates">step 3</a> with the addition of changing the branch name in the <code>go.mod</code> scaffold from <code>master</code> to the new branch (for example, <code>v1.3.x</code>). Then, make the PR against the new branch.</p>
+<h3 id="6-updating-the-homebrew-formula">6. Updating the Homebrew formula</h3>
+<p>We support installing via <a href="https://brew.sh/">Homebrew</a>, so we need to update the operator-sdk <a href="https://github.com/Homebrew/homebrew-core/blob/master/Formula/operator-sdk.rb">Homebrew formula</a> once the release is cut. Follow the instructions below, or for more detailed ones on the Homebrew contribution <a href="https://github.com/Homebrew/homebrew-core/blob/master/CONTRIBUTING.md#to-submit-a-version-upgrade-for-the-foo-formula">README</a>, to open a PR against the <a href="https://github.com/Homebrew/homebrew-core">repository</a>.</p>
+<pre><code>docker run -t -d linuxbrew/brew:latest
+docker exec -it &lt;CONTAINER_ID&gt; /bin/bash`
+# Run the following commands in the container.
+git config --global github.name &lt;GITHUB-USERNAME&gt;
+git config --global github.token &lt;GITHUB-TOKEN&gt;
+# Replace the release version of the newly cut release.
+OPERATORSDKURL=https://github.com/operator-framework/operator-sdk/archive/&lt;RELEASE-VERSION&gt;.tar.gz
+curl $OPERATORSDKURL -o operator-sdk
+# Calculate the SHA256
+OPERATORSUM=&quot;$(sha256sum operator-sdk | cut -d ' ' -f 1)&quot;
+brew bump-formula-pr --strict --url=$OPERATORSDKURL --sha256=$OPERATORSUM operator-sdk
+</code></pre><p>Note: If there were any changes made to the CLI commands, make sure to look at the existing tests, in case they need updating.</p>
+<p>You&rsquo;ve now fully released a new version of the Operator SDK. Good work! Make sure to follow the post-release steps below.</p>
+<h3 id="post-release-updating-the-operator-sdk-samples-repo">(Post-release) Updating the operator-sdk-samples repo</h3>
+<p>Many releases change SDK API&rsquo;s and conventions, which are not reflected in the <a href="https://github.com/operator-framework/operator-sdk-samples">operator-sdk-samples repo</a>. The samples repo should be updated and versioned after each SDK major/minor release with the same tag, ex. <code>v1.3.0</code>, so users can refer to the correct operator code for that release.</p>
+<p>The release process for the samples repo is simple:</p>
+<ol>
+<li>Make changes to all relevant operators (at least those referenced by SDK docs) based on API changes for the new SDK release.</li>
+<li>Ensure the operators build and run as expected (see each operator&rsquo;s docs).</li>
+<li>Once all API changes are in <code>master</code>, create a release tag locally:
+<pre><code class="language-console" data-lang="console">$ git checkout master &amp;&amp; git pull
+$ VER=&quot;v1.3.0&quot;
+$ git tag --sign --message &quot;Operator SDK Samples $VER&quot; &quot;$VER&quot;
+$ git push --tags
+</code></pre></li>
+</ol>
+<h3 id="post-release-updating-the-release-notes">(Post-release) Updating the release notes</h3>
+<p>Add the following line to the top of the GitHub release notes for <code>v1.3.0</code>:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-md" data-lang="md">**NOTE:** ensure the <span style="color:#4e9a06">`v1.3.0`</span> tag is referenced when referring to sample code in the [<span style="color:#204a87;font-weight:bold">SDK Operator samples repo</span>](<span style="color:#c4a000">https://github.com/operator-framework/operator-sdk-samples/tree/v1.3.0</span>) for this release. Links in SDK documentation are currently set to the samples repo <span style="color:#4e9a06">`master`</span> branch.
+</code></pre></div>
+	
+	
+	<div class="text-muted mt-5 pt-3 border-top">Last modified January 1, 0001
+</div>
+</div>
+
+
+          </main>
+        </div>
+      </div>
+      <div class="row flex-xl-nowrap">
+        
+<footer class="of-footer-main">
+  <div class="of-footer-main__meta">
+    <img src="/build/images/logo.svg" alt="">
+    <p class="of-footer-main__meta__text">The Operator Framework is an open source toolkit to manage Kubernetes nativeapplications, called Operators, in an effective, automated, and scalable way.</p>
+    <ul class="of-link-list of-link-list--secondary">
+      <li class="of-link-list__li"><a class="of-link-list__a" href="#">Operator SDK</a></li>
+      <li class="of-link-list__li"><a class="of-link-list__a" href="#">Operator Lifecycle Manager</a></li>
+      <li class="of-link-list__li"><a class="of-link-list__a" class="of-link of-link--external" href="#">OperatorHub</a></li>
+    </ul>
+  </div>
+  <div class="of-footer-main__social">
+    <h4 class="of-heading of-heading--sm">Connect with us!</h4>
+      
+        
+        
+    <ul class="of-link-list">
+      
+        <li class="of-link-list__li">
+          <a class="of-link-list__a" href="https://groups.google.com/forum/#!forum/operator-framework" aria-label="Forum">
+            <i class="fas fa-comment"></i>
+          </a>
+        </li>
+      
+        <li class="of-link-list__li">
+          <a class="of-link-list__a" href="https://github.com/operator-framework/operator-sdk" aria-label="github">
+            <i class="fab fa-github"></i>
+          </a>
+        </li>
+      
+</ul>
+
+      
+    
+
+  </div>
+  <div class="of-footer-main__copyright">
+    <p>Copyright &copy; 2020</p>
+    <ul class="of-link-list">
+      <li class="of-link-list__li"><a href="https://www.redhat.com/en/about/privacy-policy">Privacy Statement</a></li>
+      
+    </ul>
+  </div>
+</footer>
+</body>
+</html>
+
+      </div>
+    </div>
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+<script src="/js/main.min.29b0315468c00226fa6f4556a9cebc0ac4fe1ce1457a01b22c0a06b329877383.js" integrity="sha256-KbAxVGjAAib6b0VWqc68CsT&#43;HOFFegGyLAoGsymHc4M=" crossorigin="anonymous"></script>
+
+
+
+  </body>
+</html>

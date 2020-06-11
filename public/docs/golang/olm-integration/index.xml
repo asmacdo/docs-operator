@@ -1,0 +1,816 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Operator SDK – Integrating with Operator Lifecycle Manager</title>
+    <link>/docs/golang/olm-integration/</link>
+    <description>Recent content in Integrating with Operator Lifecycle Manager on Operator SDK</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	  <atom:link href="/docs/golang/olm-integration/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>Docs: Code Annotations for Cluster Service Versions</title>
+      <link>/docs/golang/olm-integration/csv-annotations/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/golang/olm-integration/csv-annotations/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
+&lt;p&gt;This document describes the semantics of Cluster Service Version (CSV) &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/doc/proposals/sdk-code-annotations.md&#34;&gt;code annotations&lt;/a&gt; and lists all possible annotations.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; CSV annotations can only be used in Go Operator projects. Annotations for Ansible and Helm Operator projects will be added in the future.&lt;/p&gt;
+&lt;h2 id=&#34;usage&#34;&gt;Usage&lt;/h2&gt;
+&lt;p&gt;All annotations have a &lt;code&gt;+operator-sdk:gen-csv&lt;/code&gt; prefix, denoting that they&amp;rsquo;re parsed while executing &lt;a href=&#34;../../../cli/operator-sdk_generate_csv&#34;&gt;&lt;code&gt;operator-sdk generate csv&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;h3 id=&#34;paths&#34;&gt;Paths&lt;/h3&gt;
+&lt;p&gt;Paths are dot-separated string hierarchies with the above prefix that map to CSV &lt;a href=&#34;https://github.com/operator-framework/operator-lifecycle-manager/blob/e0eea22/doc/design/building-your-csv.md&#34;&gt;&lt;code&gt;spec&lt;/code&gt;&lt;/a&gt; field names.&lt;/p&gt;
+&lt;p&gt;Example: &lt;code&gt;+operator-sdk:gen-csv:customresourcedefinitions.specDescriptors.displayName=&amp;quot;Pod Count&amp;quot;&lt;/code&gt;&lt;/p&gt;
+&lt;h4 id=&#34;customresourcedefinitions&#34;&gt;customresourcedefinitions&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;customresourcedefinitions&lt;/code&gt;: child path token
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;displayName&lt;/code&gt;: quoted string or string literal&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;resources&lt;/code&gt;: quoted string or string literal, in the format &lt;code&gt;&amp;quot;kind,version,\&amp;quot;name\&amp;quot;&amp;quot;&lt;/code&gt; or &lt;code&gt;`kind,version,&amp;quot;name&amp;quot;`&lt;/code&gt;, where &lt;code&gt;kind&lt;/code&gt;, &lt;code&gt;version&lt;/code&gt;, and &lt;code&gt;name&lt;/code&gt; are fields in each CSV &lt;code&gt;resources&lt;/code&gt; entry&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;specDescriptors&lt;/code&gt;, &lt;code&gt;statusDescriptors&lt;/code&gt;: bool, or child path token
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;displayName&lt;/code&gt;: quoted string or string literal&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;x-descriptors&lt;/code&gt;: quoted string or string literal comma-separated list of &lt;a href=&#34;https://github.com/openshift/console/blob/feabd61/frontend/packages/operator-lifecycle-manager/src/components/descriptors/types.ts#L3-L39&#34;&gt;&lt;code&gt;x-descriptor&lt;/code&gt;&lt;/a&gt; UI hints.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;NOTES&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;specDescriptors&lt;/code&gt; and &lt;code&gt;statusDescriptors&lt;/code&gt; with a value of &lt;code&gt;true&lt;/code&gt; is required for each field to be included in their respective &lt;code&gt;customresourcedefinitions&lt;/code&gt; CSV fields. See the examples below.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;customresourcedefinitions&lt;/code&gt; top-level &lt;code&gt;kind&lt;/code&gt;, &lt;code&gt;name&lt;/code&gt;, and &lt;code&gt;version&lt;/code&gt; fields are parsed from API code.&lt;/li&gt;
+&lt;li&gt;All &lt;code&gt;description&lt;/code&gt; fields are parsed from type declaration and &lt;code&gt;struct&lt;/code&gt; type field comments.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;path&lt;/code&gt; is parsed out of a field&amp;rsquo;s JSON tag and merged with parent field path&amp;rsquo;s in dot-hierarchy notation.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;examples&#34;&gt;Examples&lt;/h3&gt;
+&lt;p&gt;These examples assume &lt;code&gt;Memcached&lt;/code&gt;, &lt;code&gt;MemcachedSpec&lt;/code&gt;, and &lt;code&gt;MemcachedStatus&lt;/code&gt; are the example projects&amp;rsquo; kind, spec, and status.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Set a display name for a &lt;code&gt;customresourcedefinitions&lt;/code&gt; kind entry:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// +operator-sdk:gen-csv:customresourcedefinitions.displayName=&amp;#34;Memcached App&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;Memcached&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;{&lt;/span&gt;
+	&lt;span style=&#34;color:#000&#34;&gt;metav1&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;TypeMeta&lt;/span&gt;   &lt;span style=&#34;color:#4e9a06&#34;&gt;`json:&amp;#34;,inline&amp;#34;`&lt;/span&gt;
+	&lt;span style=&#34;color:#000&#34;&gt;metav1&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;ObjectMeta&lt;/span&gt; &lt;span style=&#34;color:#4e9a06&#34;&gt;`json:&amp;#34;metadata,omitempty&amp;#34;`&lt;/span&gt;
+
+	&lt;span style=&#34;color:#000&#34;&gt;Spec&lt;/span&gt;   &lt;span style=&#34;color:#000&#34;&gt;MemcachedSpec&lt;/span&gt;   &lt;span style=&#34;color:#4e9a06&#34;&gt;`json:&amp;#34;spec,omitempty&amp;#34;`&lt;/span&gt;
+	&lt;span style=&#34;color:#000&#34;&gt;Status&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;MemcachedStatus&lt;/span&gt; &lt;span style=&#34;color:#4e9a06&#34;&gt;`json:&amp;#34;status,omitempty&amp;#34;`&lt;/span&gt;
+&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;Set &lt;code&gt;displayName&lt;/code&gt;, &lt;code&gt;path&lt;/code&gt;, &lt;code&gt;x-descriptors&lt;/code&gt;, and &lt;code&gt;description&lt;/code&gt; on a field for a &lt;code&gt;customresourcedefinitions.specDescriptors&lt;/code&gt; entry:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;MemcachedSpec&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;{&lt;/span&gt;
+	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// Size is the size of the memcached deployment. &amp;lt;-- This will become Size&amp;#39;s specDescriptors.description.
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// +operator-sdk:gen-csv:customresourcedefinitions.specDescriptors=true
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// +operator-sdk:gen-csv:customresourcedefinitions.specDescriptors.displayName=&amp;#34;Pod Count&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// +operator-sdk:gen-csv:customresourcedefinitions.specDescriptors.x-descriptors=&amp;#34;urn:alm:descriptor:com.tectonic.ui:podCount,urn:alm:descriptor:io.kubernetes:custom&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#000&#34;&gt;Size&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;int32&lt;/span&gt; &lt;span style=&#34;color:#4e9a06&#34;&gt;`json:&amp;#34;size&amp;#34;`&lt;/span&gt; &lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// &amp;lt;-- Size&amp;#39;s specDescriptors.path is inferred from this JSON tag.
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;Let the SDK infer all un-annotated paths on a field for a &lt;code&gt;customresourcedefinitions.specDescriptors&lt;/code&gt; entry:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;MemcachedSpec&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;{&lt;/span&gt;
+	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// Size is the size of the memcached deployment.
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// +operator-sdk:gen-csv:customresourcedefinitions.specDescriptors=true
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#000&#34;&gt;Size&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;int32&lt;/span&gt; &lt;span style=&#34;color:#4e9a06&#34;&gt;`json:&amp;#34;size&amp;#34;`&lt;/span&gt;
+&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;The SDK uses the &lt;code&gt;Size&lt;/code&gt; fields&amp;rsquo; &lt;code&gt;json&lt;/code&gt; tag name as &lt;code&gt;path&lt;/code&gt;, &lt;code&gt;Size&lt;/code&gt; as &lt;code&gt;displayName&lt;/code&gt;, and field comments as &lt;code&gt;description&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The SDK also checks &lt;code&gt;path&lt;/code&gt; elements against a list of well-known path to x-descriptor string mappings and either uses a match as &lt;code&gt;x-descriptors&lt;/code&gt;, or does not set &lt;code&gt;x-descriptors&lt;/code&gt;. Supported mappings:&lt;/p&gt;
+&lt;h4 id=&#34;spec-x-descriptors&#34;&gt;Spec x-descriptors&lt;/h4&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;PATH&lt;/th&gt;
+&lt;th&gt;X-DESCRIPTOR&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;size&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:podCount&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;podCount&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:podCount&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;endpoints&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:endpointList&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;endpointList&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:endpointList&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;label&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:label&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;resources&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:resourceRequirements&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;resourceRequirements&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:resourceRequirements&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;selector&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:selector:&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;namespaceSelector&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:namespaceSelector&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;none&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:io.kubernetes:&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;booleanSwitch&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:booleanSwitch&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;password&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:password&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;checkbox&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:checkbox&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;imagePullPolicy&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:imagePullPolicy&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;updateStrategy&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:updateStrategy&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;text&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:text&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;number&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:number&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;nodeAffinity&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:nodeAffinity&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;podAffinity&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:podAffinity&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;podAntiAffinity&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:podAntiAffinity&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;none&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:fieldGroup:&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;none&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:arrayFieldGroup:&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;none&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:select:&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;advanced&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:advanced&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h4 id=&#34;status-x-descriptors&#34;&gt;Status x-descriptors&lt;/h4&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;PATH&lt;/th&gt;
+&lt;th&gt;X-DESCRIPTOR&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;podStatuses&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:podStatuses&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;size&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:podCount&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;podCount&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:com.tectonic.ui:podCount&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;link&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:org.w3:link&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;w3link&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:org.w3:link&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;conditions&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:io.kubernetes.conditions&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;text&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:text&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;prometheusEndpoint&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:prometheusEndpoint&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;phase&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:io.kubernetes.phase&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;k8sPhase&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:io.kubernetes.phase&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;reason&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:io.kubernetes.phase:reason&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;k8sReason&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:io.kubernetes.phase:reason&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;none&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;urn:alm:descriptor:io.kubernetes:&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;NOTE:&lt;/strong&gt; any x-descriptor that ends in &lt;code&gt;:&lt;/code&gt; will not be inferred by &lt;code&gt;path&lt;/code&gt; element, ex. &lt;code&gt;urn:alm:descriptor:io.kubernetes:&lt;/code&gt;. Use the &lt;code&gt;x-descriptors&lt;/code&gt; annotation if you want to enable one for your type.&lt;/p&gt;
+&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;A comprehensive example:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;Infer &lt;code&gt;path&lt;/code&gt;, &lt;code&gt;description&lt;/code&gt;, &lt;code&gt;displayName&lt;/code&gt;, and &lt;code&gt;x-descriptors&lt;/code&gt; for &lt;code&gt;specDescriptors&lt;/code&gt; and &lt;code&gt;statusDescriptors&lt;/code&gt; entries.&lt;/li&gt;
+&lt;li&gt;Create three &lt;code&gt;resources&lt;/code&gt; entries each with &lt;code&gt;kind&lt;/code&gt;, &lt;code&gt;version&lt;/code&gt;, and &lt;code&gt;name&lt;/code&gt; values.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// Represents a cluster of Memcached apps
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// +operator-sdk:gen-csv:customresourcedefinitions.displayName=&amp;#34;Memcached App&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// +operator-sdk:gen-csv:customresourcedefinitions.resources=&amp;#34;Deployment,v1,\&amp;#34;memcached-operator\&amp;#34;&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// +operator-sdk:gen-csv:customresourcedefinitions.resources=`Service,v1,&amp;#34;memcached-operator&amp;#34;`
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;Memcached&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;{&lt;/span&gt;
+	&lt;span style=&#34;color:#000&#34;&gt;metav1&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;TypeMeta&lt;/span&gt;   &lt;span style=&#34;color:#4e9a06&#34;&gt;`json:&amp;#34;,inline&amp;#34;`&lt;/span&gt;
+	&lt;span style=&#34;color:#000&#34;&gt;metav1&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;ObjectMeta&lt;/span&gt; &lt;span style=&#34;color:#4e9a06&#34;&gt;`json:&amp;#34;metadata,omitempty&amp;#34;`&lt;/span&gt;
+
+	&lt;span style=&#34;color:#000&#34;&gt;Spec&lt;/span&gt;   &lt;span style=&#34;color:#000&#34;&gt;MemcachedSpec&lt;/span&gt;   &lt;span style=&#34;color:#4e9a06&#34;&gt;`json:&amp;#34;spec,omitempty&amp;#34;`&lt;/span&gt;
+	&lt;span style=&#34;color:#000&#34;&gt;Status&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;MemcachedStatus&lt;/span&gt; &lt;span style=&#34;color:#4e9a06&#34;&gt;`json:&amp;#34;status,omitempty&amp;#34;`&lt;/span&gt;
+&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;}&lt;/span&gt;
+
+&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;MemcachedSpec&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;{&lt;/span&gt;
+	&lt;span style=&#34;color:#000&#34;&gt;Pods&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;MemcachedPods&lt;/span&gt; &lt;span style=&#34;color:#4e9a06&#34;&gt;`json:&amp;#34;pods&amp;#34;`&lt;/span&gt;
+&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;}&lt;/span&gt;
+
+&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;MemcachedStatus&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;{&lt;/span&gt;
+	&lt;span style=&#34;color:#000&#34;&gt;Pods&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;MemcachedPods&lt;/span&gt; &lt;span style=&#34;color:#4e9a06&#34;&gt;`json:&amp;#34;podStatuses&amp;#34;`&lt;/span&gt;
+&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;}&lt;/span&gt;
+
+&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;MemcachedPods&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;{&lt;/span&gt;
+	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// Size is the size of the memcached deployment.
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// +operator-sdk:gen-csv:customresourcedefinitions.specDescriptors=true
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// +operator-sdk:gen-csv:customresourcedefinitions.statusDescriptors=true
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#000&#34;&gt;Size&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;int32&lt;/span&gt; &lt;span style=&#34;color:#4e9a06&#34;&gt;`json:&amp;#34;size&amp;#34;`&lt;/span&gt;
+&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;The generated &lt;code&gt;customresourcedefinitions&lt;/code&gt; will look like:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;customresourcedefinitions&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;  &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;owned&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;  &lt;/span&gt;- &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;description&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;Represents&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;a&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;cluster&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;of&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;Memcached&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;apps&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;    &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;displayName&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;Memcached&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;App&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;    &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;kind&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;Memcached&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;    &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;name&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;memcacheds.cache.example.com&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;    &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;version&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;v1alpha1&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;    &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;resources&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;    &lt;/span&gt;- &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;kind&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;Deployment&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;      &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;name&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;A&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;Kubernetes&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;Deployment&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;      &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;version&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;v1&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;    &lt;/span&gt;- &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;kind&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;ReplicaSet&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;      &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;name&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;A&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;Kubernetes&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;ReplicaSet&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;      &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;version&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;v1beta2&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;    &lt;/span&gt;- &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;kind&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;Pod&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;      &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;name&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;A&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;Kubernetes&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;Pod&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;      &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;version&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;v1&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;    &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;specDescriptors&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;    &lt;/span&gt;- &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;description&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;The&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;desired&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;number&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;of&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;member&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;Pods&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;for&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;the&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;deployment.&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;      &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;displayName&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;Size&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;      &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;path&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;pods.size&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;      &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;x-descriptors&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;      &lt;/span&gt;- &lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#39;urn:alm:descriptor:com.tectonic.ui:podCount&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;    &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;statusDescriptors&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;    &lt;/span&gt;- &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;description&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;The&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;desired&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;number&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;of&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;member&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;Pods&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;for&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;the&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;deployment.&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;      &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;displayName&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;Size&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;      &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;path&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;podStatuses.size&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;      &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;x-descriptors&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;      &lt;/span&gt;- &lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#39;urn:alm:descriptor:com.tectonic.ui:podStatuses&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;      &lt;/span&gt;- &lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#39;urn:alm:descriptor:com.tectonic.ui:podCount&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Generating a ClusterServiceVersion</title>
+      <link>/docs/golang/olm-integration/generating-a-csv/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/golang/olm-integration/generating-a-csv/</guid>
+      <description>
+        
+        
+        &lt;p&gt;This document describes how to manage the following lifecycle for your Operator using the SDK&amp;rsquo;s &lt;a href=&#34;../../../cli/operator-sdk_generate_csv&#34;&gt;&lt;code&gt;operator-sdk generate csv&lt;/code&gt;&lt;/a&gt; command:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Generate your first release&lt;/strong&gt; - encapsulate the metadata needed to install your Operator with the &lt;a href=&#34;https://github.com/operator-framework/operator-lifecycle-manager&#34;&gt;Operator Lifecycle Manager&lt;/a&gt; and configure the permissions it needs from the generated SDK files.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Update your Operator&lt;/strong&gt; - apply any updates to Operator manifests made during development.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Upgrade your Operator&lt;/strong&gt; - carry over any customizations you have made and ensure a rolling update to the next version of your Operator.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; &lt;code&gt;operator-sdk generate csv&lt;/code&gt; only officially supports Go Operators. Ansible and Helm Operators will be fully supported in the future. However, &lt;code&gt;generate csv&lt;/code&gt; &lt;em&gt;may&lt;/em&gt; work with Ansible and Helm Operators if their project structure aligns with that described below.&lt;/p&gt;
+&lt;h2 id=&#34;configuration&#34;&gt;Configuration&lt;/h2&gt;
+&lt;h3 id=&#34;inputs&#34;&gt;Inputs&lt;/h3&gt;
+&lt;p&gt;The &lt;a href=&#34;https://github.com/operator-framework/operator-lifecycle-manager/blob/4197455/Documentation/design/building-your-csv.md&#34;&gt;ClusterServiceVersion (CSV)&lt;/a&gt; generator requires certain input
+manifests to construct a CSV manifest. Each of these inputs are read every time
+&lt;code&gt;operator-sdk generate csv&lt;/code&gt; is run are used to overwrite data in corresponding
+CSV fields (with one exception described &lt;a href=&#34;#csv-fields&#34;&gt;below&lt;/a&gt;).&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Path to the Operator manifests root directory. By default &lt;code&gt;generate csv&lt;/code&gt; extracts manifests from files in &lt;code&gt;deploy/&lt;/code&gt; for the following kinds and adds them to the CSV. Use the &lt;code&gt;--deploy-dir&lt;/code&gt; flag to change this path.
+&lt;ul&gt;
+&lt;li&gt;Roles: &lt;code&gt;deploy/role.yaml&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;ClusterRoles: &lt;code&gt;deploy/cluster_role.yaml&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Deployments: &lt;code&gt;deploy/operator.yaml&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Path to the API types root directory. The CSV generator also parses the &lt;a href=&#34;./csv-annotations.md&#34;&gt;CSV annotations&lt;/a&gt; from the API type definitions to populate certain CSV fields. By default the API types directory is &lt;code&gt;pkg/apis/&lt;/code&gt;. Use the &lt;code&gt;--apis-dir&lt;/code&gt; flag to change this path. The CSV generator expects either of the following layouyts for the API types directory.
+&lt;ul&gt;
+&lt;li&gt;Mulitple groups: &lt;code&gt;&amp;lt;API-root-dir&amp;gt;/&amp;lt;group&amp;gt;/&amp;lt;version&amp;gt;/&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Single groups: &lt;code&gt;&amp;lt;API-root-dir&amp;gt;/&amp;lt;version&amp;gt;/&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Path to a directory containing CustomResourceDefinition&amp;rsquo;s (CRD&amp;rsquo;s) and Custom Resource examples (CR&amp;rsquo;s).
+Use the &lt;code&gt;--crd-dir&lt;/code&gt; flag to change this path.
+&lt;ul&gt;
+&lt;li&gt;Custom Resources: &lt;code&gt;deploy/crds/&amp;lt;full group&amp;gt;_&amp;lt;version&amp;gt;_&amp;lt;kind&amp;gt;_cr.yaml&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;CustomResourceDefinitions: &lt;code&gt;deploy/crds/&amp;lt;full group&amp;gt;_&amp;lt;resource&amp;gt;_crd.yaml&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;output&#34;&gt;Output&lt;/h3&gt;
+&lt;p&gt;By default &lt;code&gt;generate csv&lt;/code&gt; will create a &lt;a href=&#34;https://github.com/operator-framework/operator-registry/blob/6893d19/README.md#manifest-format&#34;&gt;&lt;em&gt;bundle&lt;/em&gt;&lt;/a&gt; directory
+&lt;code&gt;deploy/olm-catalog/&amp;lt;operator-name&amp;gt;/manifests&lt;/code&gt; containing your CSV and CRDs.
+To change where the CSV bundle directory is generated use the &lt;code&gt;--ouput-dir&lt;/code&gt; flag.&lt;/p&gt;
+&lt;h2 id=&#34;creating-a-new-csv&#34;&gt;Creating a new CSV&lt;/h2&gt;
+&lt;p&gt;CSV&amp;rsquo;s are versioned by their &lt;code&gt;metadata.name&lt;/code&gt; and &lt;code&gt;spec.version&lt;/code&gt; fields and stored
+in bundle directories. To create a CSV for version &lt;code&gt;0.0.1&lt;/code&gt;, run:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-console&#34; data-lang=&#34;console&#34;&gt;$ operator-sdk generate csv --csv-version 0.0.1
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;A CSV should now exist at &lt;code&gt;deploy/olm-catalog/&amp;lt;operator-name&amp;gt;/manifests/&amp;lt;operator-name&amp;gt;.clusterserviceversion.yaml&lt;/code&gt;
+with &lt;code&gt;&amp;lt;operator-name&amp;gt;.v0.0.1&lt;/code&gt; and version &lt;code&gt;0.0.1&lt;/code&gt;. This command will also copy all &lt;code&gt;CustomResourceDefinition&lt;/code&gt;
+manifests from &lt;code&gt;deploy/crds&lt;/code&gt; or the value passed to &lt;code&gt;--crd-dir&lt;/code&gt; to that CSV&amp;rsquo;s directory.
+Note that a valid semantic version is required.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; &lt;code&gt;generate csv&lt;/code&gt; will populate many but not all fields in your CSV
+automatically. Subsequent calls to &lt;code&gt;generate csv&lt;/code&gt; will warn you of missing
+required fields. See the list of fields &lt;a href=&#34;#csv-fields&#34;&gt;below&lt;/a&gt; for more information.&lt;/p&gt;
+&lt;h4 id=&#34;deprecated-behavior&#34;&gt;Deprecated behavior&lt;/h4&gt;
+&lt;p&gt;&lt;em&gt;This behavior is deprecated. If you have versioned bundle directories, consider
+removing them and using default behavior&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Setting &lt;code&gt;--make-manifests=false&lt;/code&gt; will create a CSV in a versioned directory
+&lt;code&gt;deploy/olm-catalog/&amp;lt;operator-name&amp;gt;/0.0.1/&amp;lt;operator-name&amp;gt;.v0.0.1.clusterserviceversion.yaml&lt;/code&gt;,
+If a versioned bundle directory exists on disk, &lt;code&gt;generate csv&lt;/code&gt; allows you to
+upgrade your CSV from that version using the &lt;code&gt;--from-version&lt;/code&gt; flag. Example: if you
+have an existing CSV with version &lt;code&gt;0.0.1&lt;/code&gt; and want to write a new version &lt;code&gt;0.0.2&lt;/code&gt;, you can run:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-console&#34; data-lang=&#34;console&#34;&gt;$ operator-sdk generate csv --csv-version 0.0.2 --from-version 0.0.1
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This will write a new CSV manifest to &lt;code&gt;deploy/olm-catalog/&amp;lt;operator-name&amp;gt;/0.0.2/&amp;lt;operator-name&amp;gt;.v0.0.2.clusterserviceversion.yaml&lt;/code&gt;
+containing user-defined data from &lt;code&gt;0.0.1&lt;/code&gt; and any modifications you&amp;rsquo;ve made to
+the configured inputs.&lt;/p&gt;
+&lt;p&gt;Setting &lt;code&gt;--update-crds=false&lt;/code&gt; prevents the generator from updating bundled CRD manifests.&lt;/p&gt;
+&lt;h2 id=&#34;updating-your-csv&#34;&gt;Updating your CSV&lt;/h2&gt;
+&lt;p&gt;Let&amp;rsquo;s say you added a new CRD &lt;code&gt;deploy/crds/group.domain.com_resource_crd.yaml&lt;/code&gt;
+to your Operator project, and added a port to your Deployment manifest &lt;code&gt;operator.yaml&lt;/code&gt;.
+Assuming you&amp;rsquo;re using the same version as above, updating your CSV is as simple
+as running &lt;code&gt;operator-sdk generate csv&lt;/code&gt;. Doing so will append your new CRD to
+&lt;code&gt;spec.customresourcedefinitions.owned&lt;/code&gt;, replace the old data at &lt;code&gt;spec.install.spec.deployments&lt;/code&gt;
+with your updated Deployment, and update your existing CSV manifest.&lt;/p&gt;
+&lt;p&gt;The SDK will not overwrite &lt;a href=&#34;#csv-fields&#34;&gt;user-defined&lt;/a&gt; fields like &lt;code&gt;spec.maintainers&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;upgrading-your-csv&#34;&gt;Upgrading your CSV&lt;/h2&gt;
+&lt;p&gt;New versions of your CSV are created by running &lt;code&gt;operator-sdk generate csv --csv-version &amp;lt;new-version&amp;gt;&lt;/code&gt;.
+Doing will persist user-defined fields, updates &lt;code&gt;spec.version&lt;/code&gt;,
+and populates &lt;code&gt;spec.replaces&lt;/code&gt; with the old CSV versions&amp;rsquo; name.&lt;/p&gt;
+&lt;h2 id=&#34;csv-fields&#34;&gt;CSV fields&lt;/h2&gt;
+&lt;p&gt;Below are two lists of fields: the first is a list of all fields the SDK and OLM expect in a CSV, and the second are optional.&lt;/p&gt;
+&lt;p&gt;Several fields require user input (labeled &lt;em&gt;user&lt;/em&gt;) or a &lt;a href=&#34;./csv-annotations.md&#34;&gt;CSV annotation&lt;/a&gt; (labeled &lt;em&gt;annotation&lt;/em&gt;). This list may change as the SDK becomes better at generating CSV&amp;rsquo;s.&lt;/p&gt;
+&lt;p&gt;Required:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;metadata.name&lt;/code&gt;: a &lt;em&gt;unique&lt;/em&gt; name for this CSV. Operator version should be included in the name to ensure uniqueness, ex. &lt;code&gt;app-operator.v0.1.1&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;spec.description&lt;/code&gt; &lt;em&gt;(user)&lt;/em&gt; : a thorough description of the Operator&amp;rsquo;s functionality.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;spec.displayName&lt;/code&gt; &lt;em&gt;(user)&lt;/em&gt; : a name to display for the Operator in Operator Hub.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;spec.keywords&lt;/code&gt; &lt;em&gt;(user)&lt;/em&gt; : a list of keywords describing the Operator.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;spec.maintainers&lt;/code&gt; &lt;em&gt;(user)&lt;/em&gt; : a list of human or organizational entities maintaining the Operator, with a &lt;code&gt;name&lt;/code&gt; and &lt;code&gt;email&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;spec.provider&lt;/code&gt; &lt;em&gt;(user)&lt;/em&gt; : the Operator provider, with a &lt;code&gt;name&lt;/code&gt;; usually an organization.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;spec.labels&lt;/code&gt; &lt;em&gt;(user)&lt;/em&gt; : a list of &lt;code&gt;key:value&lt;/code&gt; pairs to be used by Operator internals.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;spec.version&lt;/code&gt;: semantic version of the Operator, ex. &lt;code&gt;0.1.1&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;spec.installModes&lt;/code&gt;: what mode of &lt;a href=&#34;https://github.com/operator-framework/operator-lifecycle-manager/blob/4197455/Documentation/design/building-your-csv.md#operator-metadata&#34;&gt;installation namespacing&lt;/a&gt; OLM should use. Currently all but &lt;code&gt;MultiNamespace&lt;/code&gt; are supported by SDK Operators.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;spec.customresourcedefinitions&lt;/code&gt;: any CRDs the Operator uses. Certain fields in elements of &lt;code&gt;owned&lt;/code&gt; will be filled by the SDK.
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;owned&lt;/code&gt;: all CRDs the Operator deploys itself from it&amp;rsquo;s bundle.
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;name&lt;/code&gt;: CRD&amp;rsquo;s &lt;code&gt;metadata.name&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;kind&lt;/code&gt;: CRD&amp;rsquo;s &lt;code&gt;metadata.spec.names.kind&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;version&lt;/code&gt;: CRD&amp;rsquo;s &lt;code&gt;metadata.spec.version&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;description&lt;/code&gt; &lt;em&gt;(annotation)&lt;/em&gt; : description of the CRD.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;displayName&lt;/code&gt; &lt;em&gt;(annotation)&lt;/em&gt; : display name of the CRD.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;resources&lt;/code&gt; &lt;em&gt;(annotation)&lt;/em&gt; : any Kubernetes resources used by the CRD, ex. &lt;code&gt;Pod&lt;/code&gt;&#39;s and &lt;code&gt;ConfigMap&lt;/code&gt;&#39;s.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;specDescriptors&lt;/code&gt; &lt;em&gt;(annotation)&lt;/em&gt; : UI hints for inputs and outputs of the Operator&amp;rsquo;s spec.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;statusDescriptors&lt;/code&gt; &lt;em&gt;(annotation)&lt;/em&gt; : UI hints for inputs and outputs of the Operator&amp;rsquo;s status.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;actionDescriptors&lt;/code&gt; &lt;em&gt;(user)&lt;/em&gt; : UI hints for an Operator&amp;rsquo;s in-cluster actions.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;required&lt;/code&gt; &lt;em&gt;(user)&lt;/em&gt; : all CRDs the Operator expects to be present in-cluster, if any. All &lt;code&gt;required&lt;/code&gt; element fields must be populated manually.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Optional:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;metadata.annotations.alm-examples&lt;/code&gt;: CR examples, in JSON string literal format, for your CRD&amp;rsquo;s. Ideally one per CRD.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;metadata.annotations.capabilities&lt;/code&gt;: level of Operator capability. See the &lt;a href=&#34;../../images/operator-capability-level.png&#34;&gt;Operator maturity model&lt;/a&gt; for a list of valid values.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;spec.replaces&lt;/code&gt;: the name of the CSV being replaced by this CSV.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;spec.links&lt;/code&gt; &lt;em&gt;(user)&lt;/em&gt; : a list of URL&amp;rsquo;s to websites, documentation, etc. pertaining to the Operator or application being managed, each with a &lt;code&gt;name&lt;/code&gt; and &lt;code&gt;url&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;spec.selector&lt;/code&gt; &lt;em&gt;(user)&lt;/em&gt; : selectors by which the Operator can pair resources in a cluster.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;spec.icon&lt;/code&gt; &lt;em&gt;(user)&lt;/em&gt; : a base64-encoded icon unique to the Operator, set in a &lt;code&gt;base64data&lt;/code&gt; field with a &lt;code&gt;mediatype&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;spec.maturity&lt;/code&gt;: the Operator&amp;rsquo;s maturity, ex. &lt;code&gt;alpha&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;further-reading&#34;&gt;Further Reading&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/operator-framework/operator-lifecycle-manager/blob/4197455/Documentation/design/building-your-csv.md&#34;&gt;Information&lt;/a&gt; on what goes in your CSV and CSV semantics.&lt;/li&gt;
+&lt;li&gt;The original &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/doc/design/milestone-0.2.0/csv-generation.md&#34;&gt;design doc&lt;/a&gt;, which contains a thorough description how CSV&amp;rsquo;s are generated by the SDK.&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Running your Operator with OLM</title>
+      <link>/docs/golang/olm-integration/olm-cli/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/golang/olm-integration/olm-cli/</guid>
+      <description>
+        
+        
+        &lt;p&gt;The &lt;a href=&#34;https://github.com/operator-framework/operator-lifecycle-manager/&#34;&gt;Operator Lifecycle Manager (OLM)&lt;/a&gt; is a set of cluster resources that
+manage the lifecycle of an Operator. The Operator SDK provides an entrypoint for
+deploying and deleting your Operator using an OLM-enabled Kubernetes cluster
+through &lt;code&gt;operator-sdk run --olm&lt;/code&gt;, added in &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/releases/tag/v0.15.0&#34;&gt;v0.15.0&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This document assumes you are familiar with OLM and related terminology, and have
+read the SDK-OLM integration &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/doc/proposals/sdk-integration-with-olm.md&#34;&gt;design proposal&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; before continuing, please read the &lt;a href=&#34;#caveats&#34;&gt;caveats&lt;/a&gt; section below.&lt;/p&gt;
+&lt;h2 id=&#34;setup&#34;&gt;Setup&lt;/h2&gt;
+&lt;p&gt;The SDK assumes OLM is already installed and running on your cluster. If not,
+you can install OLM by running &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/doc/cli/operator-sdk_olm_install.md&#34;&gt;&lt;code&gt;operator-sdk olm install&lt;/code&gt;&lt;/a&gt;.
+You can check the status of OLM by running &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/doc/cli/operator-sdk_olm_status.md&#34;&gt;&lt;code&gt;operator-sdk olm status&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The SDK also assumes you have a valid &lt;a href=&#34;https://github.com/operator-framework/operator-registry/tree/v1.5.3#manifest-format&#34;&gt;Operator bundle&lt;/a&gt; available
+on disk. If not, you can create one using &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/doc/cli/operator-sdk_generate_csv.md&#34;&gt;&lt;code&gt;operator-sdk generate csv --update-crds&lt;/code&gt;&lt;/a&gt;,
+which will create a &lt;a href=&#34;https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/building-your-csv.md&#34;&gt;&lt;code&gt;ClusterServiceVersion&lt;/code&gt; (CSV)&lt;/a&gt; in a versioned bundle
+directory and a &lt;a href=&#34;https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/how-to-update-operators.md&#34;&gt;package manifest&lt;/a&gt; defining your Operator package,
+and copy your &lt;code&gt;CustomResourceDefinition&lt;/code&gt;&#39;s to the new bundle directory.&lt;/p&gt;
+&lt;h2 id=&#34;operator-sdk-run---olm-command-overview&#34;&gt;&lt;code&gt;operator-sdk run --olm&lt;/code&gt; command overview&lt;/h2&gt;
+&lt;p&gt;Let&amp;rsquo;s look at the anatomy of the command:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-console&#34; data-lang=&#34;console&#34;&gt;$ operator-sdk run --help
+Run an Operator in a variety of environments
+
+Usage:
+  operator-sdk run [flags]
+
+Flags:
+      --kubeconfig string           The file path to kubernetes configuration file. Defaults to location specified by $KUBECONFIG, or to default file rules if not set
+      --olm                         The operator to be run will be managed by OLM in a cluster. Cannot be set with another run-type flag
+      --olm-namespace string        [olm only] The namespace where OLM is installed (default &amp;quot;olm&amp;quot;)
+      --operator-namespace string   [olm only] The namespace where operator resources are created in --olm mode. It must already exist in the cluster or be defined in a manifest passed to IncludePaths.
+      --manifests string            [olm only] Directory containing package manifest and operator bundles.
+      --operator-version string     [olm only] Version of operator to deploy
+      --install-mode string         [olm only] InstallMode to create OperatorGroup with. Format: InstallModeType=[ns1,ns2[, ...]]
+      --include strings             [olm only] Path to Kubernetes resource manifests, ex. Role, Subscription. These supplement or override defaults generated by run/cleanup
+      --timeout duration            [olm only] Time to wait for the command to complete before failing (default 2m0s)
+      ...
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;These flags correspond to options in the &lt;code&gt;OLMCmd&lt;/code&gt; configuration model (names are similar if not identical):&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;OLMCmd&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;{&lt;/span&gt;
+  &lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// KubeconfigPath is the local path to a kubeconfig. This uses well-defined
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;  &lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// default loading rules to load the config if empty.
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;  &lt;span style=&#34;color:#000&#34;&gt;KubeconfigPath&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;string&lt;/span&gt;
+  &lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// OLMNamespace is the namespace in which OLM is installed.
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;  &lt;span style=&#34;color:#000&#34;&gt;OLMNamespace&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;string&lt;/span&gt;
+  &lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// OperatorNamespace is the cluster namespace in which operator resources
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;  &lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// are created.
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;  &lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// OperatorNamespace must already exist in the cluster or be defined in
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;  &lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// a manifest passed to IncludePaths.
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;  &lt;span style=&#34;color:#000&#34;&gt;OperatorNamespace&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;string&lt;/span&gt;
+	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// ManifestsDir is a directory containing a package manifest and N bundles
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// of the operator&amp;#39;s CSV and CRD&amp;#39;s. OperatorVersion can be set to the
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// version of the desired operator version&amp;#39;s subdir and Run()/Cleanup() will
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// deploy the operator version in that subdir.
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#000&#34;&gt;ManifestsDir&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;string&lt;/span&gt;
+	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// OperatorVersion is the version of the operator to deploy. It must be
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// a semantic version, ex. 0.1.0.
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#000&#34;&gt;OperatorVersion&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;string&lt;/span&gt;
+	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// InstallMode specifies which supported installMode should be used to
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// create an OperatorGroup. The format for this field is as follows:
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;//
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// &amp;#34;InstallModeType=[ns1,ns2[, ...]]&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;//
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// The InstallModeType string passed must be marked as &amp;#34;supported&amp;#34; in the
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// CSV being installed. The namespaces passed must exist or be created by
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// passing a Namespace manifest to IncludePaths. An empty set of namespaces
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// can be used for AllNamespaces.
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// The default mode is OwnNamespace, which uses OperatorNamespace or the
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// kubeconfig default.
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#000&#34;&gt;InstallMode&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;string&lt;/span&gt;
+  &lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// IncludePaths are path to manifests of Kubernetes resources that either
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// supplement or override defaults generated by methods of OLMCmd. These
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// manifests can be but are not limited to: RBAC, Subscriptions,
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// CatalogSources, OperatorGroups.
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;//
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// Kinds that are overridden if supplied:
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// - CatalogSource
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// - Subscription
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// - OperatorGroup
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#000&#34;&gt;IncludePaths&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;[]&lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;string&lt;/span&gt;
+	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// Timeout dictates how long to wait for a REST call to complete. A call
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// exceeding Timeout will generate an error.
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#000&#34;&gt;Timeout&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;time&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;Duration&lt;/span&gt;
+&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Most of the above configuration options do not need explanation beyond their descriptions.
+The following options require more clarification:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;--operator-version&lt;/code&gt;, on top of being a semantic version string corresponding to a
+CSV version, should point to the directory containing your Operator bundle.
+This path is &lt;code&gt;deploy/olm-catalog/&amp;lt;operator-name&amp;gt;/&amp;lt;operator-version&amp;gt;&lt;/code&gt; in an SDK Operator project.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--include&lt;/code&gt; can be used if you have an existing set of manifests outside your
+bundle (ex. catalog manifests like a &lt;code&gt;Subscription&lt;/code&gt;, &lt;code&gt;CatalogSource&lt;/code&gt;, and/or &lt;code&gt;OperatorGroup&lt;/code&gt;)
+you wish to facilitate Operator deployment with.
+&lt;ul&gt;
+&lt;li&gt;Currently any manifests supplied to this command will be created with the same
+behavior of &lt;code&gt;kubectl create -f &amp;lt;manifest-path&amp;gt;&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;If a &lt;code&gt;Subscription&lt;/code&gt; or &lt;code&gt;CatalogSource&lt;/code&gt; are supplied, the other must be supplied
+since they are linked by field references.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--install-mode&lt;/code&gt; configures the &lt;code&gt;spec.targetNamespaces&lt;/code&gt; field of an &lt;code&gt;OperatorGroup&lt;/code&gt;,
+and supports the following modes (assuming your CSV does as well):
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;OwnNamespace&lt;/code&gt;: the Operator will watch its own namespace. This is the default.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;SingleNamespace&lt;/code&gt;: the Operator will watch a namespace, not necessarily its own.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;MultiNamespace&lt;/code&gt;: the Operator will watch multiple namespaces.
+Example: &lt;code&gt;--install-mode=MultiNamespace=my-ns-1,my-ns-2&lt;/code&gt; will watch resources in namespaces &lt;code&gt;my-ns-1&lt;/code&gt; and &lt;code&gt;my-ns-2&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;AllNamespaces&lt;/code&gt;: the Operator will watch all namespaces (cluster-scoped Operators).
+Example: &lt;code&gt;--install-mode=AllNamespaces=&amp;quot;&amp;quot;&lt;/code&gt; will watch resources in all namespaces given&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;examples&#34;&gt;Examples&lt;/h2&gt;
+&lt;h3 id=&#34;setup-1&#34;&gt;Setup&lt;/h3&gt;
+&lt;p&gt;Lets walk through creating a &lt;code&gt;memcached-operator&lt;/code&gt; and enabling OLM on your cluster.&lt;/p&gt;
+&lt;p&gt;Follow the user guides for &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/doc/user-guide.md&#34;&gt;Go&lt;/a&gt;, &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/doc/ansible/user-guide.md&#34;&gt;Ansible&lt;/a&gt;,
+or &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/doc/helm/user-guide.md&#34;&gt;Helm&lt;/a&gt;, depending on which Operator type you are interested in.&lt;/p&gt;
+&lt;p&gt;Now that we have a working, simple Operator, we can generate a new &lt;code&gt;v0.1.0&lt;/code&gt; bundle:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; &lt;code&gt;operator-sdk generate csv&lt;/code&gt; only officially supports Go Operators,
+although it will generate a barebones CSV for Ansible and Helm Operators that &lt;em&gt;will&lt;/em&gt; require manual modification.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-console&#34; data-lang=&#34;console&#34;&gt;$ operator-sdk generate csv --csv-version 0.1.0 --update-crds
+INFO[0000] Generating CSV manifest version 0.1.0
+INFO[0004] Required csv fields not filled in file deploy/olm-catalog/memcached-operator/0.1.0/memcached-operator.v0.1.0.clusterserviceversion.yaml:
+	spec.keywords
+	spec.provider
+INFO[0004] Created deploy/olm-catalog/memcached-operator/0.1.0/memcached-operator.v0.1.0.clusterserviceversion.yaml
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;A bundle directory containing a CSV and all CRDs in &lt;code&gt;deploy/crds&lt;/code&gt; and package manifest
+have been created at &lt;code&gt;deploy/olm-catalog/memcached-operator/0.1.0&lt;/code&gt; and
+&lt;code&gt;deploy/olm-catalog/memcached-operator/memcached-operator.package.yaml&lt;/code&gt;, respectively.&lt;/p&gt;
+&lt;p&gt;Ensure OLM is enabled on your cluster:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-console&#34; data-lang=&#34;console&#34;&gt;# If OLM is not already installed, go ahead and install the latest version.
+$ operator-sdk olm install
+INFO[0000] Fetching CRDs for version &amp;quot;latest&amp;quot;           
+INFO[0001] Fetching resources for version &amp;quot;latest&amp;quot;      
+INFO[0007] Creating CRDs and resources                  
+INFO[0007]   Creating CustomResourceDefinition &amp;quot;clusterserviceversions.operators.coreos.com&amp;quot;
+INFO[0007]   Creating CustomResourceDefinition &amp;quot;installplans.operators.coreos.com&amp;quot;
+INFO[0007]   Creating CustomResourceDefinition &amp;quot;subscriptions.operators.coreos.com&amp;quot;
+INFO[0007]   Creating CustomResourceDefinition &amp;quot;catalogsources.operators.coreos.com&amp;quot;
+INFO[0007]   Creating CustomResourceDefinition &amp;quot;operatorgroups.operators.coreos.com&amp;quot;
+INFO[0007]   Creating Namespace &amp;quot;olm&amp;quot;                   
+INFO[0007]   Creating Namespace &amp;quot;operators&amp;quot;             
+INFO[0007]   Creating ServiceAccount &amp;quot;olm/olm-operator-serviceaccount&amp;quot;
+INFO[0007]   Creating ClusterRole &amp;quot;system:controller:operator-lifecycle-manager&amp;quot;
+INFO[0007]   Creating ClusterRoleBinding &amp;quot;olm-operator-binding-olm&amp;quot;
+INFO[0007]   Creating Deployment &amp;quot;olm/olm-operator&amp;quot;     
+INFO[0007]   Creating Deployment &amp;quot;olm/catalog-operator&amp;quot;
+INFO[0007]   Creating ClusterRole &amp;quot;aggregate-olm-edit&amp;quot;  
+INFO[0007]   Creating ClusterRole &amp;quot;aggregate-olm-view&amp;quot;  
+INFO[0007]   Creating OperatorGroup &amp;quot;operators/global-operators&amp;quot;
+INFO[0011]   Creating OperatorGroup &amp;quot;olm/olm-operators&amp;quot;
+INFO[0011]   Creating ClusterServiceVersion &amp;quot;olm/packageserver&amp;quot;
+INFO[0011]   Creating CatalogSource &amp;quot;olm/operatorhubio-catalog&amp;quot;
+INFO[0011] Waiting for deployment/olm-operator rollout to complete
+INFO[0011]   Waiting for Deployment &amp;quot;olm/olm-operator&amp;quot; to rollout: 0 of 1 updated replicas are available
+INFO[0013]   Deployment &amp;quot;olm/olm-operator&amp;quot; successfully rolled out
+INFO[0013] Waiting for deployment/catalog-operator rollout to complete
+INFO[0013]   Waiting for Deployment &amp;quot;olm/catalog-operator&amp;quot; to rollout: 0 of 1 updated replicas are available
+INFO[0018]   Deployment &amp;quot;olm/catalog-operator&amp;quot; successfully rolled out
+INFO[0018] Waiting for deployment/packageserver rollout to complete
+INFO[0018]   Waiting for Deployment &amp;quot;olm/packageserver&amp;quot; to rollout: 1 out of 2 new replicas have been updated
+INFO[0023]   Waiting for Deployment &amp;quot;olm/packageserver&amp;quot; to rollout: 1 old replicas are pending termination
+INFO[0030]   Deployment &amp;quot;olm/packageserver&amp;quot; successfully rolled out
+INFO[0030] Successfully installed OLM version &amp;quot;latest&amp;quot;  
+
+NAME                                            NAMESPACE    KIND                        STATUS
+clusterserviceversions.operators.coreos.com                  CustomResourceDefinition    Installed
+installplans.operators.coreos.com                            CustomResourceDefinition    Installed
+subscriptions.operators.coreos.com                           CustomResourceDefinition    Installed
+catalogsources.operators.coreos.com                          CustomResourceDefinition    Installed
+operatorgroups.operators.coreos.com                          CustomResourceDefinition    Installed
+olm                                                          Namespace                   Installed
+operators                                                    Namespace                   Installed
+olm-operator-serviceaccount                     olm          ServiceAccount              Installed
+system:controller:operator-lifecycle-manager                 ClusterRole                 Installed
+olm-operator-binding-olm                                     ClusterRoleBinding          Installed
+olm-operator                                    olm          Deployment                  Installed
+catalog-operator                                olm          Deployment                  Installed
+aggregate-olm-edit                                           ClusterRole                 Installed
+aggregate-olm-view                                           ClusterRole                 Installed
+global-operators                                operators    OperatorGroup               Installed
+olm-operators                                   olm          OperatorGroup               Installed
+packageserver                                   olm          ClusterServiceVersion       Installed
+operatorhubio-catalog                           olm          CatalogSource               Installed
+
+# Check OLM&#39;s status.
+$ operator-sdk olm status
+INFO[0000] Fetching CRDs for version &amp;quot;0.14.1&amp;quot;           
+INFO[0002] Fetching resources for version &amp;quot;0.14.1&amp;quot;      
+INFO[0002] Successfully got OLM status for version &amp;quot;0.14.1&amp;quot;
+
+NAME                                            NAMESPACE    KIND                        STATUS
+olm                                                          Namespace                   Installed
+operatorgroups.operators.coreos.com                          CustomResourceDefinition    Installed
+catalogsources.operators.coreos.com                          CustomResourceDefinition    Installed
+subscriptions.operators.coreos.com                           CustomResourceDefinition    Installed
+installplans.operators.coreos.com                            CustomResourceDefinition    Installed
+aggregate-olm-edit                                           ClusterRole                 Installed
+catalog-operator                                olm          Deployment                  Installed
+olm-operator                                    olm          Deployment                  Installed
+operatorhubio-catalog                           olm          CatalogSource               Installed
+olm-operators                                   olm          OperatorGroup               Installed
+aggregate-olm-view                                           ClusterRole                 Installed
+operators                                                    Namespace                   Installed
+global-operators                                operators    OperatorGroup               Installed
+olm-operator-serviceaccount                     olm          ServiceAccount              Installed
+packageserver                                   olm          ClusterServiceVersion       Installed
+system:controller:operator-lifecycle-manager                 ClusterRole                 Installed
+clusterserviceversions.operators.coreos.com                  CustomResourceDefinition    Installed
+olm-operator-binding-olm                                     ClusterRoleBinding          Installed
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; certain cluster types may already have OLM enabld, but under a non-default (&lt;code&gt;&amp;quot;olm&amp;quot;&lt;/code&gt;) namespace.
+Set &lt;code&gt;--olm-namespac=[non-default-olm-namespace]&lt;/code&gt; for both &lt;code&gt;operator-sdk olm&lt;/code&gt; and &lt;code&gt;operator-sdk run&lt;/code&gt;
+commands if this is the case.&lt;/p&gt;
+&lt;h3 id=&#34;simple-operator&#34;&gt;Simple Operator&lt;/h3&gt;
+&lt;p&gt;Assuming everything your Operator needs to successfully deploy and run exists
+in your bundle directory (no &lt;code&gt;Secret&lt;/code&gt;&#39;s, etc.), you can deploy your Operator
+using the following command invocation:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-console&#34; data-lang=&#34;console&#34;&gt;$ operator-sdk run --olm --manifests deploy/olm-catalog/memcached-operator --operator-version 0.1.0
+INFO[0000] loading Bundles                               dir=deploy/olm-catalog/memcached-operator
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=memcached-operator load=bundles
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=0.1.0 load=bundles
+INFO[0000] found csv, loading bundle                     dir=deploy/olm-catalog/memcached-operator file=memcached-operator.v0.1.0.clusterserviceversion.yaml load=bundles
+INFO[0000] loading bundle file                           dir=deploy/olm-catalog/memcached-operator/0.1.0 file=example.com_memcacheds_crd.yaml load=bundle
+INFO[0000] loading bundle file                           dir=deploy/olm-catalog/memcached-operator/0.1.0 file=memcached-operator.v0.1.0.clusterserviceversion.yaml load=bundle
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=metadata load=bundles
+INFO[0000] loading Packages and Entries                  dir=deploy/olm-catalog/memcached-operator
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=memcached-operator load=package
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=0.1.0 load=package
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=metadata load=package
+INFO[0000] Creating registry                            
+INFO[0000]   Creating ConfigMap &amp;quot;olm/memcached-operator-registry-bundles&amp;quot;
+INFO[0000]   Creating Deployment &amp;quot;olm/memcached-operator-registry-server&amp;quot;
+INFO[0000]   Creating Service &amp;quot;olm/memcached-operator-registry-server&amp;quot;
+INFO[0000] Waiting for Deployment &amp;quot;olm/memcached-operator-registry-server&amp;quot; rollout to complete
+INFO[0000]   Waiting for Deployment &amp;quot;olm/memcached-operator-registry-server&amp;quot; to rollout: 0 out of 1 new replicas have been updated
+INFO[0001]   Waiting for Deployment &amp;quot;olm/memcached-operator-registry-server&amp;quot; to rollout: 0 of 1 updated replicas are available
+INFO[0002]   Deployment &amp;quot;olm/memcached-operator-registry-server&amp;quot; successfully rolled out
+INFO[0002] Creating resources                           
+INFO[0002]   Creating CatalogSource &amp;quot;default/memcached-operator-ocs&amp;quot;
+INFO[0002]   Creating Subscription &amp;quot;default/memcached-operator-v0-0-1-sub&amp;quot;
+INFO[0002]   Creating OperatorGroup &amp;quot;default/operator-sdk-og&amp;quot;
+INFO[0002] Waiting for ClusterServiceVersion &amp;quot;default/memcached-operator.v0.1.0&amp;quot; to reach &#39;Succeeded&#39; phase
+INFO[0002]   Waiting for ClusterServiceVersion &amp;quot;default/memcached-operator.v0.1.0&amp;quot; to appear
+INFO[0034]   Found ClusterServiceVersion &amp;quot;default/memcached-operator.v0.1.0&amp;quot; phase: Pending
+INFO[0035]   Found ClusterServiceVersion &amp;quot;default/memcached-operator.v0.1.0&amp;quot; phase: InstallReady
+INFO[0036]   Found ClusterServiceVersion &amp;quot;default/memcached-operator.v0.1.0&amp;quot; phase: Installing
+INFO[0036]   Found ClusterServiceVersion &amp;quot;default/memcached-operator.v0.1.0&amp;quot; phase: Succeeded
+INFO[0037] Successfully installed &amp;quot;memcached-operator.v0.1.0&amp;quot; on OLM version &amp;quot;0.14.1&amp;quot;
+
+NAME                            NAMESPACE    KIND                        STATUS
+memcacheds.cache.example.com    default      CustomResourceDefinition    Installed
+memcached-operator.v0.1.0       default      ClusterServiceVersion       Installed
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This command can be further simplified by passing only &lt;code&gt;--operator-version=0.1.0&lt;/code&gt;
+and letting the command infer the bundle path.&lt;/p&gt;
+&lt;h3 id=&#34;multi-namespacedcluster-wide-deployment&#34;&gt;Multi-namespaced/cluster-wide deployment&lt;/h3&gt;
+&lt;p&gt;Lets say you modify your CSV&amp;rsquo;s &lt;code&gt;installModes&lt;/code&gt; to support &lt;code&gt;MultiNamespace&lt;/code&gt;. Now
+you can deploy your Operator such that it watches multiple namespaces &lt;code&gt;ns-1&lt;/code&gt;, &lt;code&gt;ns-2&lt;/code&gt;, and &lt;code&gt;ns-3&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-console&#34; data-lang=&#34;console&#34;&gt;$ operator-sdk run --olm --operator-version 0.1.0 --install-mode-MultiNamespace=ns-1,ns-2,ns-3
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;supplying-your-own-catalog-manifests&#34;&gt;Supplying your own catalog manifests&lt;/h3&gt;
+&lt;p&gt;I now have a reasonably complicated set of catalog requirements, ex. multiple &lt;code&gt;OperatorGroup&lt;/code&gt;&#39;s in my cluster,
+and want full control over how the SDK tells OLM to deploy my operator.&lt;/p&gt;
+&lt;p&gt;These manifests are in &lt;code&gt;deploy/catalog-manifests&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-console&#34; data-lang=&#34;console&#34;&gt;$ ls -l deploy/catalog-manifests
+-rw-rw-r--. 1 user user  2368 Mar 24 19:21 special-operatorgroup.yaml
+-rw-rw-r--. 1 user user  3264 Mar 24 19:23 special-subscription.yaml
+-rw-rw-r--. 1 user user  5117 Mar 24 18:22 special-catalogsource.yaml
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Instead of &lt;code&gt;operator-sdk run --olm&lt;/code&gt; creating these manifests for my Operator,
+I can direct the command to create the above manifests:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-console&#34; data-lang=&#34;console&#34;&gt;$ operator-sdk run --olm --operator-version 0.1.0 --include special-operatorgroup.yaml,special-subscription.yaml,special-catalogsource.yaml
+INFO[0000] loading Bundles                               dir=deploy/olm-catalog/memcached-operator
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=memcached-operator load=bundles
+...
+INFO[0002] Creating resources                           
+INFO[0002]   Creating OperatorGroup &amp;quot;default/special-operatorgroup&amp;quot;
+INFO[0002]   Creating CatalogSource &amp;quot;default/special-subscription&amp;quot;
+INFO[0002]   Creating Subscription &amp;quot;default/special-catalogsource&amp;quot;
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;cleaning-up&#34;&gt;Cleaning up&lt;/h3&gt;
+&lt;p&gt;I was testing my Operator, and now I would like to remove it from your cluster
+in a given namespace. The &lt;code&gt;operator-sdk cleanup --olm&lt;/code&gt; command will do this for you:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-console&#34; data-lang=&#34;console&#34;&gt;$ operator-sdk cleanup --olm --operator-version 0.1.0
+INFO[0000] loading Bundles                               dir=deploy/olm-catalog/memcached-operator
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=memcached-operator load=bundles
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=0.1.0 load=bundles
+INFO[0000] found csv, loading bundle                     dir=deploy/olm-catalog/memcached-operator file=memcached-operator.v0.1.0.clusterserviceversion.yaml load=bundles
+INFO[0000] loading bundle file                           dir=deploy/olm-catalog/memcached-operator/0.1.0 file=example.com_memcacheds_crd.yaml load=bundle
+INFO[0000] loading bundle file                           dir=deploy/olm-catalog/memcached-operator/0.1.0 file=memcached-operator.v0.1.0.clusterserviceversion.yaml load=bundle
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=metadata load=bundles
+INFO[0000] loading Packages and Entries                  dir=deploy/olm-catalog/memcached-operator
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=memcached-operator load=package
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=0.1.0 load=package
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=metadata load=package
+INFO[0000] Deleting resources                           
+INFO[0000]   Deleting CatalogSource &amp;quot;default/memcached-operator-ocs&amp;quot;
+INFO[0000]   Deleting Subscription &amp;quot;default/memcached-operator-v0-0-1-sub&amp;quot;
+INFO[0000]   Deleting OperatorGroup &amp;quot;default/operator-sdk-og&amp;quot;
+INFO[0000]   Deleting CustomResourceDefinition &amp;quot;default/memcacheds.example.com&amp;quot;
+INFO[0000]   Deleting ClusterServiceVersion &amp;quot;default/memcached-operator.v0.1.0&amp;quot;
+INFO[0000]   Waiting for deleted resources to disappear
+INFO[0001] Successfully uninstalled &amp;quot;memcached-operator.v0.1.0&amp;quot; on OLM version &amp;quot;0.14.1&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;caveats&#34;&gt;Caveats&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;operator-sdk run&lt;/code&gt; (and &lt;code&gt;operator-sdk cleanup&lt;/code&gt;) are intended to be used for testing
+purposes only as of now, since this command creates a transient image registry that
+should not be used in production. Typically a registry is deployed eparately and a
+set of catalog manifests are created in the cluster to inform OLM
+of that registry and which Operator versions it can deploy and where to deploy the Operator.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;operator-sdk run&lt;/code&gt; can only deploy one Operator and one version of that Operator
+at a time, hence its intended purpose being testing only. Production OLM usage
+requires the typical setup described above.&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Operator Bundle Tooling in Operator SDK</title>
+      <link>/docs/golang/olm-integration/bundle-cli/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/golang/olm-integration/bundle-cli/</guid>
+      <description>
+        
+        
+        &lt;p&gt;This document gives an overview of using &lt;code&gt;operator-sdk&lt;/code&gt; to work with Operator &lt;a href=&#34;https://github.com/operator-framework/operator-registry/tree/v1.5.3#manifest-format&#34;&gt;bundles&lt;/a&gt;, namely on-disk bundle directories and creating bundle &lt;a href=&#34;https://github.com/operator-framework/operator-registry/blob/v1.5.3/docs/design/operator-bundle.md&#34;&gt;images/metadata&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;commands&#34;&gt;Commands&lt;/h2&gt;
+&lt;p&gt;The following &lt;code&gt;operator-sdk&lt;/code&gt; subcommands create or interact with Operator on-disk bundles and bundle images:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;generate csv&lt;/code&gt;: creates a new or updates an existing CSV in a semantically versioned bundle directory, creates a package manifest if it does not exist, and optionally copies your CRDs to the versioned bundle directory. Read more about this command &lt;a href=&#34;/docs/golang/olm-integration/generating-a-csv/&#34;&gt;here&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;bundle create&lt;/code&gt;: creates an Operator bundle image from manifests on disk, or writes bundle image metadata to disk. This subcommand has corresponding functionality to &lt;code&gt;opm alpha bundle build&lt;/code&gt;, and is stable. Output and underlying behavior between these commands is the same, except nothing is written to disk unless &lt;code&gt;--generate-only&lt;/code&gt; is set (false by default). Refer to &lt;a href=&#34;https://github.com/operator-framework/operator-registry/blob/v1.5.9/docs/design/operator-bundle.md#build-bundle-image&#34;&gt;&lt;code&gt;opm alpha bundle build&lt;/code&gt; docs&lt;/a&gt; for more information. CLI differences between these commands:
+| &lt;strong&gt;operator-sdk&lt;/strong&gt; | &lt;strong&gt;opm&lt;/strong&gt; |
+|&amp;mdash; |&amp;mdash; |
+| &lt;code&gt;operator-sdk bundle create --default=&amp;lt;channel-name&amp;gt;&lt;/code&gt; |  &lt;code&gt;opm alpha bundle build --default-channel=&amp;lt;channel-name&amp;gt;&lt;/code&gt; |
+| &lt;code&gt;operator-sdk bundle create --generate-only&lt;/code&gt; | &lt;code&gt;opm alpha bundle generate&lt;/code&gt; |
+| &lt;code&gt;operator-sdk bundle create &amp;lt;image-tag&amp;gt;&lt;/code&gt; | &lt;code&gt;opm alpha bundle build --tag &amp;lt;image-tag&amp;gt;&lt;/code&gt; |&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;bundle validate&lt;/code&gt;: validates an Operator bundle image. This subcommand has corresponding functionality to &lt;code&gt;opm alpha bundle validate&lt;/code&gt;, and is stable. Refer to the &lt;a href=&#34;https://github.com/operator-framework/operator-registry/blob/v1.5.9/docs/design/operator-bundle.md#validate-bundle-image&#34;&gt;&lt;code&gt;opm alpha bundle validate&lt;/code&gt; docs&lt;/a&gt; for more information. CLI differences between these commands:
+| &lt;strong&gt;operator-sdk&lt;/strong&gt; | &lt;strong&gt;opm&lt;/strong&gt; |
+|&amp;mdash; |&amp;mdash; |
+| &lt;code&gt;operator-sdk bundle validate &amp;lt;image-tag&amp;gt;&lt;/code&gt; | &lt;code&gt;opm alpha bundle validate --tag &amp;lt;image-tag&amp;gt;&lt;/code&gt; |
+| &lt;code&gt;operator-sdk bundle validate &amp;lt;directory&amp;gt;&lt;/code&gt; | no equivalent |&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+  </channel>
+</rss>

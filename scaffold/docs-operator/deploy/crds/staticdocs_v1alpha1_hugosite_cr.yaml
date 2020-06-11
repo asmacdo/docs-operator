@@ -1,0 +1,7 @@
+apiVersion: staticdocs/v1alpha1
+kind: HugoSite
+metadata:
+  name: example-hugosite
+spec:
+  # Add fields here
+  size: 3

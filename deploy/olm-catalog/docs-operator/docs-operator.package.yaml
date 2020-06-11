@@ -1,0 +1,5 @@
+channels:
+- currentCSV: docs-operator.v0.0.1
+  name: alpha
+defaultChannel: alpha
+packageName: docs-operator

@@ -1,0 +1,8 @@
+apiVersion: static.docs/v1alpha1
+kind: HugoSite
+metadata:
+  name: olm
+spec:
+  # Add fields here
+  build_git_repo: "https://github.com/operator-framework/olm-docs"
+  github_docs_dir: "."

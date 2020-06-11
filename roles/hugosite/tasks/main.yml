@@ -1,0 +1,10 @@
+---
+- name: Generate and Serve a Hugo site
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', 'nginx.yaml') }}"
+
+- name: Add service for site
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', 'service.yaml') }}"

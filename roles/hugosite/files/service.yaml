@@ -1,0 +1,13 @@
+# TODO s/service/ingress/
+apiVersion: v1
+kind: Service
+metadata:
+  name: external-nginx
+spec:
+  type: "NodePort"
+  ports:
+  - name: "http"
+    port: 80
+    targetPort: 80
+  selector:
+    app: "{{ meta.name }}-nginx"

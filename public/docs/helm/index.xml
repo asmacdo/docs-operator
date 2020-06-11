@@ -1,0 +1,259 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Operator SDK – Helm Based Operators</title>
+    <link>/docs/helm/</link>
+    <description>Recent content in Helm Based Operators on Operator SDK</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	  <atom:link href="/docs/helm/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>Docs: Helm Based Operator SDK Installation</title>
+      <link>/docs/helm/installation/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/helm/installation/</guid>
+      <description>
+        
+        
+        &lt;p&gt;Follow the steps in the &lt;a href=&#34;/docs/install-operator-sdk&#34;&gt;installation guide&lt;/a&gt; to learn how to install the Operator SDK CLI tool.&lt;/p&gt;
+&lt;h2 id=&#34;additional-prerequisites&#34;&gt;Additional Prerequisites&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://docs.docker.com/install/&#34;&gt;docker&lt;/a&gt; version 17.03+.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://kubernetes.io/docs/tasks/tools/install-kubectl/&#34;&gt;kubectl&lt;/a&gt; version v1.11.3+.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: This guide uses &lt;a href=&#34;https://github.com/kubernetes/minikube#installation&#34;&gt;minikube&lt;/a&gt; version v0.25.0+ as the
+local Kubernetes cluster and &lt;a href=&#34;https://quay.io&#34;&gt;quay.io&lt;/a&gt; for the public registry.&lt;/p&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Helm Based Operator Quickstart</title>
+      <link>/docs/helm/quickstart/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/helm/quickstart/</guid>
+      <description>
+        
+        
+        &lt;p&gt;This guide walks through an example of building a simple nginx-operator powered by &lt;a href=&#34;https://helm.sh/docs/&#34;&gt;Helm&lt;/a&gt; using tools and libraries provided by the Operator SDK.&lt;/p&gt;
+&lt;h2 id=&#34;create-a-new-project&#34;&gt;Create a new project&lt;/h2&gt;
+&lt;p&gt;Use the CLI to create a new Helm-based nginx-operator project:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;operator-sdk new nginx-operator --api-version&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;=&lt;/span&gt;example.com/v1alpha1 --kind&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;=&lt;/span&gt;Nginx --type&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;=&lt;/span&gt;helm
+&lt;span style=&#34;color:#204a87&#34;&gt;cd&lt;/span&gt; nginx-operator
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This creates the nginx-operator project specifically for watching the
+Nginx resource with APIVersion &lt;code&gt;example.com/v1alpha1&lt;/code&gt; and Kind
+&lt;code&gt;Nginx&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;For Helm-based projects, &lt;code&gt;operator-sdk new&lt;/code&gt; also generates the RBAC rules
+in &lt;code&gt;deploy/role.yaml&lt;/code&gt; based on the resources that would be deployed by the
+chart&amp;rsquo;s default manifest. Be sure to double check that the rules generated
+in &lt;code&gt;deploy/role.yaml&lt;/code&gt; meet the operator&amp;rsquo;s permission requirements.&lt;/p&gt;
+&lt;p&gt;To learn more about the project directory structure, see the
+&lt;a href=&#34;/docs/helm/reference/scaffolding&#34;&gt;project layout&lt;/a&gt; doc.&lt;/p&gt;
+&lt;h3 id=&#34;use-an-existing-chart&#34;&gt;Use an existing chart&lt;/h3&gt;
+&lt;p&gt;Instead of creating your project with a boilerplate Helm chart, you can also use &lt;code&gt;--helm-chart&lt;/code&gt;, &lt;code&gt;--helm-chart-repo&lt;/code&gt;, and &lt;code&gt;--helm-chart-version&lt;/code&gt; to use an existing chart, either from your local filesystem or a remote chart repository.&lt;/p&gt;
+&lt;p&gt;If &lt;code&gt;--helm-chart&lt;/code&gt; is specified, &lt;code&gt;--api-version&lt;/code&gt; and &lt;code&gt;--kind&lt;/code&gt; become optional. If left unset, the SDK will default &lt;code&gt;--api-version&lt;/code&gt; to &lt;code&gt;charts.helm.k8s.io/v1alpha1&lt;/code&gt; and will deduce &lt;code&gt;--kind&lt;/code&gt; from the specified chart.&lt;/p&gt;
+&lt;p&gt;If &lt;code&gt;--helm-chart&lt;/code&gt; is a local chart archive or directory, it will be validated and unpacked or copied into the project.&lt;/p&gt;
+&lt;p&gt;Otherwise, the SDK will attempt to fetch the specified helm chart from a remote repository.&lt;/p&gt;
+&lt;p&gt;If a custom repository URL is not specified by &lt;code&gt;--helm-chart-repo&lt;/code&gt;, the following chart reference formats are supported:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;&amp;lt;repoName&amp;gt;/&amp;lt;chartName&amp;gt;&lt;/code&gt;: Fetch the helm chart named &lt;code&gt;chartName&lt;/code&gt; from the helm
+chart repository named &lt;code&gt;repoName&lt;/code&gt;, as specified in the
+$HELM_HOME/repositories/repositories.yaml file.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;&amp;lt;url&amp;gt;&lt;/code&gt;: Fetch the helm chart archive at the specified URL.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If a custom repository URL is specified by &lt;code&gt;--helm-chart-repo&lt;/code&gt;, the only supported format for &lt;code&gt;--helm-chart&lt;/code&gt; is:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;&amp;lt;chartName&amp;gt;&lt;/code&gt;: Fetch the helm chart named &lt;code&gt;chartName&lt;/code&gt; in the helm chart repository
+specified by the &lt;code&gt;--helm-chart-repo&lt;/code&gt; URL.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If &lt;code&gt;--helm-chart-version&lt;/code&gt; is not set, the SDK will fetch the latest available version of the helm chart. Otherwise, it will fetch the specified version. The option &lt;code&gt;--helm-chart-version&lt;/code&gt; is not used when &lt;code&gt;--helm-chart&lt;/code&gt; itself refers to a specific version, for example when it is a local path or a URL.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; For more details and examples run &lt;code&gt;operator-sdk new --help&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 id=&#34;operator-scope&#34;&gt;Operator scope&lt;/h3&gt;
+&lt;p&gt;Read the &lt;a href=&#34;/docs/operator-scope&#34;&gt;operator scope&lt;/a&gt; documentation on how to run your operator as namespace-scoped vs cluster-scoped.&lt;/p&gt;
+&lt;h2 id=&#34;customize-the-operator-logic&#34;&gt;Customize the operator logic&lt;/h2&gt;
+&lt;p&gt;For this example the nginx-operator will execute the following
+reconciliation logic for each &lt;code&gt;Nginx&lt;/code&gt; Custom Resource (CR):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Create a nginx Deployment if it doesn&amp;rsquo;t exist&lt;/li&gt;
+&lt;li&gt;Create a nginx Service if it doesn&amp;rsquo;t exist&lt;/li&gt;
+&lt;li&gt;Create a nginx Ingress if it is enabled and doesn&amp;rsquo;t exist&lt;/li&gt;
+&lt;li&gt;Ensure that the Deployment, Service, and optional Ingress match the desired configuration (e.g. replica count, image, service type, etc) as specified by the &lt;code&gt;Nginx&lt;/code&gt; CR&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;watch-the-nginx-cr&#34;&gt;Watch the Nginx CR&lt;/h3&gt;
+&lt;p&gt;By default, the nginx-operator watches &lt;code&gt;Nginx&lt;/code&gt; resource events as shown
+in &lt;code&gt;watches.yaml&lt;/code&gt; and executes Helm releases using the specified chart:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;---&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;&lt;/span&gt;- &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;version&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;v1alpha1&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;  &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;group&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;example.com&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;  &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;kind&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;Nginx&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;  &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;chart&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;helm-charts/nginx&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;reviewing-the-nginx-helm-chart&#34;&gt;Reviewing the Nginx Helm Chart&lt;/h3&gt;
+&lt;p&gt;When a Helm operator project is created, the SDK creates an example Helm chart
+that contains a set of templates for a simple Nginx release.&lt;/p&gt;
+&lt;p&gt;For this example, we have templates for deployment, service, and ingress
+resources, along with a NOTES.txt template, which Helm chart developers use
+to convey helpful information about a release.&lt;/p&gt;
+&lt;p&gt;If you aren&amp;rsquo;t already familiar with Helm Charts, take a moment to review
+the &lt;a href=&#34;https://helm.sh/docs/topics/charts/&#34;&gt;Helm Chart developer documentation&lt;/a&gt;.&lt;/p&gt;
+&lt;h3 id=&#34;understanding-the-nginx-cr-spec&#34;&gt;Understanding the Nginx CR spec&lt;/h3&gt;
+&lt;p&gt;Helm uses a concept called &lt;a href=&#34;https://helm.sh/docs/intro/using_helm/#customizing-the-chart-before-installing&#34;&gt;values&lt;/a&gt; to provide customizations
+to a Helm chart&amp;rsquo;s defaults, which are defined in the Helm chart&amp;rsquo;s &lt;code&gt;values.yaml&lt;/code&gt;
+file.&lt;/p&gt;
+&lt;p&gt;Overriding these defaults is as simple as setting the desired values in the CR
+spec. Let&amp;rsquo;s use the number of replicas as an example.&lt;/p&gt;
+&lt;p&gt;First, inspecting &lt;code&gt;helm-charts/nginx/values.yaml&lt;/code&gt;, we see that the chart has a
+value called &lt;code&gt;replicaCount&lt;/code&gt; and it is set to &lt;code&gt;1&lt;/code&gt; by default. If we want to have
+2 nginx instances in our deployment, we would need to make sure our CR spec
+contained &lt;code&gt;replicaCount: 2&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Update &lt;code&gt;deploy/crds/example.com_v1alpha1_nginx_cr.yaml&lt;/code&gt; to look like the following:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;apiVersion&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;example.com/v1alpha1&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;kind&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;Nginx&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;metadata&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;  &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;name&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;example-nginx&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;spec&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;  &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;replicaCount&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;2&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Similarly, we see that the default service port is set to &lt;code&gt;80&lt;/code&gt;, but we would
+like to use &lt;code&gt;8080&lt;/code&gt;, so we&amp;rsquo;ll again update &lt;code&gt;deploy/crds/example.com_v1alpha1_nginx_cr.yaml&lt;/code&gt;
+by adding the service port override:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;apiVersion&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;example.com/v1alpha1&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;kind&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;Nginx&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;metadata&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;  &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;name&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;example-nginx&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;spec&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;  &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;replicaCount&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;2&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;  &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;service&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;    &lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;port&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;8080&lt;/span&gt;&lt;span style=&#34;color:#f8f8f8;text-decoration:underline&#34;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;As you may have noticed, the Helm operator simply applies the entire spec as if
+it was the contents of a values file, just like &lt;code&gt;helm install -f ./overrides.yaml&lt;/code&gt;
+works.&lt;/p&gt;
+&lt;h2 id=&#34;build-and-run-the-operator&#34;&gt;Build and run the operator&lt;/h2&gt;
+&lt;p&gt;Before running the operator, Kubernetes needs to know about the new custom
+resource definition the operator will be watching.&lt;/p&gt;
+&lt;p&gt;Deploy the CRD:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;kubectl create -f deploy/crds/example.com_nginxes_crd.yaml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Once this is done, there are two ways to run the operator:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;As a pod inside a Kubernetes cluster&lt;/li&gt;
+&lt;li&gt;As a go program outside the cluster using &lt;code&gt;operator-sdk&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;1-run-as-a-pod-inside-a-kubernetes-cluster&#34;&gt;1. Run as a pod inside a Kubernetes cluster&lt;/h3&gt;
+&lt;p&gt;Running as a pod inside a Kubernetes cluster is preferred for production use.&lt;/p&gt;
+&lt;p&gt;Build the nginx-operator image and push it to a registry:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;operator-sdk build quay.io/example/nginx-operator:v0.0.1
+docker push quay.io/example/nginx-operator:v0.0.1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Kubernetes deployment manifests are generated in &lt;code&gt;deploy/operator.yaml&lt;/code&gt;. The
+deployment image in this file needs to be modified from the placeholder
+&lt;code&gt;REPLACE_IMAGE&lt;/code&gt; to the previous built image. To do this run:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;sed -i &lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#39;s|REPLACE_IMAGE|quay.io/example/nginx-operator:v0.0.1|g&amp;#39;&lt;/span&gt; deploy/operator.yaml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;
+If you are performing these steps on OSX, use the following &lt;code&gt;sed&lt;/code&gt; command instead:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;sed -i &lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#39;s|REPLACE_IMAGE|quay.io/example/nginx-operator:v0.0.1|g&amp;#39;&lt;/span&gt; deploy/operator.yaml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Deploy the nginx-operator:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;kubectl create -f deploy/service_account.yaml
+kubectl create -f deploy/role.yaml
+kubectl create -f deploy/role_binding.yaml
+kubectl create -f deploy/operator.yaml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Verify that the nginx-operator is up and running:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ kubectl get deployment
+NAME                 DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+nginx-operator       &lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;1&lt;/span&gt;         &lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;1&lt;/span&gt;         &lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;1&lt;/span&gt;            &lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;1&lt;/span&gt;           1m
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;2-run-outside-the-cluster&#34;&gt;2. Run outside the cluster&lt;/h3&gt;
+&lt;p&gt;This method is preferred during the development cycle to speed up deployment and testing.&lt;/p&gt;
+&lt;p&gt;Run the operator locally with the default Kubernetes config file present at
+&lt;code&gt;$HOME/.kube/config&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ operator-sdk run --local
+INFO&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;[&lt;/span&gt;0000&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;]&lt;/span&gt; Go Version: go1.10.3
+INFO&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;[&lt;/span&gt;0000&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;]&lt;/span&gt; Go OS/Arch: linux/amd64
+INFO&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;[&lt;/span&gt;0000&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;]&lt;/span&gt; operator-sdk Version: v0.1.1+git
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Run the operator locally with a provided Kubernetes config file:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ operator-sdk run --local --kubeconfig&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;=&lt;/span&gt;&amp;lt;path_to_config&amp;gt;
+INFO&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;[&lt;/span&gt;0000&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;]&lt;/span&gt; Go Version: go1.10.3
+INFO&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;[&lt;/span&gt;0000&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;]&lt;/span&gt; Go OS/Arch: linux/amd64
+INFO&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;[&lt;/span&gt;0000&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;]&lt;/span&gt; operator-sdk Version: v0.2.0+git
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;deploy-the-nginx-custom-resource&#34;&gt;Deploy the Nginx custom resource&lt;/h2&gt;
+&lt;p&gt;Apply the nginx CR that we modified earlier:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;kubectl apply -f deploy/crds/example.com_v1alpha1_nginx_cr.yaml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Ensure that the nginx-operator creates the deployment for the CR:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ kubectl get deployment
+NAME                                           DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+example-nginx-b9phnoz9spckcrua7ihrbkrt1        &lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;2&lt;/span&gt;         &lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;2&lt;/span&gt;         &lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;2&lt;/span&gt;            &lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;2&lt;/span&gt;           1m
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Check the pods to confirm 2 replicas were created:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ kubectl get pods
+NAME                                                      READY     STATUS    RESTARTS   AGE
+example-nginx-b9phnoz9spckcrua7ihrbkrt1-f8f9c875d-fjcr9   1/1       Running   &lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;0&lt;/span&gt;          1m
+example-nginx-b9phnoz9spckcrua7ihrbkrt1-f8f9c875d-ljbzl   1/1       Running   &lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;0&lt;/span&gt;          1m
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Check that the service port is set to &lt;code&gt;8080&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ kubectl get service
+NAME                                      TYPE        CLUSTER-IP   EXTERNAL-IP   PORT&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;S&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;)&lt;/span&gt;    AGE
+example-nginx-b9phnoz9spckcrua7ihrbkrt1   ClusterIP   10.96.26.3   &amp;lt;none&amp;gt;        8080/TCP   1m
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;update-the-replicacount-and-remove-the-port&#34;&gt;Update the replicaCount and remove the port&lt;/h3&gt;
+&lt;p&gt;Change the &lt;code&gt;spec.replicaCount&lt;/code&gt; field from 2 to 3, remove the &lt;code&gt;spec.service&lt;/code&gt;
+field, and apply the change:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ cat deploy/crds/example.com_v1alpha1_nginx_cr.yaml
+apiVersion: &lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;example.com/v1alpha1&amp;#34;&lt;/span&gt;
+kind: &lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;Nginx&amp;#34;&lt;/span&gt;
+metadata:
+  name: &lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;example-nginx&amp;#34;&lt;/span&gt;
+spec:
+  replicaCount: &lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;3&lt;/span&gt;
+
+$ kubectl apply -f deploy/crds/example.com_v1alpha1_nginx_cr.yaml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Confirm that the operator changes the deployment size:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ kubectl get deployment
+NAME                                           DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+example-nginx-b9phnoz9spckcrua7ihrbkrt1        &lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;3&lt;/span&gt;         &lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;3&lt;/span&gt;         &lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;3&lt;/span&gt;            &lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;3&lt;/span&gt;           1m
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Check that the service port is set to the default (&lt;code&gt;80&lt;/code&gt;):&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ kubectl get service
+NAME                                      TYPE        CLUSTER-IP   EXTERNAL-IP   PORT&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;S&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;)&lt;/span&gt;  AGE
+example-nginx-b9phnoz9spckcrua7ihrbkrt1   ClusterIP   10.96.26.3   &amp;lt;none&amp;gt;        80/TCP   1m
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;cleanup&#34;&gt;Cleanup&lt;/h3&gt;
+&lt;p&gt;Clean up the resources:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;kubectl delete -f deploy/crds/example.com_v1alpha1_nginx_cr.yaml
+kubectl delete -f deploy/operator.yaml
+kubectl delete -f deploy/role_binding.yaml
+kubectl delete -f deploy/role.yaml
+kubectl delete -f deploy/service_account.yaml
+kubectl delete -f deploy/crds/example.com_nginxes_crd.yaml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt; Additional CR/CRD&amp;rsquo;s can be added to the project by running, for example, the command :&lt;code&gt;operator-sdk add api --api-version=cache.example.com/v1alpha1 --kind=AppService&lt;/code&gt;
+For more information, refer &lt;a href=&#34;/docs/cli/operator-sdk_add_api&#34;&gt;cli&lt;/a&gt; doc.&lt;/p&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Helm Based Operator Reference</title>
+      <link>/docs/helm/reference/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/helm/reference/</guid>
+      <description>
+        
+        
+        
+
+&lt;div class=&#34;alert alert-warning&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Warning&lt;/h4&gt;
+These pages are under construction. Please continue to use the &lt;a href=&#34;https://github.com/operator-framework/operator-sdk/tree/master/doc&#34;&gt;docs in
+tree&lt;/a&gt;
+for now.
+&lt;/div&gt;
+
+
+      </description>
+    </item>
+    
+  </channel>
+</rss>

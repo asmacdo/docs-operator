@@ -1,0 +1,186 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: |-
+      [
+        {
+          "apiVersion": "static.docs/v1alpha1",
+          "kind": "HugoSite",
+          "metadata": {
+            "name": "olm"
+          },
+          "spec": {
+            "build_git_repo": "https://github.com/operator-framework/olm-docs",
+            "github_docs_dir": "."
+          }
+        },
+        {
+          "apiVersion": "static.docs/v1alpha1",
+          "kind": "HugoSite",
+          "metadata": {
+            "name": "operator-sdk"
+          },
+          "spec": {
+            "build_git_repo": "https://github.com/operator-framework/operator-sdk",
+            "github_docs_dir": "website"
+          }
+        }
+      ]
+    capabilities: Basic Install
+  name: docs-operator.v0.0.1
+  namespace: placeholder
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions:
+    owned:
+    - kind: HugoSite
+      name: hugosites.static.docs
+      version: v1alpha1
+  description: CRs map to hugo websites
+  displayName: doc-operator
+  icon:
+  - base64data: ""
+    mediatype: ""
+  install:
+    spec:
+      deployments:
+      - name: docs-operator
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              name: docs-operator
+          strategy: {}
+          template:
+            metadata:
+              labels:
+                name: docs-operator
+            spec:
+              containers:
+              - env:
+                - name: WATCH_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.annotations['olm.targetNamespaces']
+                - name: POD_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.name
+                - name: OPERATOR_NAME
+                  value: docs-operator
+                - name: ANSIBLE_GATHERING
+                  value: explicit
+                image: quay.io/asmacdo/docs-operator:initial
+                imagePullPolicy: Always
+                livenessProbe:
+                  httpGet:
+                    path: /healthz
+                    port: 6789
+                  initialDelaySeconds: 3
+                  periodSeconds: 3
+                name: docs-operator
+                resources: {}
+                volumeMounts:
+                - mountPath: /tmp/ansible-operator/runner
+                  name: runner
+              serviceAccountName: docs-operator
+              volumes:
+              - emptyDir: {}
+                name: runner
+      permissions:
+      - rules:
+        - apiGroups:
+          - ""
+          resources:
+          - pods
+          - services
+          - services/finalizers
+          - endpoints
+          - persistentvolumeclaims
+          - events
+          - configmaps
+          - secrets
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - apps
+          resources:
+          - deployments
+          - daemonsets
+          - replicasets
+          - statefulsets
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - monitoring.coreos.com
+          resources:
+          - servicemonitors
+          verbs:
+          - get
+          - create
+        - apiGroups:
+          - apps
+          resourceNames:
+          - docs-operator
+          resources:
+          - deployments/finalizers
+          verbs:
+          - update
+        - apiGroups:
+          - ""
+          resources:
+          - pods
+          verbs:
+          - get
+        - apiGroups:
+          - apps
+          resources:
+          - replicasets
+          - deployments
+          verbs:
+          - get
+        - apiGroups:
+          - static.docs
+          resources:
+          - '*'
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        serviceAccountName: docs-operator
+    strategy: deployment
+  installModes:
+  - supported: true
+    type: OwnNamespace
+  - supported: true
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: true
+    type: AllNamespaces
+  keywords:
+  - hugo
+  maintainers:
+  - email: my@email.com
+    name: austin
+  maturity: alpha
+  provider:
+    name: idk what this is
+  version: 0.0.1

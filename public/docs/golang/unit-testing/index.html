@@ -1,0 +1,1181 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="generator" content="Hugo 0.69.2" />
+
+<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+
+<link rel="shortcut icon" href="/favicons/favicon.ico" >
+<link rel="apple-touch-icon" href="/favicons/apple-touch-icon-180x180.png" sizes="180x180">
+<link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">
+<link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicons/android-36x36.png" sizes="36x36">
+<link rel="icon" type="image/png" href="/favicons/android-48x48.png" sizes="48x48">
+<link rel="icon" type="image/png" href="/favicons/android-72x72.png" sizes="72x72">
+<link rel="icon" type="image/png" href="/favicons/android-96x96.png" sizes="96x96">
+<link rel="icon" type="image/png" href="/favicons/android-144x144.png" sizes="144x144">
+<link rel="icon" type="image/png" href="/favicons/android-192x192.png" sizes="192x192">
+
+<title>Unit testing with Operator SDK | Operator SDK</title><meta property="og:title" content="Unit testing with Operator SDK" />
+<meta property="og:description" content="Overview Testing your operator should involve both unit and end-to-end tests. Unit tests assess the expected outcomes of individual operator components without requiring coordination between components. Operator unit tests should test multiple scenarios likely to be encountered by your custom operator logic at runtime. Much of your custom logic will involve API server calls via a client; Reconcile() in particular will be making API calls on each reconciliation loop. These API calls can be mocked by using controller-runtime&#39;s fake client, perfect for unit testing." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/docs/golang/unit-testing/" />
+
+<meta itemprop="name" content="Unit testing with Operator SDK">
+<meta itemprop="description" content="Overview Testing your operator should involve both unit and end-to-end tests. Unit tests assess the expected outcomes of individual operator components without requiring coordination between components. Operator unit tests should test multiple scenarios likely to be encountered by your custom operator logic at runtime. Much of your custom logic will involve API server calls via a client; Reconcile() in particular will be making API calls on each reconciliation loop. These API calls can be mocked by using controller-runtime&#39;s fake client, perfect for unit testing.">
+
+<meta itemprop="wordCount" content="1068">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Unit testing with Operator SDK"/>
+<meta name="twitter:description" content="Overview Testing your operator should involve both unit and end-to-end tests. Unit tests assess the expected outcomes of individual operator components without requiring coordination between components. Operator unit tests should test multiple scenarios likely to be encountered by your custom operator logic at runtime. Much of your custom logic will involve API server calls via a client; Reconcile() in particular will be making API calls on each reconciliation loop. These API calls can be mocked by using controller-runtime&#39;s fake client, perfect for unit testing."/>
+
+
+
+
+
+<link rel="preload" href="/scss/main.min.2156b902b150b9e3872e1d22ac593d6651f390478d18ef3c04a45ca6b90d637b.css" as="style">
+<link href="/scss/main.min.2156b902b150b9e3872e1d22ac593d6651f390478d18ef3c04a45ca6b90d637b.css" rel="stylesheet" integrity="">
+
+
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+
+
+  </head>
+  <body class="td-page">
+    <header>
+      <header class="of-header-main">
+    <a href="/" class="of-brand">
+      <picture class="of-brand__picture">
+        <source srcset="/build/images/logo.svg" media="(min-width: 992px)">
+        <img src="/build/images/logo-sm.svg" alt="">  
+      </picture> 
+        </a>
+    <nav class="of-nav-main nav-collapse">
+      <ul class="of-nav-main__items menu-items">
+        <li class="of-nav-main__item"><a class="of-link-list__a " href="/">Home</a></li>
+        
+    
+    <li class="of-nav-main__item"><a class="of-link-list__a" href="/build/" title="Build">Build</a></li>
+    
+    <li class="of-nav-main__item"><a class="of-link-list__a" href="/docs/" title="Documentation">Documentation</a></li>
+    
+    </ul>
+    </nav>
+   
+    <div class="of-header-main__search">
+		
+
+    </div>
+  </header>
+    </header>
+    <div class="container-fluid td-outer">
+      <div class="td-main">
+        <div class="row flex-xl-nowrap">
+          <div class="col-12 col-md-3 col-xl-2 td-sidebar d-print-none">
+            
+
+
+
+
+<div id="td-sidebar-menu" class="td-sidebar__inner">
+  
+  <nav class="collapse td-sidebar-nav pt-2 pl-4" id="td-section-nav">
+    
+    
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/" class="align-left pl-0 pr-2 td-sidebar-link td-sidebar-link__section">Documentation</a>
+  </li>
+  <ul>
+    <li class="collapse show" id="docs">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsinstall-operator-sdk" href="/docs/install-operator-sdk/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuilderquickstart" href="/docs/kubebuilder/quickstart/">Quickstart</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/ansible/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Ansible Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsansible">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibleinstallation" href="/docs/ansible/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblequickstart" href="/docs/ansible/quickstart/">Quickstart</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibletesting-guide" href="/docs/ansible/testing-guide/">Testing with Molecule</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibledevelopment-tips" href="/docs/ansible/development-tips/">Development Tips</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/ansible/reference/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsansiblereference">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceadvanced_options" href="/docs/ansible/reference/advanced_options/">Advanced Options</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceapb-migration-guide" href="/docs/ansible/reference/apb-migration-guide/">APB Migration</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencedependent-watches" href="/docs/ansible/reference/dependent-watches/">Dependent Watches</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencefinalizers" href="/docs/ansible/reference/finalizers/">Finalizers</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceinformation-flow-ansible-operator" href="/docs/ansible/reference/information-flow-ansible-operator/">Information Flow</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceretroactively-owned-resources" href="/docs/ansible/reference/retroactively-owned-resources/">Retroactively Owned Resources</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencescaffolding" href="/docs/ansible/reference/scaffolding/">Scaffolding</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencewatches" href="/docs/ansible/reference/watches/">Watches</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibledevwebhooks" href="/docs/ansible/dev/webhooks/"></a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/" class="align-left pl-0 pr-2 active td-sidebar-link td-sidebar-link__section">Golang Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse show" id="docsgolang">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolanginstallation" href="/docs/golang/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangquickstart" href="/docs/golang/quickstart/">Quickstart</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page  active" id="m-docsgolangunit-testing" href="/docs/golang/unit-testing/">Unit Testing</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolange2e-tests" href="/docs/golang/e2e-tests/">Writing E2E Tests</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/monitoring/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Monitoring</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangmonitoring">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangmonitoringprometheus" href="/docs/golang/monitoring/prometheus/">With Prometheus</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangmonitoringservice-monitor" href="/docs/golang/monitoring/service-monitor/">Using Prometheus Operator ServiceMonitor CRD</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/olm-integration/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Integrating with OLM</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangolm-integration">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationcsv-annotations" href="/docs/golang/olm-integration/csv-annotations/">CSV Code Annotations</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationgenerating-a-csv" href="/docs/golang/olm-integration/generating-a-csv/">Generating ClusterServiceVersion&#39;s</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationolm-cli" href="/docs/golang/olm-integration/olm-cli/">Running with OLM</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationbundle-cli" href="/docs/golang/olm-integration/bundle-cli/">Working with Bundles</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/references/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangreferences">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesclient" href="/docs/golang/references/client/">Controller Runtime Client API</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesevent-filtering" href="/docs/golang/references/event-filtering/">Using Predicates for Event Filtering</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferenceslogging" href="/docs/golang/references/logging/">Logging</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesproject_layout" href="/docs/golang/references/project_layout/">Project Layout</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/helm/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Helm Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docshelm">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelminstallation" href="/docs/helm/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmquickstart" href="/docs/helm/quickstart/">Quickstart</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/helm/reference/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docshelmreference">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferenceadvanced_features" href="/docs/helm/reference/advanced_features/">Advanced Features</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferencescaffolding" href="/docs/helm/reference/scaffolding/">Scaffolding</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferencewatches" href="/docs/helm/reference/watches/">Watches</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/scorecard/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Scorecard</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsscorecard">
+      
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/cli/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">CLI Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscli">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk" href="/docs/cli/operator-sdk/">operator-sdk</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add" href="/docs/cli/operator-sdk_add/">operator-sdk add</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_api" href="/docs/cli/operator-sdk_add_api/">operator-sdk add api</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_controller" href="/docs/cli/operator-sdk_add_controller/">operator-sdk add controller</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_crd" href="/docs/cli/operator-sdk_add_crd/">operator-sdk add crd</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_build" href="/docs/cli/operator-sdk_build/">operator-sdk build</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle" href="/docs/cli/operator-sdk_bundle/">operator-sdk bundle</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle_create" href="/docs/cli/operator-sdk_bundle_create/">operator-sdk bundle create</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle_validate" href="/docs/cli/operator-sdk_bundle_validate/">operator-sdk bundle validate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_cleanup" href="/docs/cli/operator-sdk_cleanup/">operator-sdk cleanup</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion" href="/docs/cli/operator-sdk_completion/">operator-sdk completion</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion_bash" href="/docs/cli/operator-sdk_completion_bash/">operator-sdk completion bash</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion_zsh" href="/docs/cli/operator-sdk_completion_zsh/">operator-sdk completion zsh</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate" href="/docs/cli/operator-sdk_generate/">operator-sdk generate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_crds" href="/docs/cli/operator-sdk_generate_crds/">operator-sdk generate crds</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_csv" href="/docs/cli/operator-sdk_generate_csv/">operator-sdk generate csv</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_k8s" href="/docs/cli/operator-sdk_generate_k8s/">operator-sdk generate k8s</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_migrate" href="/docs/cli/operator-sdk_migrate/">operator-sdk migrate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_new" href="/docs/cli/operator-sdk_new/">operator-sdk new</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm" href="/docs/cli/operator-sdk_olm/">operator-sdk olm</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_install" href="/docs/cli/operator-sdk_olm_install/">operator-sdk olm install</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_status" href="/docs/cli/operator-sdk_olm_status/">operator-sdk olm status</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_uninstall" href="/docs/cli/operator-sdk_olm_uninstall/">operator-sdk olm uninstall</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_print-deps" href="/docs/cli/operator-sdk_print-deps/">operator-sdk print-deps</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_run" href="/docs/cli/operator-sdk_run/">operator-sdk run</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_scorecard" href="/docs/cli/operator-sdk_scorecard/">operator-sdk scorecard</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_test" href="/docs/cli/operator-sdk_test/">operator-sdk test</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_test_local" href="/docs/cli/operator-sdk_test_local/">operator-sdk test local</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_version" href="/docs/cli/operator-sdk_version/">operator-sdk version</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/contribution-guidelines/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Contribution Guidelines</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscontribution-guidelines">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesdeveloper-guide" href="/docs/contribution-guidelines/developer-guide/">Development Environment</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesrelease" href="/docs/contribution-guidelines/release/">Release Guide</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesreporting-issues" href="/docs/contribution-guidelines/reporting-issues/">Reporting Issues</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/contribution-guidelines/testing/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Testing</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscontribution-guidelinestesting">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinestestingrunning-the-tests" href="/docs/contribution-guidelines/testing/running-the-tests/">Running Tests</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinestestingtravis-build" href="/docs/contribution-guidelines/testing/travis-build/">Travis CI</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelineslocal-changes" href="/docs/contribution-guidelines/local-changes/">Local Changes</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelineslocal-docs" href="/docs/contribution-guidelines/local-docs/">Local Docs</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrating-existing-apis" href="/docs/migrating-existing-apis/">Migrating Existing K8S APIs</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/migration/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Migration Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsmigration">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrationv010-migration-guide" href="/docs/migration/v0.1.0-migration-guide/">Migration</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrationversion-upgrade-guide" href="/docs/migration/version-upgrade-guide/">Version Upgrade</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsoperator-scope" href="/docs/operator-scope/">Operator Scope</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsversioning" href="/docs/versioning/">Versioning</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsfaq" href="/docs/faq/">FAQ</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuilderadvanced-topics" href="/docs/kubebuilder/advanced-topics/"></a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuildermigrationproject_migration_guide" href="/docs/kubebuilder/migration/project_migration_guide/"></a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+  </nav>
+</div>
+
+
+
+
+          </div>
+
+          <main class="col-12 col-md-9 col-xl-8 pl-md-5" role="main">
+            
+  
+
+            
+            
+<div class="td-content">
+	<h1>Unit testing with Operator SDK</h1>
+	
+	<h2 id="overview">Overview</h2>
+<p>Testing your operator should involve both unit and <a href="e2e-tests">end-to-end</a> tests. Unit tests assess the expected outcomes of individual operator components without requiring coordination between components. Operator unit tests should test multiple scenarios likely to be encountered by your custom operator logic at runtime. Much of your custom logic will involve API server calls via a <a href="/docs/golang/references/client/">client</a>; <code>Reconcile()</code> in particular will be making API calls on each reconciliation loop. These API calls can be mocked by using <code>controller-runtime</code>'s <a href="https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg/client/fake">fake client</a>, perfect for unit testing. This document steps through writing a unit test for the <a href="https://github.com/operator-framework/operator-sdk-samples/blob/4c6934448684a6953ece4d3d9f3f77494b1c125e/memcached-operator/pkg/controller/memcached/memcached_controller.go#L82">memcached-operator</a>&lsquo;s <code>Reconcile()</code> method using a fake client.</p>
+<h2 id="using-a-fake-client">Using a Fake client</h2>
+<p>The <code>controller-runtime</code>'s fake client exposes the same set of operations as a typical client, but simply tracks objects rather than sending requests over a network. You can create a new fake client that tracks an initial set of objects with the following code:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+    <span style="color:#4e9a06">&#34;context&#34;</span>
+    <span style="color:#4e9a06">&#34;testing&#34;</span>
+
+    <span style="color:#000">cachev1alpha1</span> <span style="color:#4e9a06">&#34;github.com/example-inc/memcached-operator/pkg/apis/cache/v1alpha1&#34;</span>
+    <span style="color:#4e9a06">&#34;k8s.io/apimachinery/pkg/runtime&#34;</span>
+    <span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/client&#34;</span>
+    <span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/client/fake&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">TestMemcachedController</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">t</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">testing</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">T</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#ce5c00;font-weight:bold">...</span>
+    <span style="color:#8f5902;font-style:italic">// A Memcached object with metadata and spec.
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">memcached</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">cachev1alpha1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Memcached</span><span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000">ObjectMeta</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">metav1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ObjectMeta</span><span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000">Name</span><span style="color:#000;font-weight:bold">:</span>      <span style="color:#4e9a06">&#34;memcached&#34;</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">Namespace</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;memcached-operator&#34;</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">Labels</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">map</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">]</span><span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#4e9a06">&#34;label-key&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;label-value&#34;</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000;font-weight:bold">},</span>
+        <span style="color:#000;font-weight:bold">},</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#8f5902;font-style:italic">// Objects to track in the fake client.
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">objs</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Object</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">memcached</span><span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#8f5902;font-style:italic">// Create a fake client to mock API calls.
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">cl</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">fake</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NewFakeClient</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">objs</span><span style="color:#ce5c00;font-weight:bold">...</span><span style="color:#000;font-weight:bold">)</span>
+
+    <span style="color:#8f5902;font-style:italic">// List Memcached objects filtering by labels
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">opt</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MatchingLabels</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">map</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">]</span><span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">&#34;label-key&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;label-value&#34;</span><span style="color:#000;font-weight:bold">})</span>
+    <span style="color:#000">memcachedList</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">cachev1alpha1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MemcachedList</span><span style="color:#000;font-weight:bold">{}</span>
+    <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">cl</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">List</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">memcachedList</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">opt</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000">t</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Fatalf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;list memcached: (%v)&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#ce5c00;font-weight:bold">...</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>The fake client <code>cl</code> will cache <code>memcached</code> in an internal object tracker so that CRUD operations via <code>cl</code> can be performed on it.</p>
+<h2 id="testing-reconcile">Testing Reconcile</h2>
+<p><a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/reconcile#Reconciler"><code>Reconcile()</code></a> performs most API server calls a particular operator controller will make. <code>ReconcileMemcached.Reconcile()</code> will ensure the <code>Memcached</code> resource exists as well as reconcile the state of owned Deployments and Pods. We can test runtime reconciliation scenarios using the above client. The following is an example that tests if <code>Reconcile()</code> creates a deployment if one is not found, and whether the created deployment is correct:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+    <span style="color:#4e9a06">&#34;context&#34;</span>
+    <span style="color:#4e9a06">&#34;testing&#34;</span>
+
+    <span style="color:#000">cachev1alpha1</span> <span style="color:#4e9a06">&#34;github.com/example-inc/memcached-operator/pkg/apis/cache/v1alpha1&#34;</span>
+
+    <span style="color:#000">appsv1</span> <span style="color:#4e9a06">&#34;k8s.io/api/apps/v1&#34;</span>
+    <span style="color:#000">metav1</span> <span style="color:#4e9a06">&#34;k8s.io/apimachinery/pkg/apis/meta/v1&#34;</span>
+    <span style="color:#4e9a06">&#34;k8s.io/apimachinery/pkg/runtime&#34;</span>
+    <span style="color:#4e9a06">&#34;k8s.io/apimachinery/pkg/types&#34;</span>
+    <span style="color:#4e9a06">&#34;k8s.io/client-go/kubernetes/scheme&#34;</span>
+    <span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/client/fake&#34;</span>
+    <span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/reconcile&#34;</span>
+    <span style="color:#000">logf</span> <span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/log&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">TestMemcachedControllerDeploymentCreate</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">t</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">testing</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">T</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000;font-weight:bold">(</span>
+        <span style="color:#000">name</span>            <span style="color:#000;font-weight:bold">=</span> <span style="color:#4e9a06">&#34;memcached-operator&#34;</span>
+        <span style="color:#000">namespace</span>       <span style="color:#000;font-weight:bold">=</span> <span style="color:#4e9a06">&#34;memcached&#34;</span>
+        <span style="color:#000">replicas</span>  <span style="color:#204a87;font-weight:bold">int32</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">3</span>
+    <span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#8f5902;font-style:italic">// A Memcached object with metadata and spec.
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">memcached</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">cachev1alpha1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Memcached</span><span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000">ObjectMeta</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">metav1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ObjectMeta</span><span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000">Name</span><span style="color:#000;font-weight:bold">:</span>      <span style="color:#000">name</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">Namespace</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">namespace</span><span style="color:#000;font-weight:bold">,</span>
+        <span style="color:#000;font-weight:bold">},</span>
+        <span style="color:#000">Spec</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">cachev1alpha1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MemcachedSpec</span><span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000">Size</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">replicas</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#8f5902;font-style:italic">// Set desired number of Memcached replicas.
+</span><span style="color:#8f5902;font-style:italic"></span>        <span style="color:#000;font-weight:bold">},</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#8f5902;font-style:italic">// Objects to track in the fake client.
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">objs</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Object</span><span style="color:#000;font-weight:bold">{</span> <span style="color:#000">memcached</span> <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#8f5902;font-style:italic">// Register operator types with the runtime scheme.
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">s</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">scheme</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Scheme</span>
+    <span style="color:#000">s</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">AddKnownTypes</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">cachev1alpha1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">SchemeGroupVersion</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">memcached</span><span style="color:#000;font-weight:bold">)</span>
+
+    <span style="color:#8f5902;font-style:italic">// Create a fake client to mock API calls.
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">cl</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">fake</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NewFakeClient</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">objs</span><span style="color:#ce5c00;font-weight:bold">...</span><span style="color:#000;font-weight:bold">)</span>
+
+    <span style="color:#8f5902;font-style:italic">// Create a ReconcileMemcached object with the scheme and fake client.
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">ReconcileMemcached</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">cl</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">scheme</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">s</span><span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#8f5902;font-style:italic">// Mock request to simulate Reconcile() being called on an event for a
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#8f5902;font-style:italic">// watched resource .
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">req</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">reconcile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Request</span><span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000">NamespacedName</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">types</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NamespacedName</span><span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000">Name</span><span style="color:#000;font-weight:bold">:</span>      <span style="color:#000">name</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">Namespace</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">namespace</span><span style="color:#000;font-weight:bold">,</span>
+        <span style="color:#000;font-weight:bold">},</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000">res</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Reconcile</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">req</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+       <span style="color:#000">t</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Fatalf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;reconcile: (%v)&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#8f5902;font-style:italic">// Check the result of reconciliation to make sure it has the desired state.
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">!</span><span style="color:#000">res</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Requeue</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000">t</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Error</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;reconcile did not requeue request as expected&#34;</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#8f5902;font-style:italic">// Check if deployment has been created and has the correct size.
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">dep</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">appsv1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Deployment</span><span style="color:#000;font-weight:bold">{}</span>
+    <span style="color:#000">err</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">req</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NamespacedName</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">dep</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000">t</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Fatalf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;get deployment: (%v)&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#8f5902;font-style:italic">// Check if the quantity of Replicas for this deployment is equals the specification
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">dsize</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">dep</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Spec</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Replicas</span>
+    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">dsize</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#000">replicas</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000">t</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Errorf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;dep size (%d) is not the expected size (%d)&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">dsize</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">replicas</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p><strong>The above tests check if:</strong></p>
+<ul>
+<li><code>Reconcile()</code> fails to find a Deployment object</li>
+<li>A Deployment is created</li>
+<li>The request is requeued in the expected manner</li>
+<li>The number of replicas in the created Deployment&rsquo;s spec is as expected.</li>
+</ul>
+<p><strong>NOTE</strong>: A unit test checking more cases can be found in our <a href="https://github.com/operator-framework/operator-sdk-samples/blob/master/go/memcached-operator/pkg/controller/memcached/memcached_controller_test.go#L25"><code>samples repo</code></a>.</p>
+<h2 id="testing-with-3rd-party-resources">Testing with 3rd Party Resources</h2>
+<p>You may have added third-party resources in your operator as described in the <a href="/docs/golang/quickstart/#register-with-the-managers-scheme"><code>Advanced Topics section of the user guide</code></a>. In order to create a unit-test to test these kinds of resources, it might be necessary to update the Scheme with the third-party resources and pass it to your Reconciler.
+The following code snippet is an example that adds the <a href="https://docs.openshift.com/container-platform/3.11/rest_api/apis-route.openshift.io/v1.Route.html"><code>v1.Route</code></a> OpenShift scheme to the ReconcileMemcached reconciler&rsquo;s scheme.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">
+<span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+    <span style="color:#ce5c00;font-weight:bold">...</span>
+    <span style="color:#000">routev1</span> <span style="color:#4e9a06">&#34;github.com/openshift/api/route/v1&#34;</span>
+    <span style="color:#ce5c00;font-weight:bold">...</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#8f5902;font-style:italic">// TestMemcachedController runs ReconcileMemcached.Reconcile() against a
+</span><span style="color:#8f5902;font-style:italic">// fake client that tracks a Memcached object.
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">TestMemcachedController</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">t</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">testing</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">T</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#ce5c00;font-weight:bold">...</span>
+    <span style="color:#8f5902;font-style:italic">// Register operator types with the runtime scheme.
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">s</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">scheme</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Scheme</span>
+
+    <span style="color:#8f5902;font-style:italic">// Add route Openshift scheme
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">routev1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">AddToScheme</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">s</span><span style="color:#000;font-weight:bold">);</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000">t</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Fatalf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Unable to add route scheme: (%v)&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#8f5902;font-style:italic">// Create the mock for the Route
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#8f5902;font-style:italic">// NOTE: If the object will be created by the reconcile you do not need add a mock for it
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">route</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">routev1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Route</span><span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000">ObjectMeta</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">v1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ObjectMeta</span><span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000">Name</span><span style="color:#000;font-weight:bold">:</span>      <span style="color:#000">name</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">Namespace</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">namespace</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">Labels</span><span style="color:#000;font-weight:bold">:</span>    <span style="color:#000">getAppLabels</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">),</span>
+        <span style="color:#000;font-weight:bold">},</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#000">s</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">AddKnownTypes</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">appv1alpha1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">SchemeGroupVersion</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">memcached</span><span style="color:#000;font-weight:bold">)</span>
+
+    <span style="color:#8f5902;font-style:italic">// Create a fake client to mock API calls.
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">cl</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">fake</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NewFakeClient</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">objs</span><span style="color:#ce5c00;font-weight:bold">...</span><span style="color:#000;font-weight:bold">)</span>
+
+    <span style="color:#8f5902;font-style:italic">// Create a ReconcileMemcached object with the scheme and fake client.
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">ReconcileMemcached</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">cl</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">scheme</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">s</span><span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#ce5c00;font-weight:bold">...</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p><strong>NOTE:</strong> If your Reconcile has not the scheme attribute you may create the client fake as <code>cl := fake.NewFakeClientWithScheme(s, objs...)</code> in order to add the schema.</p>
+<p>In this way, you will be able to get the mock object injected into the Reconcile as the following example.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">    <span style="color:#000">route</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">routev1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Route</span><span style="color:#000;font-weight:bold">{}</span>
+    <span style="color:#000">err</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TODO</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">types</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NamespacedName</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">Name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">name</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Namespace</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">namespace</span><span style="color:#000;font-weight:bold">},</span> <span style="color:#000">route</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000">t</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Fatalf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;get route: (%v)&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p><strong>NOTE:</strong> Following an example of issue that can be faced because of an invalid <code>TypeMeta.APIVersion</code> informed. It is not recommended declared the <code>TypeMeta</code> since it will be implicit generated.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">get route: <span style="color:#ce5c00;font-weight:bold">(</span>no kind <span style="color:#4e9a06">&#34;Route&#34;</span> is registered <span style="color:#204a87;font-weight:bold">for</span> version <span style="color:#4e9a06">&#34;v1&#34;</span> in scheme <span style="color:#4e9a06">&#34;k8s.io/client-go/kubernetes/scheme/register.go:61&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
+</code></pre></div><p>Following an example which could cause this error.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">    <span style="color:#ce5c00;font-weight:bold">...</span>
+    <span style="color:#000">route</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">routev1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Route</span><span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000">TypeMeta</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">v1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TypeMeta</span><span style="color:#000;font-weight:bold">{</span>  <span style="color:#8f5902;font-style:italic">// TODO (user): Remove the TypeMeta declared
+</span><span style="color:#8f5902;font-style:italic"></span>            <span style="color:#000">APIVersion</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;v1&#34;</span><span style="color:#000;font-weight:bold">,</span>   <span style="color:#8f5902;font-style:italic">// the correct value will be `&#34;route.openshift.io/v1&#34;`
+</span><span style="color:#8f5902;font-style:italic"></span>            <span style="color:#000">Kind</span><span style="color:#000;font-weight:bold">:</span>       <span style="color:#4e9a06">&#34;Route&#34;</span><span style="color:#000;font-weight:bold">,</span>
+        <span style="color:#000;font-weight:bold">},</span>
+        <span style="color:#000">ObjectMeta</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">v1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ObjectMeta</span><span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000">Name</span><span style="color:#000;font-weight:bold">:</span>      <span style="color:#000">name</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">Namespace</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">namespace</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">Labels</span><span style="color:#000;font-weight:bold">:</span>    <span style="color:#000">ls</span><span style="color:#000;font-weight:bold">,</span>
+        <span style="color:#000;font-weight:bold">},</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#ce5c00;font-weight:bold">...</span>
+</code></pre></div><p>Following another example of the issue that can be faced when the third-party resource schema was not added properly.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">create a route: <span style="color:#ce5c00;font-weight:bold">(</span>no kind is registered <span style="color:#204a87;font-weight:bold">for</span> the <span style="color:#204a87">type</span> v1.Route in scheme <span style="color:#4e9a06">&#34;k8s.io/client-go/kubernetes/scheme/register.go:61&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span><span style="color:#4e9a06">`</span>
+</code></pre></div><h2 id="how-to-increase-the-verbosity-of-the-logs">How to increase the verbosity of the logs?</h2>
+<p>Following is a snippet code as an example to increase the verbosity of the logs in order to better troubleshoot your tests.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+    <span style="color:#ce5c00;font-weight:bold">...</span>
+    <span style="color:#000">logf</span> <span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime/pkg/log&#34;</span>
+    <span style="color:#ce5c00;font-weight:bold">...</span>
+<span style="color:#000;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">TestMemcachedController</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">t</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">testing</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">T</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#8f5902;font-style:italic">//dev logs
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">logf</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">SetLogger</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">logf</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ZapLogger</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">true</span><span style="color:#000;font-weight:bold">))</span>
+    <span style="color:#ce5c00;font-weight:bold">...</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><!-- Link vars declaration -->
+<!-- NOTE: The CI has a bug and the test will not pass with _ . Use "-" instead of "_" -->
+
+	
+	
+	<div class="text-muted mt-5 pt-3 border-top">Last modified January 1, 0001
+</div>
+</div>
+
+
+          </main>
+        </div>
+      </div>
+      <div class="row flex-xl-nowrap">
+        
+<footer class="of-footer-main">
+  <div class="of-footer-main__meta">
+    <img src="/build/images/logo.svg" alt="">
+    <p class="of-footer-main__meta__text">The Operator Framework is an open source toolkit to manage Kubernetes nativeapplications, called Operators, in an effective, automated, and scalable way.</p>
+    <ul class="of-link-list of-link-list--secondary">
+      <li class="of-link-list__li"><a class="of-link-list__a" href="#">Operator SDK</a></li>
+      <li class="of-link-list__li"><a class="of-link-list__a" href="#">Operator Lifecycle Manager</a></li>
+      <li class="of-link-list__li"><a class="of-link-list__a" class="of-link of-link--external" href="#">OperatorHub</a></li>
+    </ul>
+  </div>
+  <div class="of-footer-main__social">
+    <h4 class="of-heading of-heading--sm">Connect with us!</h4>
+      
+        
+        
+    <ul class="of-link-list">
+      
+        <li class="of-link-list__li">
+          <a class="of-link-list__a" href="https://groups.google.com/forum/#!forum/operator-framework" aria-label="Forum">
+            <i class="fas fa-comment"></i>
+          </a>
+        </li>
+      
+        <li class="of-link-list__li">
+          <a class="of-link-list__a" href="https://github.com/operator-framework/operator-sdk" aria-label="github">
+            <i class="fab fa-github"></i>
+          </a>
+        </li>
+      
+</ul>
+
+      
+    
+
+  </div>
+  <div class="of-footer-main__copyright">
+    <p>Copyright &copy; 2020</p>
+    <ul class="of-link-list">
+      <li class="of-link-list__li"><a href="https://www.redhat.com/en/about/privacy-policy">Privacy Statement</a></li>
+      
+    </ul>
+  </div>
+</footer>
+</body>
+</html>
+
+      </div>
+    </div>
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+<script src="/js/main.min.29b0315468c00226fa6f4556a9cebc0ac4fe1ce1457a01b22c0a06b329877383.js" integrity="sha256-KbAxVGjAAib6b0VWqc68CsT&#43;HOFFegGyLAoGsymHc4M=" crossorigin="anonymous"></script>
+
+
+
+  </body>
+</html>

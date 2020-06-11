@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ meta.name }}-site"
+  namespace: "default"
+  labels:
+    name: "{{ meta.name }}-nginx"
+spec:
+  selector:
+    matchLabels:
+      app: "{{ meta.name }}-nginx"
+  template:
+    metadata:
+      labels:
+        app: "{{ meta.name }}-nginx"
+    spec:
+      containers:
+      - env:
+        image: quay.io/asmacdo/docs-exp:hugo
+        imagePullPolicy: Always
+        name: nginx
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: "{{ meta.name }}-target"
+          mountPath: /usr/share/nginx/html
+      initContainers:
+        # This container clones the desired git repo to the EmptyDir volume.
+        - name: git-clone
+          image: alpine/git # Any image with git will do
+          args:
+            - clone
+            - --recurse-submodules
+            - --
+            - '{{ build_git_repo }}'
+            - /src # Put it in the volume
+          securityContext:
+            runAsUser: 1 # Any non-root user will do. Match to the workload.
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - name: "{{ meta.name }}-src"
+              mountPath: /src
+        - name: hugo-builder
+          image: klakegg/hugo:0.69.2-ext-ubuntu
+          command: ['sh', '-c', 'hugo -s "{{ github_docs_dir }}"']
+          volumeMounts:
+            - name: "{{ meta.name }}-src"
+              mountPath: /src
+              readOnly: false
+            - name: "{{ meta.name }}-target"
+              mountPath: /target
+              readOnly: false
+      volumes:
+      - name: "{{ meta.name }}-src"
+        emptyDir: {}
+      - name: "{{ meta.name }}-target"
+        emptyDir: {}

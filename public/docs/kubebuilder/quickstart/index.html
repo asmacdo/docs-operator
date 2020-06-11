@@ -1,0 +1,1235 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="generator" content="Hugo 0.69.2" />
+
+<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+
+<link rel="shortcut icon" href="/favicons/favicon.ico" >
+<link rel="apple-touch-icon" href="/favicons/apple-touch-icon-180x180.png" sizes="180x180">
+<link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">
+<link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicons/android-36x36.png" sizes="36x36">
+<link rel="icon" type="image/png" href="/favicons/android-48x48.png" sizes="48x48">
+<link rel="icon" type="image/png" href="/favicons/android-72x72.png" sizes="72x72">
+<link rel="icon" type="image/png" href="/favicons/android-96x96.png" sizes="96x96">
+<link rel="icon" type="image/png" href="/favicons/android-144x144.png" sizes="144x144">
+<link rel="icon" type="image/png" href="/favicons/android-192x192.png" sizes="192x192">
+
+<title>Golang Based Operator Quickstart | Operator SDK</title><meta property="og:title" content="Golang Based Operator Quickstart" />
+<meta property="og:description" content="NOTE: This is a WIP doc for the Kubebuilder integration effort. This new CLI and workflow is currently alpha and there may be breaking changes. Please refer to the quickstart guide for the default CLI and workflow.
+This guide walks through an example of building a simple memcached-operator using the operator-sdk CLI tool and controller-runtime library API.
+Prerequisites  go version v1.13&#43;. docker version 17.03&#43;. kubectl version v1.11.3&#43;. kustomize v3.1.0&#43; Access to a Kubernetes v1." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/docs/kubebuilder/quickstart/" />
+
+<meta itemprop="name" content="Golang Based Operator Quickstart">
+<meta itemprop="description" content="NOTE: This is a WIP doc for the Kubebuilder integration effort. This new CLI and workflow is currently alpha and there may be breaking changes. Please refer to the quickstart guide for the default CLI and workflow.
+This guide walks through an example of building a simple memcached-operator using the operator-sdk CLI tool and controller-runtime library API.
+Prerequisites  go version v1.13&#43;. docker version 17.03&#43;. kubectl version v1.11.3&#43;. kustomize v3.1.0&#43; Access to a Kubernetes v1.">
+
+<meta itemprop="wordCount" content="1913">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Golang Based Operator Quickstart"/>
+<meta name="twitter:description" content="NOTE: This is a WIP doc for the Kubebuilder integration effort. This new CLI and workflow is currently alpha and there may be breaking changes. Please refer to the quickstart guide for the default CLI and workflow.
+This guide walks through an example of building a simple memcached-operator using the operator-sdk CLI tool and controller-runtime library API.
+Prerequisites  go version v1.13&#43;. docker version 17.03&#43;. kubectl version v1.11.3&#43;. kustomize v3.1.0&#43; Access to a Kubernetes v1."/>
+
+
+
+
+
+<link rel="preload" href="/scss/main.min.2156b902b150b9e3872e1d22ac593d6651f390478d18ef3c04a45ca6b90d637b.css" as="style">
+<link href="/scss/main.min.2156b902b150b9e3872e1d22ac593d6651f390478d18ef3c04a45ca6b90d637b.css" rel="stylesheet" integrity="">
+
+
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+
+
+  </head>
+  <body class="td-page">
+    <header>
+      <header class="of-header-main">
+    <a href="/" class="of-brand">
+      <picture class="of-brand__picture">
+        <source srcset="/build/images/logo.svg" media="(min-width: 992px)">
+        <img src="/build/images/logo-sm.svg" alt="">  
+      </picture> 
+        </a>
+    <nav class="of-nav-main nav-collapse">
+      <ul class="of-nav-main__items menu-items">
+        <li class="of-nav-main__item"><a class="of-link-list__a " href="/">Home</a></li>
+        
+    
+    <li class="of-nav-main__item"><a class="of-link-list__a" href="/build/" title="Build">Build</a></li>
+    
+    <li class="of-nav-main__item"><a class="of-link-list__a" href="/docs/" title="Documentation">Documentation</a></li>
+    
+    </ul>
+    </nav>
+   
+    <div class="of-header-main__search">
+		
+
+    </div>
+  </header>
+    </header>
+    <div class="container-fluid td-outer">
+      <div class="td-main">
+        <div class="row flex-xl-nowrap">
+          <div class="col-12 col-md-3 col-xl-2 td-sidebar d-print-none">
+            
+
+
+
+
+<div id="td-sidebar-menu" class="td-sidebar__inner">
+  
+  <nav class="collapse td-sidebar-nav pt-2 pl-4" id="td-section-nav">
+    
+    
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/" class="align-left pl-0 pr-2 active td-sidebar-link td-sidebar-link__section">Documentation</a>
+  </li>
+  <ul>
+    <li class="collapse show" id="docs">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsinstall-operator-sdk" href="/docs/install-operator-sdk/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page  active" id="m-docskubebuilderquickstart" href="/docs/kubebuilder/quickstart/">Quickstart</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/ansible/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Ansible Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsansible">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibleinstallation" href="/docs/ansible/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblequickstart" href="/docs/ansible/quickstart/">Quickstart</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibletesting-guide" href="/docs/ansible/testing-guide/">Testing with Molecule</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibledevelopment-tips" href="/docs/ansible/development-tips/">Development Tips</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/ansible/reference/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsansiblereference">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceadvanced_options" href="/docs/ansible/reference/advanced_options/">Advanced Options</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceapb-migration-guide" href="/docs/ansible/reference/apb-migration-guide/">APB Migration</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencedependent-watches" href="/docs/ansible/reference/dependent-watches/">Dependent Watches</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencefinalizers" href="/docs/ansible/reference/finalizers/">Finalizers</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceinformation-flow-ansible-operator" href="/docs/ansible/reference/information-flow-ansible-operator/">Information Flow</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceretroactively-owned-resources" href="/docs/ansible/reference/retroactively-owned-resources/">Retroactively Owned Resources</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencescaffolding" href="/docs/ansible/reference/scaffolding/">Scaffolding</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencewatches" href="/docs/ansible/reference/watches/">Watches</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibledevwebhooks" href="/docs/ansible/dev/webhooks/"></a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Golang Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolang">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolanginstallation" href="/docs/golang/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangquickstart" href="/docs/golang/quickstart/">Quickstart</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangunit-testing" href="/docs/golang/unit-testing/">Unit Testing</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolange2e-tests" href="/docs/golang/e2e-tests/">Writing E2E Tests</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/monitoring/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Monitoring</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangmonitoring">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangmonitoringprometheus" href="/docs/golang/monitoring/prometheus/">With Prometheus</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangmonitoringservice-monitor" href="/docs/golang/monitoring/service-monitor/">Using Prometheus Operator ServiceMonitor CRD</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/olm-integration/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Integrating with OLM</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangolm-integration">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationcsv-annotations" href="/docs/golang/olm-integration/csv-annotations/">CSV Code Annotations</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationgenerating-a-csv" href="/docs/golang/olm-integration/generating-a-csv/">Generating ClusterServiceVersion&#39;s</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationolm-cli" href="/docs/golang/olm-integration/olm-cli/">Running with OLM</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationbundle-cli" href="/docs/golang/olm-integration/bundle-cli/">Working with Bundles</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/references/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangreferences">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesclient" href="/docs/golang/references/client/">Controller Runtime Client API</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesevent-filtering" href="/docs/golang/references/event-filtering/">Using Predicates for Event Filtering</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferenceslogging" href="/docs/golang/references/logging/">Logging</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesproject_layout" href="/docs/golang/references/project_layout/">Project Layout</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/helm/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Helm Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docshelm">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelminstallation" href="/docs/helm/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmquickstart" href="/docs/helm/quickstart/">Quickstart</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/helm/reference/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docshelmreference">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferenceadvanced_features" href="/docs/helm/reference/advanced_features/">Advanced Features</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferencescaffolding" href="/docs/helm/reference/scaffolding/">Scaffolding</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferencewatches" href="/docs/helm/reference/watches/">Watches</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/scorecard/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Scorecard</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsscorecard">
+      
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/cli/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">CLI Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscli">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk" href="/docs/cli/operator-sdk/">operator-sdk</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add" href="/docs/cli/operator-sdk_add/">operator-sdk add</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_api" href="/docs/cli/operator-sdk_add_api/">operator-sdk add api</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_controller" href="/docs/cli/operator-sdk_add_controller/">operator-sdk add controller</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_crd" href="/docs/cli/operator-sdk_add_crd/">operator-sdk add crd</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_build" href="/docs/cli/operator-sdk_build/">operator-sdk build</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle" href="/docs/cli/operator-sdk_bundle/">operator-sdk bundle</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle_create" href="/docs/cli/operator-sdk_bundle_create/">operator-sdk bundle create</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle_validate" href="/docs/cli/operator-sdk_bundle_validate/">operator-sdk bundle validate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_cleanup" href="/docs/cli/operator-sdk_cleanup/">operator-sdk cleanup</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion" href="/docs/cli/operator-sdk_completion/">operator-sdk completion</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion_bash" href="/docs/cli/operator-sdk_completion_bash/">operator-sdk completion bash</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion_zsh" href="/docs/cli/operator-sdk_completion_zsh/">operator-sdk completion zsh</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate" href="/docs/cli/operator-sdk_generate/">operator-sdk generate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_crds" href="/docs/cli/operator-sdk_generate_crds/">operator-sdk generate crds</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_csv" href="/docs/cli/operator-sdk_generate_csv/">operator-sdk generate csv</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_k8s" href="/docs/cli/operator-sdk_generate_k8s/">operator-sdk generate k8s</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_migrate" href="/docs/cli/operator-sdk_migrate/">operator-sdk migrate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_new" href="/docs/cli/operator-sdk_new/">operator-sdk new</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm" href="/docs/cli/operator-sdk_olm/">operator-sdk olm</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_install" href="/docs/cli/operator-sdk_olm_install/">operator-sdk olm install</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_status" href="/docs/cli/operator-sdk_olm_status/">operator-sdk olm status</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_uninstall" href="/docs/cli/operator-sdk_olm_uninstall/">operator-sdk olm uninstall</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_print-deps" href="/docs/cli/operator-sdk_print-deps/">operator-sdk print-deps</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_run" href="/docs/cli/operator-sdk_run/">operator-sdk run</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_scorecard" href="/docs/cli/operator-sdk_scorecard/">operator-sdk scorecard</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_test" href="/docs/cli/operator-sdk_test/">operator-sdk test</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_test_local" href="/docs/cli/operator-sdk_test_local/">operator-sdk test local</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_version" href="/docs/cli/operator-sdk_version/">operator-sdk version</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/contribution-guidelines/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Contribution Guidelines</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscontribution-guidelines">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesdeveloper-guide" href="/docs/contribution-guidelines/developer-guide/">Development Environment</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesrelease" href="/docs/contribution-guidelines/release/">Release Guide</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesreporting-issues" href="/docs/contribution-guidelines/reporting-issues/">Reporting Issues</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/contribution-guidelines/testing/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Testing</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscontribution-guidelinestesting">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinestestingrunning-the-tests" href="/docs/contribution-guidelines/testing/running-the-tests/">Running Tests</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinestestingtravis-build" href="/docs/contribution-guidelines/testing/travis-build/">Travis CI</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelineslocal-changes" href="/docs/contribution-guidelines/local-changes/">Local Changes</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelineslocal-docs" href="/docs/contribution-guidelines/local-docs/">Local Docs</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrating-existing-apis" href="/docs/migrating-existing-apis/">Migrating Existing K8S APIs</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/migration/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Migration Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsmigration">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrationv010-migration-guide" href="/docs/migration/v0.1.0-migration-guide/">Migration</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrationversion-upgrade-guide" href="/docs/migration/version-upgrade-guide/">Version Upgrade</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsoperator-scope" href="/docs/operator-scope/">Operator Scope</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsversioning" href="/docs/versioning/">Versioning</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsfaq" href="/docs/faq/">FAQ</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuilderadvanced-topics" href="/docs/kubebuilder/advanced-topics/"></a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuildermigrationproject_migration_guide" href="/docs/kubebuilder/migration/project_migration_guide/"></a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+  </nav>
+</div>
+
+
+
+
+          </div>
+
+          <main class="col-12 col-md-9 col-xl-8 pl-md-5" role="main">
+            
+  
+
+            
+            
+<div class="td-content">
+	<h1>Golang Based Operator Quickstart</h1>
+	
+	<p><strong>NOTE:</strong> This is a WIP doc for the Kubebuilder integration effort. This new CLI and workflow is currently alpha and there may be breaking changes.
+Please refer to the <a href="/docs/golang/quickstart/">quickstart guide</a> for the default CLI and workflow.</p>
+<p>This guide walks through an example of building a simple memcached-operator using the operator-sdk CLI tool and controller-runtime library API.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li><a href="https://golang.org/dl/">go</a> version v1.13+.</li>
+<li><a href="https://docs.docker.com/install/">docker</a> version 17.03+.</li>
+<li><a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/">kubectl</a> version v1.11.3+.</li>
+<li><a href="https://sigs.k8s.io/kustomize/docs/INSTALL.md">kustomize</a> v3.1.0+</li>
+<li>Access to a Kubernetes v1.11.3+ cluster.</li>
+</ul>
+<h2 id="create-a-new-project">Create a new project</h2>
+<p>Use the CLI to create a new memcached-operator project:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ mkdir -p <span style="color:#000">$HOME</span>/projects/memcached-operator
+$ <span style="color:#204a87">cd</span> <span style="color:#000">$HOME</span>/projects/memcached-operator
+<span style="color:#8f5902;font-style:italic"># we&#39;ll use a domain of example.com</span>
+<span style="color:#8f5902;font-style:italic"># so all API groups will be &lt;group&gt;.example.com</span>
+$ operator-sdk init --domain<span style="color:#ce5c00;font-weight:bold">=</span>example.com --repo<span style="color:#ce5c00;font-weight:bold">=</span>github.com/example-inc/memcached-operator
+</code></pre></div><p>To learn about the project directory structure, see <a href="https://book.kubebuilder.io/cronjob-tutorial/basic-project.html">Kubebuilder project layout</a> doc.</p>
+<h4 id="a-note-on-dependency-management">A note on dependency management</h4>
+<p><code>operator-sdk init</code> generates a <code>go.mod</code> file to be used with <a href="https://github.com/golang/go/wiki/Modules">Go modules</a>. The <code>--repo=&lt;path&gt;</code> flag is required when creating a project outside of <code>$GOPATH/src</code>, as scaffolded files require a valid module path. Ensure you <a href="https://github.com/golang/go/wiki/Modules#how-to-install-and-activate-module-support">activate module support</a> by running <code>export GO111MODULE=on</code> before using the SDK.</p>
+<h3 id="manager">Manager</h3>
+<p>The main program for the operator <code>main.go</code> initializes and runs the <a href="https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg/manager#Manager">Manager</a>.</p>
+<p>See the <a href="https://book.kubebuilder.io/cronjob-tutorial/empty-main.html">Kubebuilder entrypoint doc</a> for more details on how the manager registers the Scheme for the custom resource API defintions, and sets up and runs controllers and webhooks.</p>
+<p>The Manager can restrict the namespace that all controllers will watch for resources:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#000">mgr</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">manager</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">New</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">cfg</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">manager</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Options</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">Namespace</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">namespace</span><span style="color:#000;font-weight:bold">})</span>
+</code></pre></div><p>By default this will be the namespace that the operator is running in. To watch all namespaces leave the namespace option empty:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#000">mgr</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">manager</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">New</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">cfg</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">manager</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Options</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">Namespace</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;&#34;</span><span style="color:#000;font-weight:bold">})</span>
+</code></pre></div><p>It is also possible to use the <a href="https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg/cache#MultiNamespacedCacheBuilder">MultiNamespacedCacheBuilder</a> to watch a specific set of namespaces:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">namespaces</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#204a87;font-weight:bold">string</span> <span style="color:#8f5902;font-style:italic">// List of Namespaces
+</span><span style="color:#8f5902;font-style:italic">// Create a new Cmd to provide shared dependencies and start components
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000">mgr</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">manager</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">New</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">cfg</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">manager</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Options</span><span style="color:#000;font-weight:bold">{</span>
+   <span style="color:#000">NewCache</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">cache</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MultiNamespacedCacheBuilder</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">namespaces</span><span style="color:#000;font-weight:bold">),</span>
+<span style="color:#000;font-weight:bold">})</span>
+</code></pre></div><h4 id="operator-scope">Operator scope</h4>
+<blockquote>
+<p><strong>// TODO:</strong> Update <a href="/docs/operator-scope/">operator scope doc</a> and update commands that rely on WATCH_NAMESPACE being defined and sourced from <code>deploy/operator.yaml</code>.</p>
+</blockquote>
+<p>Read the <a href="/docs/operator-scope/">operator scope</a> documentation on how to run your operator as namespace-scoped vs cluster-scoped.</p>
+<p>By default the main program will set the manager&rsquo;s namespace using the value of <code>WATCH_NAMESPACE</code> env defined in <code>deploy/operator.yaml</code>.</p>
+<h2 id="create-a-new-api-and-controller">Create a new API and Controller</h2>
+<p>Create a new Custom Resource Definition(CRD) API with group <code>cache</code> version <code>v1alpha1</code> and Kind Memcached.
+When prompted, enter yes <code>y</code> for creating both the resource and controller.</p>
+<pre><code class="language-console" data-lang="console">$ operator-sdk create api --group=cache --version=v1alpha1 --kind=Memcached
+Create Resource [y/n]
+y
+Create Controller [y/n]
+y
+Writing scaffold for you to edit...
+api/v1alpha1/memcached_types.go
+controllers/memcached_controller.go
+...
+</code></pre><p>This will scaffold the Memcached resource API at <code>api/v1alpha1/memcached_types.go</code> and the controller at <code>controllers/memcached_controller.go</code>.</p>
+<p>See the <a href="https://book.kubebuilder.io/cronjob-tutorial/gvks.html">API terminology doc</a> for details on the CRD API conventions.</p>
+<p>To understand the API Go types and controller scaffolding see the Kubebuilder <a href="https://book.kubebuilder.io/cronjob-tutorial/new-api.html">api doc</a> and <a href="https://book.kubebuilder.io/cronjob-tutorial/controller-overview.html">controller doc</a>.</p>
+<h3 id="define-the-api">Define the API</h3>
+<p>Define the API for the Memcached Custom Resource(CR) by modifying the Go type definitions at <code>api/v1alpha1/memcached_types.go</code> to have the following spec and status:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8f5902;font-style:italic">// MemcachedSpec defines the desired state of Memcached
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">MemcachedSpec</span> <span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#8f5902;font-style:italic">// +kubebuilder:validation:Minimum=0
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// Size is the size of the memcached deployment
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">Size</span> <span style="color:#204a87;font-weight:bold">int32</span> <span style="color:#4e9a06">`json:&#34;size&#34;`</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#8f5902;font-style:italic">// MemcachedStatus defines the observed state of Memcached
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">MemcachedStatus</span> <span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#8f5902;font-style:italic">// Nodes are the names of the memcached pods
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">Nodes</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#204a87;font-weight:bold">string</span> <span style="color:#4e9a06">`json:&#34;nodes&#34;`</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>After modifying the <code>*_types.go</code> file always run the following command to update the generated code for that resource type:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ make generate
+</code></pre></div><p>The above makefile target will invoke the <a href="https://sigs.k8s.io/controller-tools">controller-gen</a> utility to update the <code>api/v1alpha1/zz_generated.deepcopy.go</code> file to ensure our API&rsquo;s Go type definitons implement the <code>runtime.Object</code> interface that all Kind types must implement.</p>
+<h3 id="generating-crd-manifests">Generating CRD manifests</h3>
+<p>Once the API is defined with spec/status fields and CRD validation markers, the CRD manifests can be generated and updated with the following command:</p>
+<pre><code class="language-console" data-lang="console">$ make manifests
+</code></pre><p>This makefile target will invoke controller-gen to generate the CRD manifests at <code>config/crd/bases/cache.example.com_memcacheds.yaml</code>.</p>
+<h4 id="openapi-validation">OpenAPI validation</h4>
+<p>OpenAPIv3 schemas are added to CRD manifests in the <code>spec.validation</code> block when the manifests are generated. This validation block allows Kubernetes to validate the properties in a Memcached Custom Resource when it is created or updated.</p>
+<p>Markers (annotations) are available to configure validations for your API. These markers will always have a <code>+kubebuilder:validation</code> prefix.</p>
+<p>Usage of markers in API code is discussed in the kubebuilder <a href="https://book.kubebuilder.io/reference/generating-crd.html">CRD generation</a> and <a href="https://book.kubebuilder.io/reference/markers.html">marker</a> documentation. A full list of OpenAPIv3 validation markers can be found <a href="https://book.kubebuilder.io/reference/markers/crd-validation.html">here</a>.</p>
+<p>To learn more about OpenAPI v3.0 validation schemas in CRDs, refer to the <a href="https://kubernetes.io/docs/tasks/access-kubernetes-api/custom-resources/custom-resource-definitions/#specifying-a-structural-schema">Kubernetes Documentation</a>.</p>
+<h3 id="implement-the-controller">Implement the Controller</h3>
+<p>For this example replace the generated controller file <code>controllers/memcached_controller.go</code> with the example <a href="https://github.com/operator-framework/operator-sdk/blob/master/example/kb-memcached-operator/memcached_controller.go.tmpl"><code>memcached_controller.go</code></a> implementation.</p>
+<p>The example controller executes the following reconciliation logic for each Memcached CR:</p>
+<ul>
+<li>Create a memcached Deployment if it doesn&rsquo;t exist</li>
+<li>Ensure that the Deployment size is the same as specified by the Memcached CR spec</li>
+<li>Update the Memcached CR status using the status writer with the names of the memcached pods</li>
+</ul>
+<p>The next two subsections explain how the controller watches resources and how the reconcile loop is triggered. Skip to the <a href="#build-and-run-the-operator">Build</a> section to see how to build and run the operator.</p>
+<h4 id="resources-watched-by-the-controller">Resources watched by the Controller</h4>
+<p>The <code>SetupWithManager()</code> function in <code>controllers/memcached_controller.go</code> specifies how the controller is built to watch a CR and other resources that are owned and managed by that controller.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">MemcachedReconciler</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">SetupWithManager</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">mgr</span> <span style="color:#000">ctrl</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Manager</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">error</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">ctrl</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NewControllerManagedBy</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">mgr</span><span style="color:#000;font-weight:bold">).</span>
+		<span style="color:#000">For</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">cachev1alpha1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Memcached</span><span style="color:#000;font-weight:bold">{}).</span>
+		<span style="color:#000">Owns</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">appsv1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Deployment</span><span style="color:#000;font-weight:bold">{}).</span>
+		<span style="color:#000">Complete</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>The <code>NewControllerManagedBy()</code> provides a controller builder that allows various controller configurations.</p>
+<p><code>For(&amp;cachev1alpha1.Memcached{})</code> specifies the Memcached type as the primary resource to watch. For each Memcached type Add/Update/Delete event the reconcile loop will be sent a reconcile <code>Request</code> (a namespace/name key) for that Memcached object.</p>
+<p><code>Owns(&amp;appsv1.Deployment{})</code> specifies the Deployments type as the secondary resource to watch. For each Deployment type Add/Update/Delete event, the event handler will map each event to a reconcile <code>Request</code> for the owner of the Deployment. Which in this case is the Memcached object for which the Deployment was created.</p>
+<h4 id="controller-configurations">Controller Configurations</h4>
+<p>There are a number of other useful configurations that can be made when initialzing a controller. For more details on these configurations consult the upstream <a href="https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg/builder#example-Builder">builder</a> and <a href="https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg/controller">controller</a> godocs.</p>
+<ul>
+<li>Set the max number of concurrent Reconciles for the controller via the <a href="https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg/controller#Options"><code>MaxConcurrentReconciles</code></a>  option. Defaults to 1.
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">  <span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">MemcachedReconciler</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">SetupWithManager</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">mgr</span> <span style="color:#000">ctrl</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Manager</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">error</span> <span style="color:#000;font-weight:bold">{</span>
+      <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">ctrl</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NewControllerManagedBy</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">mgr</span><span style="color:#000;font-weight:bold">).</span>
+          <span style="color:#000">For</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">cachev1alpha1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Memcached</span><span style="color:#000;font-weight:bold">{}).</span>
+          <span style="color:#000">Owns</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">appsv1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Deployment</span><span style="color:#000;font-weight:bold">{}).</span>
+          <span style="color:#000">WithOptions</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">controller</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Options</span><span style="color:#000;font-weight:bold">{</span>
+              <span style="color:#000">MaxConcurrentReconciles</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">2</span><span style="color:#000;font-weight:bold">,</span>
+          <span style="color:#000;font-weight:bold">}).</span>
+          <span style="color:#000">Complete</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span><span style="color:#000;font-weight:bold">)</span>
+  <span style="color:#000;font-weight:bold">}</span>
+</code></pre></div></li>
+<li>Filter watch events using <a href="/docs/golang/references/event-filtering/">predicates</a></li>
+<li>Choose the type of <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/handler#hdr-EventHandlers">EventHandler</a> to change how a watch event will translate to reconcile requests for the reconcile loop. For operator relationships that are more complex than primary and secondary resources, the <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/handler#EnqueueRequestsFromMapFunc"><code>EnqueueRequestsFromMapFunc</code></a> handler can be used to transform a watch event into an arbitrary set of reconcile requests.</li>
+</ul>
+<h4 id="reconcile-loop">Reconcile loop</h4>
+<p>Every Controller has a Reconciler object with a <code>Reconcile()</code> method that implements the reconcile loop. The reconcile loop is passed the <a href="https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg/reconcile#Request"><code>Request</code></a> argument which is a Namespace/Name key used to lookup the primary resource object, Memcached, from the cache:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+	<span style="color:#000">ctrl</span> <span style="color:#4e9a06">&#34;sigs.k8s.io/controller-runtime&#34;</span>
+
+	<span style="color:#000">cachev1alpha1</span> <span style="color:#4e9a06">&#34;github.com/example-inc/memcached-operator/api/v1alpha1&#34;</span>
+	<span style="color:#ce5c00;font-weight:bold">...</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">MemcachedReconciler</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Reconcile</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">req</span> <span style="color:#000">ctrl</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Request</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctrl</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">error</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#8f5902;font-style:italic">// Lookup the Memcached instance for this reconcile request
+</span><span style="color:#8f5902;font-style:italic"></span>  <span style="color:#000">memcached</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">cachev1alpha1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Memcached</span><span style="color:#000;font-weight:bold">{}</span>
+  <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">req</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NamespacedName</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">memcached</span><span style="color:#000;font-weight:bold">)</span>
+  <span style="color:#ce5c00;font-weight:bold">...</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>Based on the return values, <a href="https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg/reconcile#Result"><code>Result</code></a> and error, the <code>Request</code> may be requeued and the reconcile loop may be triggered again:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8f5902;font-style:italic">// Reconcile successful - don&#39;t requeue
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">ctrl</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#204a87;font-weight:bold">nil</span>
+<span style="color:#8f5902;font-style:italic">// Reconcile failed due to error - requeue
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">ctrl</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#000">err</span>
+<span style="color:#8f5902;font-style:italic">// Requeue for any reason other than error
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">ctrl</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">Requeue</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">true</span><span style="color:#000;font-weight:bold">},</span> <span style="color:#204a87;font-weight:bold">nil</span>
+</code></pre></div><p>You can set the <code>Result.RequeueAfter</code> to requeue the <code>Request</code> after a grace period as well:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#4e9a06">&#34;time&#34;</span>
+
+<span style="color:#8f5902;font-style:italic">// Reconcile for any reason than error after 5 seconds
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">ctrl</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">RequeueAfter</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">time</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Second</span><span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#0000cf;font-weight:bold">5</span><span style="color:#000;font-weight:bold">},</span> <span style="color:#204a87;font-weight:bold">nil</span>
+</code></pre></div><p><strong>Note:</strong> Returning <code>Result</code> with <code>RequeueAfter</code> set is how you can periodically reconcile a CR.</p>
+<p>For a guide on Reconcilers, Clients, and interacting with resource Events, see the <a href="/docs/golang/references/client/">Client API doc</a>.</p>
+<blockquote>
+<p><strong>// TODO:</strong> Should we point to the client API doc after the integration?</p>
+</blockquote>
+<h3 id="specify-permissions-and-generate-rbac-manifests">Specify permissions and generate RBAC manifests</h3>
+<p>The controller needs certain RBAC permissions to interact with the resources it manages. These are specified via [RBAC markers][rbac_markers] like the following:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8f5902;font-style:italic">// +kubebuilder:rbac:groups=cache.example.com,resources=memcacheds,verbs=get;list;watch;create;update;patch;delete
+</span><span style="color:#8f5902;font-style:italic">// +kubebuilder:rbac:groups=cache.example.com,resources=memcacheds/status,verbs=get;update;patch
+</span><span style="color:#8f5902;font-style:italic">// +kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;create;update;patch;delete
+</span><span style="color:#8f5902;font-style:italic">// +kubebuilder:rbac:groups=core,resources=pods,verbs=get;list;
+</span><span style="color:#8f5902;font-style:italic"></span>
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">MemcachedReconciler</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Reconcile</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">req</span> <span style="color:#000">ctrl</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Request</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctrl</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Result</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">error</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+</code></pre></div><p>The <code>ClusterRole</code> manifest at <code>config/rbac/role.yaml</code> is generated from the above markers via controller-gen with the following command:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ make manifests
+</code></pre></div><h2 id="build-and-run-the-operator">Build and run the operator</h2>
+<p>Before running the operator, the CRD must be registered with the Kubernetes apiserver:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ make install
+</code></pre></div><p>Once this is done, there are two ways to run the operator:</p>
+<ul>
+<li>As Go program outside a cluster</li>
+<li>As a Deployment inside a Kubernetes cluster</li>
+</ul>
+<h3 id="1-run-locally-outside-the-cluster">1. Run locally outside the cluster</h3>
+<p>To run the operator locally execute the following command:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ make run <span style="color:#000">ENABLE_WEBHOOKS</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87">false</span>
+</code></pre></div><blockquote>
+<p><strong>// TODO:</strong> Add an advanced section or separate doc on writing defaulting/validating and conversion webhooks.</p>
+</blockquote>
+<h3 id="2-run-as-a-deployment-inside-the-cluster">2. Run as a Deployment inside the cluster</h3>
+<h4 id="build-and-push-the-image">Build and push the image</h4>
+<p>Build the operator image and push it to a registry.</p>
+<p>Make sure to modify the <code>IMG</code> arg in the example below to reference a container repository that
+you have access to. You can obtain an account for storing containers at
+repository sites such quay.io or hub.docker.com. This example uses quay.</p>
+<p>Build the image:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ <span style="color:#204a87">export</span> <span style="color:#000">USERNAME</span><span style="color:#ce5c00;font-weight:bold">=</span>&lt;quay-username&gt;
+
+$ make docker-build <span style="color:#000">IMG</span><span style="color:#ce5c00;font-weight:bold">=</span>quay.io/<span style="color:#000">$USERNAME</span>/memcached-operator:v0.0.1
+</code></pre></div><p>Push the image to a repository:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ make docker-push <span style="color:#000">IMG</span><span style="color:#ce5c00;font-weight:bold">=</span>quay.io/<span style="color:#000">$USERNAME</span>/memcached-operator:v0.0.1
+</code></pre></div><blockquote>
+<p><strong>// TODO:</strong> Mention how to use <code>buildah build</code> by just updating the Makefile?</p>
+</blockquote>
+<p><strong>Note</strong>:
+The name and tag of the image (<code>IMG=&lt;some-registry&gt;/&lt;project-name&gt;:tag</code>) in both the commands can also be set in the Makefile. Modify the line which has <code>IMG ?= controller:latest</code> to set your desired default image name.</p>
+<h4 id="deploy-the-operator">Deploy the operator</h4>
+<p>For this example we will run the operator in the <code>default</code> namespace which can be specified for all resources in <code>config/default/kustomization.yaml</code>:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ <span style="color:#204a87">cd</span> config/default/ <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> kustomize edit <span style="color:#204a87">set</span> namespace <span style="color:#4e9a06">&#34;default&#34;</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#204a87">cd</span> ../..
+</code></pre></div><p>Run the following to deploy the operator. This will also install the RBAC manifests from <code>config/rbac</code>.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ make deploy <span style="color:#000">IMG</span><span style="color:#ce5c00;font-weight:bold">=</span>quay.io/<span style="color:#000">$USERNAME</span>/memcached-operator:v0.0.1
+</code></pre></div><p>Verify that the memcached-operator is up and running:</p>
+<pre><code class="language-console" data-lang="console">$ kubectl get deployment
+NAME                                    READY   UP-TO-DATE   AVAILABLE   AGE
+memcached-operator-controller-manager   1/1     1            1           8m
+</code></pre><h3 id="3-deploy-your-operator-with-the-operator-lifecycle-manager-olm">3. Deploy your Operator with the Operator Lifecycle Manager (OLM)</h3>
+<p>OLM will manage creation of most if not all resources required to run your operator, using a bit of setup from other <code>operator-sdk</code> commands. Check out the <a href="/docs/golang/olm-integration/olm-cli/">docs</a> for more information.</p>
+<h2 id="create-a-memcached-cr">Create a Memcached CR</h2>
+<p>Update the sample Memcached CR manifest at <code>config/samples/cache_v1alpha1_memcached.yaml</code> and define the <code>spec</code> as the following:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-YAML" data-lang="YAML"><span style="color:#204a87;font-weight:bold">apiVersion</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>cache.example.com/v1alpha1<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span><span style="color:#204a87;font-weight:bold">kind</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>Memcached<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span><span style="color:#204a87;font-weight:bold">metadata</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span>memcached-sample<span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline"></span><span style="color:#204a87;font-weight:bold">spec</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline">
+</span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">size</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#0000cf;font-weight:bold">3</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></code></pre></div><p>Create the CR:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ kubectl apply -f config/samples/cache_v1alpha1_memcached.yaml
+</code></pre></div><p>Ensure that the memcached operator creates the deployment for the sample CR with the correct size:</p>
+<pre><code class="language-console" data-lang="console">$ kubectl get deployment
+NAME                                    READY   UP-TO-DATE   AVAILABLE   AGE
+memcached-operator-controller-manager   1/1     1            1           8m
+memcached-sample                        3/3     3            3           1m
+</code></pre><p>Check the pods and CR status to confirm the status is updated with the memcached pod names:</p>
+<pre><code class="language-console" data-lang="console">$ kubectl get pods
+NAME                                  READY     STATUS    RESTARTS   AGE
+memcached-sample-6fd7c98d8-7dqdr      1/1       Running   0          1m
+memcached-sample-6fd7c98d8-g5k7v      1/1       Running   0          1m
+memcached-sample-6fd7c98d8-m7vn7      1/1       Running   0          1m
+</code></pre><pre><code class="language-console" data-lang="console">$ kubectl get memcached/memcached-sample -o yaml
+apiVersion: cache.example.com/v1alpha1
+kind: Memcached
+metadata:
+  clusterName: &quot;&quot;
+  creationTimestamp: 2018-03-31T22:51:08Z
+  generation: 0
+  name: memcached-sample
+  namespace: default
+  resourceVersion: &quot;245453&quot;
+  selfLink: /apis/cache.example.com/v1alpha1/namespaces/default/memcacheds/memcached-sample
+  uid: 0026cc97-3536-11e8-bd83-0800274106a1
+spec:
+  size: 3
+status:
+  nodes:
+  - memcached-sample-6fd7c98d8-7dqdr
+  - memcached-sample-6fd7c98d8-g5k7v
+  - memcached-sample-6fd7c98d8-m7vn7
+</code></pre><h3 id="update-the-size">Update the size</h3>
+<p>Update <code>config/samples/cache_v1alpha1_memcached.yaml</code> to change the <code>spec.size</code> field in the Memcached CR from 3 to 4:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ kubectl patch memcached memcached-sample -p <span style="color:#4e9a06">&#39;{&#34;spec&#34;:{&#34;size&#34;: 4}}&#39;</span> --type<span style="color:#ce5c00;font-weight:bold">=</span>merge
+</code></pre></div><p>Confirm that the operator changes the deployment size:</p>
+<pre><code class="language-console" data-lang="console">$ kubectl get deployment
+NAME                                    READY   UP-TO-DATE   AVAILABLE   AGE
+memcached-operator-controller-manager   1/1     1            1           10m
+memcached-sample                        4/4     4            4           3m
+</code></pre><h3 id="cleanup">Cleanup</h3>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ kubectl delete -f config/samples/cache_v1alpha1_memcached.yaml
+$ kubectl delete deployments,service -l control-plane<span style="color:#ce5c00;font-weight:bold">=</span>controller-manager
+$ kubectl delete role,rolebinding --all
+</code></pre></div><p>See the <a href="/docs/kubebuilder/advanced-topics/">advanced topics</a> doc for more use cases and under the hood details.</p>
+
+	
+	
+	<div class="text-muted mt-5 pt-3 border-top">Last modified January 1, 0001
+</div>
+</div>
+
+
+          </main>
+        </div>
+      </div>
+      <div class="row flex-xl-nowrap">
+        
+<footer class="of-footer-main">
+  <div class="of-footer-main__meta">
+    <img src="/build/images/logo.svg" alt="">
+    <p class="of-footer-main__meta__text">The Operator Framework is an open source toolkit to manage Kubernetes nativeapplications, called Operators, in an effective, automated, and scalable way.</p>
+    <ul class="of-link-list of-link-list--secondary">
+      <li class="of-link-list__li"><a class="of-link-list__a" href="#">Operator SDK</a></li>
+      <li class="of-link-list__li"><a class="of-link-list__a" href="#">Operator Lifecycle Manager</a></li>
+      <li class="of-link-list__li"><a class="of-link-list__a" class="of-link of-link--external" href="#">OperatorHub</a></li>
+    </ul>
+  </div>
+  <div class="of-footer-main__social">
+    <h4 class="of-heading of-heading--sm">Connect with us!</h4>
+      
+        
+        
+    <ul class="of-link-list">
+      
+        <li class="of-link-list__li">
+          <a class="of-link-list__a" href="https://groups.google.com/forum/#!forum/operator-framework" aria-label="Forum">
+            <i class="fas fa-comment"></i>
+          </a>
+        </li>
+      
+        <li class="of-link-list__li">
+          <a class="of-link-list__a" href="https://github.com/operator-framework/operator-sdk" aria-label="github">
+            <i class="fab fa-github"></i>
+          </a>
+        </li>
+      
+</ul>
+
+      
+    
+
+  </div>
+  <div class="of-footer-main__copyright">
+    <p>Copyright &copy; 2020</p>
+    <ul class="of-link-list">
+      <li class="of-link-list__li"><a href="https://www.redhat.com/en/about/privacy-policy">Privacy Statement</a></li>
+      
+    </ul>
+  </div>
+</footer>
+</body>
+</html>
+
+      </div>
+    </div>
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+<script src="/js/main.min.29b0315468c00226fa6f4556a9cebc0ac4fe1ce1457a01b22c0a06b329877383.js" integrity="sha256-KbAxVGjAAib6b0VWqc68CsT&#43;HOFFegGyLAoGsymHc4M=" crossorigin="anonymous"></script>
+
+
+
+  </body>
+</html>

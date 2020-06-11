@@ -1,0 +1,1194 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Operator SDK – CLI Reference</title>
+    <link>/docs/cli/</link>
+    <description>Recent content in CLI Reference on Operator SDK</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	  <atom:link href="/docs/cli/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>Docs: operator-sdk</title>
+      <link>/docs/cli/operator-sdk/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk&#34;&gt;operator-sdk&lt;/h2&gt;
+&lt;p&gt;An SDK for building operators with ease&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;An SDK for building operators with ease&lt;/p&gt;
+&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;  -h, --help   help for operator-sdk
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_add&#34;&gt;operator-sdk add&lt;/a&gt;	 - Adds a controller or resource to the project&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_build&#34;&gt;operator-sdk build&lt;/a&gt;	 - Compiles code and builds artifacts&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_bundle&#34;&gt;operator-sdk bundle&lt;/a&gt;	 - Work with operator bundle metadata and bundle images&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_cleanup&#34;&gt;operator-sdk cleanup&lt;/a&gt;	 - Delete and clean up after a running Operator&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_completion&#34;&gt;operator-sdk completion&lt;/a&gt;	 - Generators for shell completions&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_generate&#34;&gt;operator-sdk generate&lt;/a&gt;	 - Invokes a specific generator&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_migrate&#34;&gt;operator-sdk migrate&lt;/a&gt;	 - Adds source code to an operator&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_new&#34;&gt;operator-sdk new&lt;/a&gt;	 - Creates a new operator application&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_olm&#34;&gt;operator-sdk olm&lt;/a&gt;	 - Manage the Operator Lifecycle Manager installation in your cluster&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_print-deps&#34;&gt;operator-sdk print-deps&lt;/a&gt;	 - Print Golang packages and versions required to run the operator&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_run&#34;&gt;operator-sdk run&lt;/a&gt;	 - Run an Operator in a variety of environments&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_scorecard&#34;&gt;operator-sdk scorecard&lt;/a&gt;	 - Run scorecard tests&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_test&#34;&gt;operator-sdk test&lt;/a&gt;	 - Tests the operator&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_version&#34;&gt;operator-sdk version&lt;/a&gt;	 - Prints the version of operator-sdk&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk add</title>
+      <link>/docs/cli/operator-sdk_add/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_add/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-add&#34;&gt;operator-sdk add&lt;/h2&gt;
+&lt;p&gt;Adds a controller or resource to the project&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;Adds a controller or resource to the project&lt;/p&gt;
+&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;  -h, --help   help for add
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk&#34;&gt;operator-sdk&lt;/a&gt;	 - An SDK for building operators with ease&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_add_api&#34;&gt;operator-sdk add api&lt;/a&gt;	 - Adds a new api definition under pkg/apis&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_add_controller&#34;&gt;operator-sdk add controller&lt;/a&gt;	 - Adds a new controller pkg&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_add_crd&#34;&gt;operator-sdk add crd&lt;/a&gt;	 - Adds a Custom Resource Definition (CRD) and the Custom Resource (CR) files&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk add api</title>
+      <link>/docs/cli/operator-sdk_add_api/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_add_api/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-add-api&#34;&gt;operator-sdk add api&lt;/h2&gt;
+&lt;p&gt;Adds a new api definition under pkg/apis&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;operator-sdk add api &amp;ndash;kind=&lt;kind&gt; &amp;ndash;api-version&amp;lt;group/version&amp;gt;
+creates an API definition for a new custom resource.
+This command must be run from the project root directory.&lt;/p&gt;
+&lt;p&gt;For Go-based operators:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Creates the api definition for a new custom resource under pkg/apis.&lt;/li&gt;
+&lt;li&gt;By default, this command runs Kubernetes deepcopy and CRD generators on
+tagged types in all paths under pkg/apis. Go code is generated under
+pkg/apis/&lt;group&gt;/&lt;version&gt;/zz_generated.deepcopy.go. Generation can be disabled with the
+&amp;ndash;skip-generation flag for Go-based operators.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For Ansible-based operators:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Creates resource folder under /roles.&lt;/li&gt;
+&lt;li&gt;watches.yaml is updated with new resource.&lt;/li&gt;
+&lt;li&gt;deploy/role.yaml will be updated with apiGroup for new API.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For Helm-based operators:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Creates resource folder under /helm-charts.&lt;/li&gt;
+&lt;li&gt;watches.yaml is updated with new resource.&lt;/li&gt;
+&lt;li&gt;deploy/role.yaml will be updated to reflact new rules for the incoming API.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;CRD&amp;rsquo;s are generated, or updated if they exist for a particular group + version + kind, under
+deploy/crds/&lt;full group&gt;_&lt;resource&gt;_crd.yaml; OpenAPI V3 validation YAML
+is generated as a &amp;lsquo;validation&amp;rsquo; object.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;operator-sdk add api [flags]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;examples&#34;&gt;Examples&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;  # Create a new API, under an existing project. This command must be run from the project root directory.
+# Go Example:
+  $ operator-sdk add api --api-version=app.example.com/v1alpha1 --kind=AppService
+
+# Ansible Example
+  $ operator-sdk add api  \
+  --api-version=app.example.com/v1alpha1 \
+  --kind=AppService
+
+# Helm Example:
+  $ operator-sdk add api \
+  --api-version=app.example.com/v1alpha1 \
+  --kind=AppService
+
+  $ operator-sdk add api \
+  --api-version=app.example.com/v1alpha1 \
+  --kind=AppService
+  --helm-chart=myrepo/app
+
+  $ operator-sdk add api \
+  --helm-chart=myrepo/app
+
+  $ operator-sdk add api \
+  --helm-chart=myrepo/app \
+  --helm-chart-version=1.2.3
+
+  $ operator-sdk add api \
+  --helm-chart=app \
+  --helm-chart-repo=https://charts.mycompany.com/
+
+  $ operator-sdk add api \
+  --helm-chart=app \
+  --helm-chart-repo=https://charts.mycompany.com/ \
+  --helm-chart-version=1.2.3
+
+  $ operator-sdk add api \
+  --helm-chart=/path/to/local/chart-directories/app/
+
+  $ operator-sdk add api \
+  --helm-chart=/path/to/local/chart-archives/app-1.2.3.tgz
+
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;      --api-version string          Kubernetes apiVersion and has a format of $GROUP_NAME/$VERSION (e.g app.example.com/v1alpha1)
+      --crd-version string          CRD version to generate (default &amp;quot;v1beta1&amp;quot;)
+      --helm-chart string           Initialize helm operator with existing helm chart (&amp;lt;URL&amp;gt;, &amp;lt;repo&amp;gt;/&amp;lt;name&amp;gt;, or local path). Valid only for --type helm
+      --helm-chart-repo string      Chart repository URL for the requested helm chart, Valid only for --type helm
+      --helm-chart-version string   Specific version of the helm chart (default is latest version). Valid only for --type helm
+  -h, --help                        help for api
+      --kind string                 Kubernetes resource Kind name. (e.g AppService)
+      --skip-generation             Skip generation of deepcopy and OpenAPI code and OpenAPI CRD specs
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_add&#34;&gt;operator-sdk add&lt;/a&gt;	 - Adds a controller or resource to the project&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk add controller</title>
+      <link>/docs/cli/operator-sdk_add_controller/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_add_controller/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-add-controller&#34;&gt;operator-sdk add controller&lt;/h2&gt;
+&lt;p&gt;Adds a new controller pkg&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;Add a new controller package to your operator project.&lt;/p&gt;
+&lt;p&gt;This command creates a new controller package under pkg/controller/&lt;kind&gt; that, by default, reconciles on a custom resource for the specified apiversion and kind. The controller will expect to use the custom resource type that should already be defined under pkg/apis/&lt;group&gt;/&lt;version&gt; via the &amp;ldquo;operator-sdk add api&amp;rdquo; command.&lt;/p&gt;
+&lt;p&gt;Note that, if the controller pkg for that Kind already exists at pkg/controller/&lt;kind&gt; then the command will not overwrite and return an error.&lt;/p&gt;
+&lt;p&gt;This command MUST be run from the project root directory.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;operator-sdk add controller [flags]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;examples&#34;&gt;Examples&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;
+The following example will create a controller to manage, watch and reconcile as primary resource the &amp;lt;v1.AppService&amp;gt; from the domain &amp;lt;app.example.com&amp;gt;.    
+
+Example:
+
+	$ operator-sdk add controller --api-version=app.example.com/v1 --kind=AppService
+	$ tree pkg/controller
+	pkg/controller/
+	├── add_appservice.go
+	├── appservice
+	│   └── appservice_controller.go
+	└── controller.go
+
+The following example will create a controller to manage, watch and reconcile as a primary resource the &amp;lt;v1.Deployment&amp;gt; from the domain &amp;lt;k8s.io.api&amp;gt;, which is not defined in the project (external). Note that, it can be used to create controllers for any External API. 	
+
+Example:
+
+	$ operator-sdk add controller  --api-version=k8s.io.api/v1 --kind=Deployment  --custom-api-import=k8s.io/api/apps
+	$ tree pkg/controller
+	pkg/controller/
+	├── add_deployment.go
+	├── deployment
+	│   └── deployment_controller.go 
+	└── controller.go
+		
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;      --api-version string         Kubernetes APIVersion that has a format of $GROUP_NAME/$VERSION (e.g app.example.com/v1alpha1)
+      --custom-api-import string   The External API import path of the form &amp;quot;host.com/repo/path[=import_identifier]&amp;quot; Note that import_identifier is optional. ( E.g. --custom-api-import=k8s.io/api/apps )
+  -h, --help                       help for controller
+      --kind string                Kubernetes resource Kind name. (e.g AppService)
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_add&#34;&gt;operator-sdk add&lt;/a&gt;	 - Adds a controller or resource to the project&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk add crd</title>
+      <link>/docs/cli/operator-sdk_add_crd/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_add_crd/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-add-crd&#34;&gt;operator-sdk add crd&lt;/h2&gt;
+&lt;p&gt;Adds a Custom Resource Definition (CRD) and the Custom Resource (CR) files&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;The operator-sdk add crd command will create a Custom Resource Definition (CRD)and the Custom Resource (CR) files for the specified api-version and kind.&lt;/p&gt;
+&lt;p&gt;Generated CRD filename: &lt;project-name&gt;/deploy/crds/&lt;full group&gt;_&lt;resource&gt;_crd.yaml
+Generated CR  filename: &lt;project-name&gt;/deploy/crds/&lt;full group&gt;_&lt;version&gt;_&lt;kind&gt;_cr.yaml&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;project-name&amp;gt;/deploy path must already exist
+--api-version and --kind are required flags to generate the new operator application.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;operator-sdk add crd [flags]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;      --api-version string   Kubernetes apiVersion and has a format of $GROUP_NAME/$VERSION (e.g app.example.com/v1alpha1)
+      --crd-version string   CRD version to generate (default &amp;quot;v1beta1&amp;quot;)
+  -h, --help                 help for crd
+      --kind string          Kubernetes CustomResourceDefintion kind. (e.g AppService)
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_add&#34;&gt;operator-sdk add&lt;/a&gt;	 - Adds a controller or resource to the project&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk build</title>
+      <link>/docs/cli/operator-sdk_build/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_build/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-build&#34;&gt;operator-sdk build&lt;/h2&gt;
+&lt;p&gt;Compiles code and builds artifacts&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;The operator-sdk build command compiles the Operator code into an executable binary
+and generates the Dockerfile manifest.&lt;/p&gt;
+&lt;p&gt;&lt;image&gt; is the container image to be built, e.g. &amp;ldquo;quay.io/example/operator:v0.0.1&amp;rdquo;.
+This image will be automatically set in the deployment manifests.&lt;/p&gt;
+&lt;p&gt;After build completes, the image would be built locally in docker. Then it needs to
+be pushed to remote registry.
+For example:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ operator-sdk build quay.io/example/operator:v0.0.1
+$ docker push quay.io/example/operator:v0.0.1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;operator-sdk build &amp;lt;image&amp;gt; [flags]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;      --go-build-args string      Extra Go build arguments as one string such as &amp;quot;-ldflags -X=main.xyz=abc&amp;quot;
+  -h, --help                      help for build
+      --image-build-args string   Extra image build arguments as one string such as &amp;quot;--build-arg https_proxy=$https_proxy&amp;quot;
+      --image-builder string      Tool to build OCI images. One of: [docker, podman, buildah] (default &amp;quot;docker&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk&#34;&gt;operator-sdk&lt;/a&gt;	 - An SDK for building operators with ease&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk bundle</title>
+      <link>/docs/cli/operator-sdk_bundle/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_bundle/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-bundle&#34;&gt;operator-sdk bundle&lt;/h2&gt;
+&lt;p&gt;Work with operator bundle metadata and bundle images&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;Generate operator bundle metadata and build operator bundle images, which
+are used to manage operators in the Operator Lifecycle Manager.&lt;/p&gt;
+&lt;p&gt;More information on operator bundle images and metadata:
+&lt;a href=&#34;https://github.com/openshift/enhancements/blob/master/enhancements/olm/operator-bundle.md#docker&#34;&gt;https://github.com/openshift/enhancements/blob/master/enhancements/olm/operator-bundle.md#docker&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;  -h, --help   help for bundle
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk&#34;&gt;operator-sdk&lt;/a&gt;	 - An SDK for building operators with ease&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_bundle_create&#34;&gt;operator-sdk bundle create&lt;/a&gt;	 - Create an operator bundle image&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_bundle_validate&#34;&gt;operator-sdk bundle validate&lt;/a&gt;	 - Validate an operator bundle image&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk bundle create</title>
+      <link>/docs/cli/operator-sdk_bundle_create/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_bundle_create/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-bundle-create&#34;&gt;operator-sdk bundle create&lt;/h2&gt;
+&lt;p&gt;Create an operator bundle image&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;The &amp;lsquo;operator-sdk bundle create&amp;rsquo; command will build an operator
+bundle image containing operator metadata and manifests, tagged with the
+provided image tag.&lt;/p&gt;
+&lt;p&gt;To write all files required to build a bundle image without building the
+image, set &amp;lsquo;&amp;ndash;generate-only=true&amp;rsquo;. A bundle Dockerfile, bundle metadata, and
+a &amp;lsquo;manifests/&amp;rsquo; directory containing your bundle manifests will be written if
+&amp;lsquo;&amp;ndash;generate-only=true&amp;rsquo;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ operator-sdk bundle create --generate-only --directory ./deploy/olm-catalog/test-operator/0.1.0
+$ ls .
+...
+bundle.Dockerfile
+...
+$ tree ./deploy/olm-catalog/test-operator/
+└── 0.1.0
+    └── example.com_tests_crd.yaml
+    └── test-operator.v0.1.0.clusterserviceversion.yaml
+└── manifests
+    └── example.com_tests_crd.yaml
+    └── test-operator.v0.1.0.clusterserviceversion.yaml
+└── metadata
+    └── annotations.yaml
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&amp;lsquo;&amp;ndash;generate-only&amp;rsquo; is useful if you want to build an operator&amp;rsquo;s bundle image
+manually, modify metadata before building an image, or want to generate a
+&amp;lsquo;manifests/&amp;rsquo; directory containing your operator manifests for compatibility
+with other operator tooling.&lt;/p&gt;
+&lt;p&gt;More information on operator bundle images and metadata:
+&lt;a href=&#34;https://github.com/openshift/enhancements/blob/master/enhancements/olm/operator-bundle.md#docker&#34;&gt;https://github.com/openshift/enhancements/blob/master/enhancements/olm/operator-bundle.md#docker&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;NOTE: bundle images are not runnable.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;operator-sdk bundle create [flags]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;examples&#34;&gt;Examples&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;The following invocation will build a test-operator 0.1.0 bundle image using Docker.
+This image will contain manifests for package channels &#39;stable&#39; and &#39;beta&#39;:
+
+  $ operator-sdk bundle create quay.io/example/test-operator:v0.1.0 \
+      --directory ./deploy/olm-catalog/test-operator/0.1.0 \
+      --package test-operator \
+      --channels stable,beta \
+      --default-channel stable
+
+Assuming your operator has the same name as your repo directory and the only
+channel is &#39;stable&#39;, the above command can be abbreviated to:
+
+  $ operator-sdk bundle create quay.io/example/test-operator:v0.1.0 \
+      --directory ./deploy/olm-catalog/test-operator/0.1.0
+
+The following invocation will generate test-operator bundle metadata, a
+&#39;manifests/&#39; dir, and Dockerfile for your latest operator version without
+building the image:
+
+  $ operator-sdk bundle create \
+      --generate-only \
+      --directory ./deploy/olm-catalog/test-operator/0.1.0 \
+      --package test-operator \
+      --channels beta \
+      --default-channel beta
+
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;  -c, --channels string          The comma-separated list of channels that bundle image belongs to (default &amp;quot;stable&amp;quot;)
+  -e, --default-channel string   The default channel for the bundle image
+  -d, --directory string         The directory where bundle manifests are located, ex. &amp;lt;project-root&amp;gt;/deploy/olm-catalog/test-operator/0.1.0
+  -g, --generate-only            Generate metadata/, manifests/ and a Dockerfile on disk without building the bundle image
+  -h, --help                     help for create
+  -b, --image-builder string     Tool to build container images. One of: [docker, podman, buildah] (default &amp;quot;docker&amp;quot;)
+  -o, --output-dir string        Optional output directory for operator manifests
+      --overwrite                Overwrite bundle.Dockerfile, manifests and metadata dirs if they exist. If --output-dir is also set, the original files will not be overwritten
+  -p, --package string           The name of the package that bundle image belongs to. Set if package name differs from project name
+  -t, --tag string               The path of a registry to pull from, image name and its tag that present the bundle image (e.g. quay.io/test/test-operator:v0.1.0)
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_bundle&#34;&gt;operator-sdk bundle&lt;/a&gt;	 - Work with operator bundle metadata and bundle images&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk bundle validate</title>
+      <link>/docs/cli/operator-sdk_bundle_validate/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_bundle_validate/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-bundle-validate&#34;&gt;operator-sdk bundle validate&lt;/h2&gt;
+&lt;p&gt;Validate an operator bundle image&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;The &amp;lsquo;operator-sdk bundle validate&amp;rsquo; command can validate both content and
+format of an operator bundle image or an operator bundles directory on-disk
+containing operator metadata and manifests. This command will exit with a non-zero
+exit code if any validation tests fail.&lt;/p&gt;
+&lt;p&gt;Note: if validating an image, the image must exist in a remote registry, not
+just locally.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;operator-sdk bundle validate [flags]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;examples&#34;&gt;Examples&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;The following command flow will generate test-operator bundle image manifests
+and validate them, assuming a bundle for &#39;test-operator&#39; version v0.1.0 exists at
+&amp;lt;project-root&amp;gt;/deploy/olm-catalog/test-operator/0.1.0:
+
+  # Generate manifests locally.
+  $ operator-sdk bundle create \
+      --generate-only \
+      --directory ./deploy/olm-catalog/test-operator/0.1.0
+
+  # Validate the directory containing manifests and metadata.
+  $ operator-sdk bundle validate ./deploy/olm-catalog/test-operator
+
+To build and validate an image:
+
+  # Build and push the image using the docker CLI.
+	$ operator-sdk bundle create quay.io/example/test-operator:v0.1.0 \
+      --directory ./deploy/olm-catalog/test-operator/0.1.0
+  $ docker push quay.io/example/test-operator:v0.1.0
+
+  # Ensure the image with modified metadata and Dockerfile is valid.
+  $ operator-sdk bundle validate quay.io/example/test-operator:v0.1.0
+
+
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;  -h, --help                   help for validate
+  -b, --image-builder string   Tool to extract container images. One of: [docker, podman] (default &amp;quot;docker&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_bundle&#34;&gt;operator-sdk bundle&lt;/a&gt;	 - Work with operator bundle metadata and bundle images&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk cleanup</title>
+      <link>/docs/cli/operator-sdk_cleanup/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_cleanup/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-cleanup&#34;&gt;operator-sdk cleanup&lt;/h2&gt;
+&lt;p&gt;Delete and clean up after a running Operator&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;Delete and clean up after a running Operator&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;operator-sdk cleanup [flags]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;      --kubeconfig string           The file path to kubernetes configuration file. Defaults to location specified by $KUBECONFIG, or to default file rules if not set
+      --namespace string            (Deprecated: use --operator-namespace instead.) The namespace from which operator and namespacesresources are cleaned up
+      --olm                         The operator to be cleaned up is managed by OLM in a cluster. Cannot be set with another cleanup-type flag (default true)
+      --olm-namespace string        [olm only] The namespace where OLM is installed (default &amp;quot;olm&amp;quot;)
+      --operator-namespace string   [olm only] The namespace where operator resources are created. It must already exist in the cluster or be defined in a manifest passed to --include
+      --manifests string            [olm only] Directory containing operator bundle directories and metadata
+      --operator-version string     [olm only] Version of operator to deploy
+      --install-mode string         [olm only] InstallMode to create OperatorGroup with. Format: InstallModeType=[ns1,ns2[, ...]]
+      --include strings             [olm only] Path to Kubernetes resource manifests, ex. Role, Subscription. These supplement or override defaults generated by run/cleanup
+      --timeout duration            [olm only] Time to wait for the command to complete before failing (default 2m0s)
+  -h, --help                        help for cleanup
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk&#34;&gt;operator-sdk&lt;/a&gt;	 - An SDK for building operators with ease&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk completion</title>
+      <link>/docs/cli/operator-sdk_completion/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_completion/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-completion&#34;&gt;operator-sdk completion&lt;/h2&gt;
+&lt;p&gt;Generators for shell completions&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;Generators for shell completions&lt;/p&gt;
+&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;  -h, --help   help for completion
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk&#34;&gt;operator-sdk&lt;/a&gt;	 - An SDK for building operators with ease&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_completion_bash&#34;&gt;operator-sdk completion bash&lt;/a&gt;	 - Generate bash completions&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_completion_zsh&#34;&gt;operator-sdk completion zsh&lt;/a&gt;	 - Generate zsh completions&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk completion bash</title>
+      <link>/docs/cli/operator-sdk_completion_bash/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_completion_bash/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-completion-bash&#34;&gt;operator-sdk completion bash&lt;/h2&gt;
+&lt;p&gt;Generate bash completions&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;Generate bash completions&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;operator-sdk completion bash [flags]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;  -h, --help   help for bash
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_completion&#34;&gt;operator-sdk completion&lt;/a&gt;	 - Generators for shell completions&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk completion zsh</title>
+      <link>/docs/cli/operator-sdk_completion_zsh/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_completion_zsh/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-completion-zsh&#34;&gt;operator-sdk completion zsh&lt;/h2&gt;
+&lt;p&gt;Generate zsh completions&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;Generate zsh completions&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;operator-sdk completion zsh [flags]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;  -h, --help   help for zsh
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_completion&#34;&gt;operator-sdk completion&lt;/a&gt;	 - Generators for shell completions&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk generate</title>
+      <link>/docs/cli/operator-sdk_generate/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_generate/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-generate&#34;&gt;operator-sdk generate&lt;/h2&gt;
+&lt;p&gt;Invokes a specific generator&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;The &amp;lsquo;operator-sdk generate&amp;rsquo; command invokes a specific generator to generate
+code or manifests on disk.&lt;/p&gt;
+&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;  -h, --help   help for generate
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk&#34;&gt;operator-sdk&lt;/a&gt;	 - An SDK for building operators with ease&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_generate_crds&#34;&gt;operator-sdk generate crds&lt;/a&gt;	 - Generates CRDs for API&amp;rsquo;s&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_generate_csv&#34;&gt;operator-sdk generate csv&lt;/a&gt;	 - Generates a ClusterServiceVersion YAML file for the operator&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_generate_k8s&#34;&gt;operator-sdk generate k8s&lt;/a&gt;	 - Generates Kubernetes code for custom resource&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk generate crds</title>
+      <link>/docs/cli/operator-sdk_generate_crds/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_generate_crds/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-generate-crds&#34;&gt;operator-sdk generate crds&lt;/h2&gt;
+&lt;p&gt;Generates CRDs for API&amp;rsquo;s&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;generate crds generates CRDs or updates them if they exist,
+under deploy/crds/&lt;full group&gt;_&lt;resource&gt;_crd.yaml; OpenAPI
+V3 validation YAML is generated as a &amp;lsquo;validation&amp;rsquo; object.&lt;/p&gt;
+&lt;p&gt;Example:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ operator-sdk generate crds
+$ tree deploy/crds
+├── deploy/crds/app.example.com_v1alpha1_appservice_cr.yaml
+├── deploy/crds/app.example.com_appservices_crd.yaml
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;operator-sdk generate crds [flags]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;      --crd-version string   CRD version to generate (default &amp;quot;v1beta1&amp;quot;)
+  -h, --help                 help for crds
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_generate&#34;&gt;operator-sdk generate&lt;/a&gt;	 - Invokes a specific generator&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk generate csv</title>
+      <link>/docs/cli/operator-sdk_generate_csv/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_generate_csv/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-generate-csv&#34;&gt;operator-sdk generate csv&lt;/h2&gt;
+&lt;p&gt;Generates a ClusterServiceVersion YAML file for the operator&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;The &amp;lsquo;generate csv&amp;rsquo; command generates a ClusterServiceVersion (CSV) YAML manifest
+for the operator. This file is used to publish the operator to the OLM Catalog.&lt;/p&gt;
+&lt;p&gt;A CSV semantic version is supplied via the &amp;ndash;csv-version flag. If your operator
+has already generated a CSV manifest you want to use as a base, supply its
+version to &amp;ndash;from-version. Otherwise the SDK will scaffold a new CSV manifest.&lt;/p&gt;
+&lt;p&gt;The &amp;ndash;make-manifests flag directs the generator to create a &amp;lsquo;manifests&amp;rsquo; directory
+intended to hold your latest operator manifests. This flag is true by default.&lt;/p&gt;
+&lt;p&gt;More information on manifests:
+&lt;a href=&#34;https://github.com/operator-framework/operator-registry/blob/master/docs/design/operator-bundle.md#operator-bundle-overview&#34;&gt;https://github.com/operator-framework/operator-registry/blob/master/docs/design/operator-bundle.md#operator-bundle-overview&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Flags that change project default paths:
+&amp;ndash;deploy-dir:
+The CSV&amp;rsquo;s install strategy and permissions will be generated from the operator manifests
+(Deployment and Role/ClusterRole) present in this directory.&lt;/p&gt;
+&lt;p&gt;&amp;ndash;apis-dir:
+The CSV annotation comments will be parsed from the Go types under this path to
+fill out metadata for owned APIs in spec.customresourcedefinitions.owned.&lt;/p&gt;
+&lt;p&gt;&amp;ndash;crd-dir:
+The CSV&amp;rsquo;s spec.customresourcedefinitions.owned field is generated from the CRD manifests
+in this path. These CRD manifests are also copied over to the bundle directory if
+&amp;ndash;update-crds=true (the default). Additionally the CR manifests will be used to populate
+the CSV example CRs.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;operator-sdk generate csv [flags]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;examples&#34;&gt;Examples&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;
+		##### Generate CSV from default input paths #####
+		$ tree pkg/apis/ deploy/
+		pkg/apis/
+		├── ...
+		└── cache
+			├── group.go
+			└── v1alpha1
+				├── ...
+				└── memcached_types.go
+		deploy/
+		├── crds
+		│   ├── cache.example.com_memcacheds_crd.yaml
+		│   └── cache.example.com_v1alpha1_memcached_cr.yaml
+		├── operator.yaml
+		├── role.yaml
+		├── role_binding.yaml
+		└── service_account.yaml
+
+		$ operator-sdk generate csv --csv-version=0.0.1 --update-crds
+		INFO[0000] Generating CSV manifest version 0.0.1
+		...
+
+		$ tree deploy/
+		deploy/
+		...
+		├── olm-catalog
+		│   └── memcached-operator
+		│       ├── 0.0.1
+		│       │   ├── cache.example.com_memcacheds_crd.yaml
+		│       │   └── memcached-operator.v0.0.1.clusterserviceversion.yaml
+		│       └── memcached-operator.package.yaml
+		...
+
+
+
+		##### Generate CSV from custom input paths #####
+		$ operator-sdk generate csv --csv-version=0.0.1 --update-crds \
+		--deploy-dir=config --apis-dir=api --output-dir=production
+		INFO[0000] Generating CSV manifest version 0.0.1
+		...
+
+		$ tree config/ api/ production/
+		config/
+		├── crds
+		│   ├── cache.example.com_memcacheds_crd.yaml
+		│   └── cache.example.com_v1alpha1_memcached_cr.yaml
+		├── operator.yaml
+		├── role.yaml
+		├── role_binding.yaml
+		└── service_account.yaml
+		api/
+		├── ...
+		└── cache
+			├── group.go
+			└── v1alpha1
+				├── ...
+				└── memcached_types.go
+		production/
+		└── olm-catalog
+			└── memcached-operator
+				├── 0.0.1
+				│   ├── cache.example.com_memcacheds_crd.yaml
+				│   └── memcached-operator.v0.0.1.clusterserviceversion.yaml
+				└── memcached-operator.package.yaml
+
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;      --apis-dir string        Project relative path to root directory for API type defintions (default &amp;quot;pkg/apis&amp;quot;)
+      --crd-dir string         Project relative path to root directory for CRD and CR manifests
+      --csv-version string     Semantic version of the CSV. This flag must be set if a package manifest exists
+      --deploy-dir string      Project relative path to root directory for operator manifests (Deployment and RBAC) (default &amp;quot;deploy&amp;quot;)
+  -h, --help                   help for csv
+      --make-manifests         When set, the generator will create or update a CSV manifest in a &#39;manifests&#39; directory. This directory is intended to be used for your latest bundle manifests. The default location is deploy/olm-catalog/&amp;lt;operator-name&amp;gt;/manifests. If --output-dir is set, the directory will be &amp;lt;output-dir&amp;gt;/manifests (default true)
+      --operator-name string   Operator name to use while generating CSV
+      --output-dir string      Base directory to output generated CSV. If --make-manifests=false the resulting CSV bundle directory will be &amp;lt;output-dir&amp;gt;/olm-catalog/&amp;lt;operator-name&amp;gt;/&amp;lt;csv-version&amp;gt;. If --make-manifests=true, the bundle directory will be &amp;lt;output-dir&amp;gt;/manifests
+      --update-crds            Update CRD manifests in deploy/&amp;lt;operator-name&amp;gt;/&amp;lt;csv-version&amp;gt; from the default CRDs dir deploy/crds or --crd-dir if set. If --make-manifests=false, this option is false by default (default true)
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_generate&#34;&gt;operator-sdk generate&lt;/a&gt;	 - Invokes a specific generator&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk generate k8s</title>
+      <link>/docs/cli/operator-sdk_generate_k8s/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_generate_k8s/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-generate-k8s&#34;&gt;operator-sdk generate k8s&lt;/h2&gt;
+&lt;p&gt;Generates Kubernetes code for custom resource&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;k8s generator generates code for custom resources given the API
+specs in pkg/apis/&lt;group&gt;/&lt;version&gt; directories to comply with kube-API
+requirements. Go code is generated under
+pkg/apis/&lt;group&gt;/&lt;version&gt;/zz_generated.deepcopy.go.
+Example:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ operator-sdk generate k8s
+$ tree pkg/apis
+pkg/apis/
+└── app
+    └── v1alpha1
+        ├── zz_generated.deepcopy.go
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;operator-sdk generate k8s [flags]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;  -h, --help   help for k8s
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_generate&#34;&gt;operator-sdk generate&lt;/a&gt;	 - Invokes a specific generator&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk migrate</title>
+      <link>/docs/cli/operator-sdk_migrate/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_migrate/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-migrate&#34;&gt;operator-sdk migrate&lt;/h2&gt;
+&lt;p&gt;Adds source code to an operator&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;operator-sdk migrate adds a main.go source file and any associated source filesfor an operator that is not of the &amp;ldquo;go&amp;rdquo; type.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;operator-sdk migrate [flags]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;      --header-file string   Path to file containing headers for generated Go files. Copied to hack/boilerplate.go.txt
+  -h, --help                 help for migrate
+      --repo string          Project repository path. Used as the project&#39;s Go import path. This must be set if outside of $GOPATH/src (e.g. github.com/example-inc/my-operator)
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk&#34;&gt;operator-sdk&lt;/a&gt;	 - An SDK for building operators with ease&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk new</title>
+      <link>/docs/cli/operator-sdk_new/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_new/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-new&#34;&gt;operator-sdk new&lt;/h2&gt;
+&lt;p&gt;Creates a new operator application&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;The operator-sdk new command creates a new operator application and
+generates a default directory layout based on the input &lt;project-name&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;project-name&gt; is the project name of the new operator. (e.g app-operator)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;operator-sdk new &amp;lt;project-name&amp;gt; [flags]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;examples&#34;&gt;Examples&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;  # Create a new project directory
+  $ mkdir $HOME/projects/example.com/
+  $ cd $HOME/projects/example.com/
+
+  # Go project
+  $ operator-sdk new app-operator
+
+  # Ansible project
+  $ operator-sdk new app-operator --type=ansible \
+    --api-version=app.example.com/v1alpha1 \
+    --kind=AppService
+
+  # Helm project
+  $ operator-sdk new app-operator --type=helm \
+  --api-version=app.example.com/v1alpha1 \
+  --kind=AppService
+
+  $ operator-sdk new app-operator --type=helm \
+  --api-version=app.example.com/v1alpha1 \
+  --kind=AppService \
+  --helm-chart=myrepo/app
+
+  $ operator-sdk new app-operator --type=helm \
+  --helm-chart=myrepo/app
+
+  $ operator-sdk new app-operator --type=helm \
+  --helm-chart=myrepo/app \
+  --helm-chart-version=1.2.3
+
+  $ operator-sdk new app-operator --type=helm \
+  --helm-chart=app \
+  --helm-chart-repo=https://charts.mycompany.com/
+
+  $ operator-sdk new app-operator --type=helm \
+  --helm-chart=app \
+  --helm-chart-repo=https://charts.mycompany.com/ \
+  --helm-chart-version=1.2.3
+
+  $ operator-sdk new app-operator --type=helm \
+  --helm-chart=/path/to/local/chart-directories/app/
+
+  $ operator-sdk new app-operator --type=helm \
+  --helm-chart=/path/to/local/chart-archives/app-1.2.3.tgz
+
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;      --api-version string          Kubernetes apiVersion and has a format of $GROUP_NAME/$VERSION (e.g app.example.com/v1alpha1)
+      --crd-version string          CRD version to generate (default &amp;quot;v1beta1&amp;quot;)
+      --generate-playbook           Generate a playbook skeleton. (Only used for --type ansible)
+      --git-init                    Initialize the project directory as a git repository (default false)
+      --header-file string          Path to file containing headers for generated Go files. Copied to hack/boilerplate.go.txt
+      --helm-chart string           Initialize helm operator with existing helm chart (&amp;lt;URL&amp;gt;, &amp;lt;repo&amp;gt;/&amp;lt;name&amp;gt;, or local path). Valid only for --type helm
+      --helm-chart-repo string      Chart repository URL for the requested helm chart, Valid only for --type helm
+      --helm-chart-version string   Specific version of the helm chart (default is latest version). Valid only for --type helm
+  -h, --help                        help for new
+      --kind string                 Kubernetes resource Kind name. (e.g AppService)
+      --repo string                 Project repository path for Go operators. Used as the project&#39;s Go import path. This must be set if outside of $GOPATH/src (e.g. github.com/example-inc/my-operator)
+      --skip-generation             Skip generation of deepcopy and OpenAPI code and OpenAPI CRD specs
+      --skip-validation             Do not validate the resulting project&#39;s structure and dependencies. (Only used for --type go)
+      --type string                 Type of operator to initialize (choices: &amp;quot;go&amp;quot;, &amp;quot;ansible&amp;quot; or &amp;quot;helm&amp;quot;) (default &amp;quot;go&amp;quot;)
+      --vendor                      Use a vendor directory for dependencies
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk&#34;&gt;operator-sdk&lt;/a&gt;	 - An SDK for building operators with ease&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk olm</title>
+      <link>/docs/cli/operator-sdk_olm/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_olm/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-olm&#34;&gt;operator-sdk olm&lt;/h2&gt;
+&lt;p&gt;Manage the Operator Lifecycle Manager installation in your cluster&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;Manage the Operator Lifecycle Manager installation in your cluster&lt;/p&gt;
+&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;  -h, --help   help for olm
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk&#34;&gt;operator-sdk&lt;/a&gt;	 - An SDK for building operators with ease&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_olm_install&#34;&gt;operator-sdk olm install&lt;/a&gt;	 - Install Operator Lifecycle Manager in your cluster&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_olm_status&#34;&gt;operator-sdk olm status&lt;/a&gt;	 - Get the status of the Operator Lifecycle Manager installation in your cluster&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_olm_uninstall&#34;&gt;operator-sdk olm uninstall&lt;/a&gt;	 - Uninstall Operator Lifecycle Manager from your cluster&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk olm install</title>
+      <link>/docs/cli/operator-sdk_olm_install/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_olm_install/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-olm-install&#34;&gt;operator-sdk olm install&lt;/h2&gt;
+&lt;p&gt;Install Operator Lifecycle Manager in your cluster&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;Install Operator Lifecycle Manager in your cluster&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;operator-sdk olm install [flags]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;  -h, --help               help for install
+      --timeout duration   time to wait for the command to complete before failing (default 2m0s)
+      --version string     version of OLM resources to install (default &amp;quot;latest&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_olm&#34;&gt;operator-sdk olm&lt;/a&gt;	 - Manage the Operator Lifecycle Manager installation in your cluster&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk olm status</title>
+      <link>/docs/cli/operator-sdk_olm_status/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_olm_status/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-olm-status&#34;&gt;operator-sdk olm status&lt;/h2&gt;
+&lt;p&gt;Get the status of the Operator Lifecycle Manager installation in your cluster&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;Get the status of the Operator Lifecycle Manager installation in your cluster&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;operator-sdk olm status [flags]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;  -h, --help                   help for status
+      --olm-namespace string   namespace where OLM is installed (default &amp;quot;olm&amp;quot;)
+      --timeout duration       time to wait for the command to complete before failing (default 2m0s)
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_olm&#34;&gt;operator-sdk olm&lt;/a&gt;	 - Manage the Operator Lifecycle Manager installation in your cluster&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk olm uninstall</title>
+      <link>/docs/cli/operator-sdk_olm_uninstall/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_olm_uninstall/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-olm-uninstall&#34;&gt;operator-sdk olm uninstall&lt;/h2&gt;
+&lt;p&gt;Uninstall Operator Lifecycle Manager from your cluster&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;Uninstall Operator Lifecycle Manager from your cluster&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;operator-sdk olm uninstall [flags]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;  -h, --help               help for uninstall
+      --timeout duration   time to wait for the command to complete before failing (default 2m0s)
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_olm&#34;&gt;operator-sdk olm&lt;/a&gt;	 - Manage the Operator Lifecycle Manager installation in your cluster&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk print-deps</title>
+      <link>/docs/cli/operator-sdk_print-deps/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_print-deps/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-print-deps&#34;&gt;operator-sdk print-deps&lt;/h2&gt;
+&lt;p&gt;Print Golang packages and versions required to run the operator&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;The operator-sdk print-deps command prints all Golang packages and versions expected
+by this version of the Operator SDK. Versions for these packages should match
+those in an operator&amp;rsquo;s go.mod file.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;operator-sdk print-deps [flags]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;  -h, --help   help for print-deps
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk&#34;&gt;operator-sdk&lt;/a&gt;	 - An SDK for building operators with ease&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk run</title>
+      <link>/docs/cli/operator-sdk_run/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_run/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-run&#34;&gt;operator-sdk run&lt;/h2&gt;
+&lt;p&gt;Run an Operator in a variety of environments&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;This command will run or deploy your Operator in two different modes: locally
+and using OLM. These modes are controlled by setting &amp;ndash;local and &amp;ndash;olm run mode
+flags. Each run mode has a separate set of flags that configure &amp;lsquo;run&amp;rsquo; for that
+mode. Run &amp;lsquo;operator-sdk run &amp;ndash;help&amp;rsquo; for more information on these flags.&lt;/p&gt;
+&lt;p&gt;Read more about the &amp;ndash;olm run mode and configuration options here:
+&lt;a href=&#34;https://github.com/operator-framework/operator-sdk/blob/master/doc/user/olm-catalog/olm-cli.md&#34;&gt;https://github.com/operator-framework/operator-sdk/blob/master/doc/user/olm-catalog/olm-cli.md&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;operator-sdk run [flags]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;      --kubeconfig string           The file path to kubernetes configuration file. Defaults to location specified by $KUBECONFIG, or to default file rules if not set
+      --namespace string            (Deprecated: use --watch-namespace instead.)The namespace where the operator watches for changes.
+      --olm                         The operator to be run will be managed by OLM in a cluster. Cannot be set with another run-type flag
+      --olm-namespace string        [olm only] The namespace where OLM is installed (default &amp;quot;olm&amp;quot;)
+      --operator-namespace string   [olm only] The namespace where operator resources are created. It must already exist in the cluster or be defined in a manifest passed to --include
+      --manifests string            [olm only] Directory containing operator bundle directories and metadata
+      --operator-version string     [olm only] Version of operator to deploy
+      --install-mode string         [olm only] InstallMode to create OperatorGroup with. Format: InstallModeType=[ns1,ns2[, ...]]
+      --include strings             [olm only] Path to Kubernetes resource manifests, ex. Role, Subscription. These supplement or override defaults generated by run/cleanup
+      --timeout duration            [olm only] Time to wait for the command to complete before failing (default 2m0s)
+      --local                       The operator will be run locally by building the operator binary with the ability to access a kubernetes cluster using a kubeconfig file. Cannot be set with another run-type flag.
+      --watch-namespace string      [local only] The namespace where the operator watches for changes. Set &amp;quot;&amp;quot; for AllNamespaces, set &amp;quot;ns1,ns2&amp;quot; for MultiNamespace
+      --operator-flags string       [local only] The flags that the operator needs. Example: &amp;quot;--flag1 value1 --flag2=value2&amp;quot;
+      --go-ldflags string           [local only] Set Go linker options
+      --enable-delve                [local only] Start the operator using the delve debugger
+  -h, --help                        help for run
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk&#34;&gt;operator-sdk&lt;/a&gt;	 - An SDK for building operators with ease&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk scorecard</title>
+      <link>/docs/cli/operator-sdk_scorecard/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_scorecard/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-scorecard&#34;&gt;operator-sdk scorecard&lt;/h2&gt;
+&lt;p&gt;Run scorecard tests&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;Runs blackbox scorecard tests on an operator&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;operator-sdk scorecard [flags]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;  -b, --bundle string       OLM bundle directory path, when specified runs bundle validation
+      --config string       config file (default is &#39;&amp;lt;project_dir&amp;gt;/.osdk-scorecard.yaml&#39;; the config file&#39;s extension and format must be .yaml
+  -h, --help                help for scorecard
+      --kubeconfig string   Path to kubeconfig of custom resource created in cluster
+  -L, --list                If true, only print the test names that would be run based on selector filtering
+  -o, --output string       Output format for results. Valid values: text, json (default &amp;quot;text&amp;quot;)
+  -l, --selector string     selector (label query) to filter tests on
+      --version string      scorecard version. Valid values: v1alpha2 (default &amp;quot;v1alpha2&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk&#34;&gt;operator-sdk&lt;/a&gt;	 - An SDK for building operators with ease&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk test</title>
+      <link>/docs/cli/operator-sdk_test/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_test/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-test&#34;&gt;operator-sdk test&lt;/h2&gt;
+&lt;p&gt;Tests the operator&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;The test command has subcommands that can test the operator.&lt;/p&gt;
+&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;  -h, --help   help for test
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk&#34;&gt;operator-sdk&lt;/a&gt;	 - An SDK for building operators with ease&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_test_local&#34;&gt;operator-sdk test local&lt;/a&gt;	 - Run End-To-End tests locally&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk test local</title>
+      <link>/docs/cli/operator-sdk_test_local/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_test_local/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-test-local&#34;&gt;operator-sdk test local&lt;/h2&gt;
+&lt;p&gt;Run End-To-End tests locally&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;Run End-To-End tests locally&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;operator-sdk test local &amp;lt;path to tests directory&amp;gt; [flags]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;      --debug                         Enable debug-level logging
+      --global-manifest string        Path to manifest for Global resources (e.g. CRD manifests)
+      --go-test-flags string          Additional flags to pass to go test
+  -h, --help                          help for local
+      --image string                  Use a different operator image from the one specified in the namespaced manifest
+      --kubeconfig string             Kubeconfig path
+      --local-operator-flags string   The flags that the operator needs (while using --up-local). Example: &amp;quot;--flag1 value1 --flag2=value2&amp;quot;
+      --molecule-test-flags string    Additional flags to pass to molecule test
+      --namespace string              (Deprecated: use --operator-namespace instead) If non-empty, single namespace to run tests in
+      --namespaced-manifest string    Path to manifest for per-test, namespaced resources (e.g. RBAC and Operator manifest)
+      --no-setup                      Disable test resource creation
+      --operator-namespace string     Namespace where the operator will be deployed, CRs will be created and tests will be executed (By default it will be in the default namespace defined in the kubeconfig)
+      --skip-cleanup-error            If set as true, the cleanup function responsible to remove all artifacts will be skipped if an error is faced.
+      --up-local                      Enable running operator locally with go run instead of as an image in the cluster
+      --watch-namespace string        (only valid with --up-local) Namespace where the operator watches for changes. Set &amp;quot;&amp;quot; for AllNamespaces, set &amp;quot;ns1,ns2&amp;quot; for MultiNamespace(if not set then watches Operator Namespace
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk_test&#34;&gt;operator-sdk test&lt;/a&gt;	 - Tests the operator&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: operator-sdk version</title>
+      <link>/docs/cli/operator-sdk_version/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/cli/operator-sdk_version/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;operator-sdk-version&#34;&gt;operator-sdk version&lt;/h2&gt;
+&lt;p&gt;Prints the version of operator-sdk&lt;/p&gt;
+&lt;h3 id=&#34;synopsis&#34;&gt;Synopsis&lt;/h3&gt;
+&lt;p&gt;Prints the version of operator-sdk&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;operator-sdk version [flags]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;options&#34;&gt;Options&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;  -h, --help   help for version
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;see-also&#34;&gt;SEE ALSO&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../operator-sdk&#34;&gt;operator-sdk&lt;/a&gt;	 - An SDK for building operators with ease&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+  </channel>
+</rss>

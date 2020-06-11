@@ -1,0 +1,1288 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="generator" content="Hugo 0.69.2" />
+
+<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+
+<link rel="shortcut icon" href="/favicons/favicon.ico" >
+<link rel="apple-touch-icon" href="/favicons/apple-touch-icon-180x180.png" sizes="180x180">
+<link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">
+<link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicons/android-36x36.png" sizes="36x36">
+<link rel="icon" type="image/png" href="/favicons/android-48x48.png" sizes="48x48">
+<link rel="icon" type="image/png" href="/favicons/android-72x72.png" sizes="72x72">
+<link rel="icon" type="image/png" href="/favicons/android-96x96.png" sizes="96x96">
+<link rel="icon" type="image/png" href="/favicons/android-144x144.png" sizes="144x144">
+<link rel="icon" type="image/png" href="/favicons/android-192x192.png" sizes="192x192">
+
+<title>Running your Operator with OLM | Operator SDK</title><meta property="og:title" content="Running your Operator with OLM" />
+<meta property="og:description" content="The Operator Lifecycle Manager (OLM) is a set of cluster resources that manage the lifecycle of an Operator. The Operator SDK provides an entrypoint for deploying and deleting your Operator using an OLM-enabled Kubernetes cluster through operator-sdk run --olm, added in v0.15.0
+This document assumes you are familiar with OLM and related terminology, and have read the SDK-OLM integration design proposal.
+Note: before continuing, please read the caveats section below." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/docs/golang/olm-integration/olm-cli/" />
+
+<meta itemprop="name" content="Running your Operator with OLM">
+<meta itemprop="description" content="The Operator Lifecycle Manager (OLM) is a set of cluster resources that manage the lifecycle of an Operator. The Operator SDK provides an entrypoint for deploying and deleting your Operator using an OLM-enabled Kubernetes cluster through operator-sdk run --olm, added in v0.15.0
+This document assumes you are familiar with OLM and related terminology, and have read the SDK-OLM integration design proposal.
+Note: before continuing, please read the caveats section below.">
+
+<meta itemprop="wordCount" content="2040">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Running your Operator with OLM"/>
+<meta name="twitter:description" content="The Operator Lifecycle Manager (OLM) is a set of cluster resources that manage the lifecycle of an Operator. The Operator SDK provides an entrypoint for deploying and deleting your Operator using an OLM-enabled Kubernetes cluster through operator-sdk run --olm, added in v0.15.0
+This document assumes you are familiar with OLM and related terminology, and have read the SDK-OLM integration design proposal.
+Note: before continuing, please read the caveats section below."/>
+
+
+
+
+
+<link rel="preload" href="/scss/main.min.2156b902b150b9e3872e1d22ac593d6651f390478d18ef3c04a45ca6b90d637b.css" as="style">
+<link href="/scss/main.min.2156b902b150b9e3872e1d22ac593d6651f390478d18ef3c04a45ca6b90d637b.css" rel="stylesheet" integrity="">
+
+
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+
+
+  </head>
+  <body class="td-page">
+    <header>
+      <header class="of-header-main">
+    <a href="/" class="of-brand">
+      <picture class="of-brand__picture">
+        <source srcset="/build/images/logo.svg" media="(min-width: 992px)">
+        <img src="/build/images/logo-sm.svg" alt="">  
+      </picture> 
+        </a>
+    <nav class="of-nav-main nav-collapse">
+      <ul class="of-nav-main__items menu-items">
+        <li class="of-nav-main__item"><a class="of-link-list__a " href="/">Home</a></li>
+        
+    
+    <li class="of-nav-main__item"><a class="of-link-list__a" href="/build/" title="Build">Build</a></li>
+    
+    <li class="of-nav-main__item"><a class="of-link-list__a" href="/docs/" title="Documentation">Documentation</a></li>
+    
+    </ul>
+    </nav>
+   
+    <div class="of-header-main__search">
+		
+
+    </div>
+  </header>
+    </header>
+    <div class="container-fluid td-outer">
+      <div class="td-main">
+        <div class="row flex-xl-nowrap">
+          <div class="col-12 col-md-3 col-xl-2 td-sidebar d-print-none">
+            
+
+
+
+
+<div id="td-sidebar-menu" class="td-sidebar__inner">
+  
+  <nav class="collapse td-sidebar-nav pt-2 pl-4" id="td-section-nav">
+    
+    
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/" class="align-left pl-0 pr-2 td-sidebar-link td-sidebar-link__section">Documentation</a>
+  </li>
+  <ul>
+    <li class="collapse show" id="docs">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsinstall-operator-sdk" href="/docs/install-operator-sdk/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuilderquickstart" href="/docs/kubebuilder/quickstart/">Quickstart</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/ansible/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Ansible Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsansible">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibleinstallation" href="/docs/ansible/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblequickstart" href="/docs/ansible/quickstart/">Quickstart</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibletesting-guide" href="/docs/ansible/testing-guide/">Testing with Molecule</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibledevelopment-tips" href="/docs/ansible/development-tips/">Development Tips</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/ansible/reference/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsansiblereference">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceadvanced_options" href="/docs/ansible/reference/advanced_options/">Advanced Options</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceapb-migration-guide" href="/docs/ansible/reference/apb-migration-guide/">APB Migration</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencedependent-watches" href="/docs/ansible/reference/dependent-watches/">Dependent Watches</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencefinalizers" href="/docs/ansible/reference/finalizers/">Finalizers</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceinformation-flow-ansible-operator" href="/docs/ansible/reference/information-flow-ansible-operator/">Information Flow</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferenceretroactively-owned-resources" href="/docs/ansible/reference/retroactively-owned-resources/">Retroactively Owned Resources</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencescaffolding" href="/docs/ansible/reference/scaffolding/">Scaffolding</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansiblereferencewatches" href="/docs/ansible/reference/watches/">Watches</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsansibledevwebhooks" href="/docs/ansible/dev/webhooks/"></a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/" class="align-left pl-0 pr-2 td-sidebar-link td-sidebar-link__section">Golang Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse show" id="docsgolang">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolanginstallation" href="/docs/golang/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangquickstart" href="/docs/golang/quickstart/">Quickstart</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangunit-testing" href="/docs/golang/unit-testing/">Unit Testing</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolange2e-tests" href="/docs/golang/e2e-tests/">Writing E2E Tests</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/monitoring/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Monitoring</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangmonitoring">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangmonitoringprometheus" href="/docs/golang/monitoring/prometheus/">With Prometheus</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangmonitoringservice-monitor" href="/docs/golang/monitoring/service-monitor/">Using Prometheus Operator ServiceMonitor CRD</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/olm-integration/" class="align-left pl-0 pr-2 active td-sidebar-link td-sidebar-link__section">Integrating with OLM</a>
+  </li>
+  <ul>
+    <li class="collapse show" id="docsgolangolm-integration">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationcsv-annotations" href="/docs/golang/olm-integration/csv-annotations/">CSV Code Annotations</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationgenerating-a-csv" href="/docs/golang/olm-integration/generating-a-csv/">Generating ClusterServiceVersion&#39;s</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page  active" id="m-docsgolangolm-integrationolm-cli" href="/docs/golang/olm-integration/olm-cli/">Running with OLM</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangolm-integrationbundle-cli" href="/docs/golang/olm-integration/bundle-cli/">Working with Bundles</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/golang/references/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsgolangreferences">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesclient" href="/docs/golang/references/client/">Controller Runtime Client API</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesevent-filtering" href="/docs/golang/references/event-filtering/">Using Predicates for Event Filtering</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferenceslogging" href="/docs/golang/references/logging/">Logging</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsgolangreferencesproject_layout" href="/docs/golang/references/project_layout/">Project Layout</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/helm/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Helm Based Operators</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docshelm">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelminstallation" href="/docs/helm/installation/">Installation</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmquickstart" href="/docs/helm/quickstart/">Quickstart</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/helm/reference/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docshelmreference">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferenceadvanced_features" href="/docs/helm/reference/advanced_features/">Advanced Features</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferencescaffolding" href="/docs/helm/reference/scaffolding/">Scaffolding</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docshelmreferencewatches" href="/docs/helm/reference/watches/">Watches</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/scorecard/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Scorecard</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsscorecard">
+      
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/cli/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">CLI Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscli">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk" href="/docs/cli/operator-sdk/">operator-sdk</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add" href="/docs/cli/operator-sdk_add/">operator-sdk add</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_api" href="/docs/cli/operator-sdk_add_api/">operator-sdk add api</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_controller" href="/docs/cli/operator-sdk_add_controller/">operator-sdk add controller</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_add_crd" href="/docs/cli/operator-sdk_add_crd/">operator-sdk add crd</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_build" href="/docs/cli/operator-sdk_build/">operator-sdk build</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle" href="/docs/cli/operator-sdk_bundle/">operator-sdk bundle</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle_create" href="/docs/cli/operator-sdk_bundle_create/">operator-sdk bundle create</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_bundle_validate" href="/docs/cli/operator-sdk_bundle_validate/">operator-sdk bundle validate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_cleanup" href="/docs/cli/operator-sdk_cleanup/">operator-sdk cleanup</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion" href="/docs/cli/operator-sdk_completion/">operator-sdk completion</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion_bash" href="/docs/cli/operator-sdk_completion_bash/">operator-sdk completion bash</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_completion_zsh" href="/docs/cli/operator-sdk_completion_zsh/">operator-sdk completion zsh</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate" href="/docs/cli/operator-sdk_generate/">operator-sdk generate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_crds" href="/docs/cli/operator-sdk_generate_crds/">operator-sdk generate crds</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_csv" href="/docs/cli/operator-sdk_generate_csv/">operator-sdk generate csv</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_generate_k8s" href="/docs/cli/operator-sdk_generate_k8s/">operator-sdk generate k8s</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_migrate" href="/docs/cli/operator-sdk_migrate/">operator-sdk migrate</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_new" href="/docs/cli/operator-sdk_new/">operator-sdk new</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm" href="/docs/cli/operator-sdk_olm/">operator-sdk olm</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_install" href="/docs/cli/operator-sdk_olm_install/">operator-sdk olm install</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_status" href="/docs/cli/operator-sdk_olm_status/">operator-sdk olm status</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_olm_uninstall" href="/docs/cli/operator-sdk_olm_uninstall/">operator-sdk olm uninstall</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_print-deps" href="/docs/cli/operator-sdk_print-deps/">operator-sdk print-deps</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_run" href="/docs/cli/operator-sdk_run/">operator-sdk run</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_scorecard" href="/docs/cli/operator-sdk_scorecard/">operator-sdk scorecard</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_test" href="/docs/cli/operator-sdk_test/">operator-sdk test</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_test_local" href="/docs/cli/operator-sdk_test_local/">operator-sdk test local</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsclioperator-sdk_version" href="/docs/cli/operator-sdk_version/">operator-sdk version</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/contribution-guidelines/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Contribution Guidelines</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscontribution-guidelines">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesdeveloper-guide" href="/docs/contribution-guidelines/developer-guide/">Development Environment</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesrelease" href="/docs/contribution-guidelines/release/">Release Guide</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinesreporting-issues" href="/docs/contribution-guidelines/reporting-issues/">Reporting Issues</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/contribution-guidelines/testing/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Testing</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docscontribution-guidelinestesting">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinestestingrunning-the-tests" href="/docs/contribution-guidelines/testing/running-the-tests/">Running Tests</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelinestestingtravis-build" href="/docs/contribution-guidelines/testing/travis-build/">Travis CI</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelineslocal-changes" href="/docs/contribution-guidelines/local-changes/">Local Changes</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docscontribution-guidelineslocal-docs" href="/docs/contribution-guidelines/local-docs/">Local Docs</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrating-existing-apis" href="/docs/migrating-existing-apis/">Migrating Existing K8S APIs</a>
+      
+      
+      
+      
+
+
+
+
+
+
+<ul class="td-sidebar-nav__section pr-md-3">
+  <li class="td-sidebar-nav__section-title">
+    <a  href="/docs/migration/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Migration Reference</a>
+  </li>
+  <ul>
+    <li class="collapse " id="docsmigration">
+      
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrationv010-migration-guide" href="/docs/migration/v0.1.0-migration-guide/">Migration</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsmigrationversion-upgrade-guide" href="/docs/migration/version-upgrade-guide/">Version Upgrade</a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsoperator-scope" href="/docs/operator-scope/">Operator Scope</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsversioning" href="/docs/versioning/">Versioning</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docsfaq" href="/docs/faq/">FAQ</a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuilderadvanced-topics" href="/docs/kubebuilder/advanced-topics/"></a>
+      
+      
+      
+      
+      
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-docskubebuildermigrationproject_migration_guide" href="/docs/kubebuilder/migration/project_migration_guide/"></a>
+      
+      
+    </li>
+  </ul>
+</ul>
+
+  </nav>
+</div>
+
+
+
+
+          </div>
+
+          <main class="col-12 col-md-9 col-xl-8 pl-md-5" role="main">
+            
+  
+
+            
+            
+<div class="td-content">
+	<h1>Running your Operator with OLM</h1>
+	
+	<p>The <a href="https://github.com/operator-framework/operator-lifecycle-manager/">Operator Lifecycle Manager (OLM)</a> is a set of cluster resources that
+manage the lifecycle of an Operator. The Operator SDK provides an entrypoint for
+deploying and deleting your Operator using an OLM-enabled Kubernetes cluster
+through <code>operator-sdk run --olm</code>, added in <a href="https://github.com/operator-framework/operator-sdk/releases/tag/v0.15.0">v0.15.0</a></p>
+<p>This document assumes you are familiar with OLM and related terminology, and have
+read the SDK-OLM integration <a href="https://github.com/operator-framework/operator-sdk/blob/master/doc/proposals/sdk-integration-with-olm.md">design proposal</a>.</p>
+<p><strong>Note:</strong> before continuing, please read the <a href="#caveats">caveats</a> section below.</p>
+<h2 id="setup">Setup</h2>
+<p>The SDK assumes OLM is already installed and running on your cluster. If not,
+you can install OLM by running <a href="https://github.com/operator-framework/operator-sdk/blob/master/doc/cli/operator-sdk_olm_install.md"><code>operator-sdk olm install</code></a>.
+You can check the status of OLM by running <a href="https://github.com/operator-framework/operator-sdk/blob/master/doc/cli/operator-sdk_olm_status.md"><code>operator-sdk olm status</code></a>.</p>
+<p>The SDK also assumes you have a valid <a href="https://github.com/operator-framework/operator-registry/tree/v1.5.3#manifest-format">Operator bundle</a> available
+on disk. If not, you can create one using <a href="https://github.com/operator-framework/operator-sdk/blob/master/doc/cli/operator-sdk_generate_csv.md"><code>operator-sdk generate csv --update-crds</code></a>,
+which will create a <a href="https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/building-your-csv.md"><code>ClusterServiceVersion</code> (CSV)</a> in a versioned bundle
+directory and a <a href="https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/how-to-update-operators.md">package manifest</a> defining your Operator package,
+and copy your <code>CustomResourceDefinition</code>'s to the new bundle directory.</p>
+<h2 id="operator-sdk-run---olm-command-overview"><code>operator-sdk run --olm</code> command overview</h2>
+<p>Let&rsquo;s look at the anatomy of the command:</p>
+<pre><code class="language-console" data-lang="console">$ operator-sdk run --help
+Run an Operator in a variety of environments
+
+Usage:
+  operator-sdk run [flags]
+
+Flags:
+      --kubeconfig string           The file path to kubernetes configuration file. Defaults to location specified by $KUBECONFIG, or to default file rules if not set
+      --olm                         The operator to be run will be managed by OLM in a cluster. Cannot be set with another run-type flag
+      --olm-namespace string        [olm only] The namespace where OLM is installed (default &quot;olm&quot;)
+      --operator-namespace string   [olm only] The namespace where operator resources are created in --olm mode. It must already exist in the cluster or be defined in a manifest passed to IncludePaths.
+      --manifests string            [olm only] Directory containing package manifest and operator bundles.
+      --operator-version string     [olm only] Version of operator to deploy
+      --install-mode string         [olm only] InstallMode to create OperatorGroup with. Format: InstallModeType=[ns1,ns2[, ...]]
+      --include strings             [olm only] Path to Kubernetes resource manifests, ex. Role, Subscription. These supplement or override defaults generated by run/cleanup
+      --timeout duration            [olm only] Time to wait for the command to complete before failing (default 2m0s)
+      ...
+</code></pre><p>These flags correspond to options in the <code>OLMCmd</code> configuration model (names are similar if not identical):</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">OLMCmd</span> <span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#8f5902;font-style:italic">// KubeconfigPath is the local path to a kubeconfig. This uses well-defined
+</span><span style="color:#8f5902;font-style:italic"></span>  <span style="color:#8f5902;font-style:italic">// default loading rules to load the config if empty.
+</span><span style="color:#8f5902;font-style:italic"></span>  <span style="color:#000">KubeconfigPath</span> <span style="color:#204a87;font-weight:bold">string</span>
+  <span style="color:#8f5902;font-style:italic">// OLMNamespace is the namespace in which OLM is installed.
+</span><span style="color:#8f5902;font-style:italic"></span>  <span style="color:#000">OLMNamespace</span> <span style="color:#204a87;font-weight:bold">string</span>
+  <span style="color:#8f5902;font-style:italic">// OperatorNamespace is the cluster namespace in which operator resources
+</span><span style="color:#8f5902;font-style:italic"></span>  <span style="color:#8f5902;font-style:italic">// are created.
+</span><span style="color:#8f5902;font-style:italic"></span>  <span style="color:#8f5902;font-style:italic">// OperatorNamespace must already exist in the cluster or be defined in
+</span><span style="color:#8f5902;font-style:italic"></span>  <span style="color:#8f5902;font-style:italic">// a manifest passed to IncludePaths.
+</span><span style="color:#8f5902;font-style:italic"></span>  <span style="color:#000">OperatorNamespace</span> <span style="color:#204a87;font-weight:bold">string</span>
+	<span style="color:#8f5902;font-style:italic">// ManifestsDir is a directory containing a package manifest and N bundles
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// of the operator&#39;s CSV and CRD&#39;s. OperatorVersion can be set to the
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// version of the desired operator version&#39;s subdir and Run()/Cleanup() will
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// deploy the operator version in that subdir.
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">ManifestsDir</span> <span style="color:#204a87;font-weight:bold">string</span>
+	<span style="color:#8f5902;font-style:italic">// OperatorVersion is the version of the operator to deploy. It must be
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// a semantic version, ex. 0.1.0.
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">OperatorVersion</span> <span style="color:#204a87;font-weight:bold">string</span>
+	<span style="color:#8f5902;font-style:italic">// InstallMode specifies which supported installMode should be used to
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// create an OperatorGroup. The format for this field is as follows:
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">//
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// &#34;InstallModeType=[ns1,ns2[, ...]]&#34;
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">//
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// The InstallModeType string passed must be marked as &#34;supported&#34; in the
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// CSV being installed. The namespaces passed must exist or be created by
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// passing a Namespace manifest to IncludePaths. An empty set of namespaces
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// can be used for AllNamespaces.
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// The default mode is OwnNamespace, which uses OperatorNamespace or the
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// kubeconfig default.
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">InstallMode</span> <span style="color:#204a87;font-weight:bold">string</span>
+  <span style="color:#8f5902;font-style:italic">// IncludePaths are path to manifests of Kubernetes resources that either
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// supplement or override defaults generated by methods of OLMCmd. These
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// manifests can be but are not limited to: RBAC, Subscriptions,
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// CatalogSources, OperatorGroups.
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">//
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// Kinds that are overridden if supplied:
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// - CatalogSource
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// - Subscription
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// - OperatorGroup
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">IncludePaths</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#204a87;font-weight:bold">string</span>
+	<span style="color:#8f5902;font-style:italic">// Timeout dictates how long to wait for a REST call to complete. A call
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// exceeding Timeout will generate an error.
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">Timeout</span> <span style="color:#000">time</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Duration</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>Most of the above configuration options do not need explanation beyond their descriptions.
+The following options require more clarification:</p>
+<ul>
+<li><code>--operator-version</code>, on top of being a semantic version string corresponding to a
+CSV version, should point to the directory containing your Operator bundle.
+This path is <code>deploy/olm-catalog/&lt;operator-name&gt;/&lt;operator-version&gt;</code> in an SDK Operator project.</li>
+<li><code>--include</code> can be used if you have an existing set of manifests outside your
+bundle (ex. catalog manifests like a <code>Subscription</code>, <code>CatalogSource</code>, and/or <code>OperatorGroup</code>)
+you wish to facilitate Operator deployment with.
+<ul>
+<li>Currently any manifests supplied to this command will be created with the same
+behavior of <code>kubectl create -f &lt;manifest-path&gt;</code>.</li>
+<li>If a <code>Subscription</code> or <code>CatalogSource</code> are supplied, the other must be supplied
+since they are linked by field references.</li>
+</ul>
+</li>
+<li><code>--install-mode</code> configures the <code>spec.targetNamespaces</code> field of an <code>OperatorGroup</code>,
+and supports the following modes (assuming your CSV does as well):
+<ul>
+<li><code>OwnNamespace</code>: the Operator will watch its own namespace. This is the default.</li>
+<li><code>SingleNamespace</code>: the Operator will watch a namespace, not necessarily its own.</li>
+<li><code>MultiNamespace</code>: the Operator will watch multiple namespaces.
+Example: <code>--install-mode=MultiNamespace=my-ns-1,my-ns-2</code> will watch resources in namespaces <code>my-ns-1</code> and <code>my-ns-2</code>.</li>
+<li><code>AllNamespaces</code>: the Operator will watch all namespaces (cluster-scoped Operators).
+Example: <code>--install-mode=AllNamespaces=&quot;&quot;</code> will watch resources in all namespaces given</li>
+</ul>
+</li>
+</ul>
+<h2 id="examples">Examples</h2>
+<h3 id="setup-1">Setup</h3>
+<p>Lets walk through creating a <code>memcached-operator</code> and enabling OLM on your cluster.</p>
+<p>Follow the user guides for <a href="https://github.com/operator-framework/operator-sdk/blob/master/doc/user-guide.md">Go</a>, <a href="https://github.com/operator-framework/operator-sdk/blob/master/doc/ansible/user-guide.md">Ansible</a>,
+or <a href="https://github.com/operator-framework/operator-sdk/blob/master/doc/helm/user-guide.md">Helm</a>, depending on which Operator type you are interested in.</p>
+<p>Now that we have a working, simple Operator, we can generate a new <code>v0.1.0</code> bundle:</p>
+<p><strong>Note:</strong> <code>operator-sdk generate csv</code> only officially supports Go Operators,
+although it will generate a barebones CSV for Ansible and Helm Operators that <em>will</em> require manual modification.</p>
+<pre><code class="language-console" data-lang="console">$ operator-sdk generate csv --csv-version 0.1.0 --update-crds
+INFO[0000] Generating CSV manifest version 0.1.0
+INFO[0004] Required csv fields not filled in file deploy/olm-catalog/memcached-operator/0.1.0/memcached-operator.v0.1.0.clusterserviceversion.yaml:
+	spec.keywords
+	spec.provider
+INFO[0004] Created deploy/olm-catalog/memcached-operator/0.1.0/memcached-operator.v0.1.0.clusterserviceversion.yaml
+</code></pre><p>A bundle directory containing a CSV and all CRDs in <code>deploy/crds</code> and package manifest
+have been created at <code>deploy/olm-catalog/memcached-operator/0.1.0</code> and
+<code>deploy/olm-catalog/memcached-operator/memcached-operator.package.yaml</code>, respectively.</p>
+<p>Ensure OLM is enabled on your cluster:</p>
+<pre><code class="language-console" data-lang="console"># If OLM is not already installed, go ahead and install the latest version.
+$ operator-sdk olm install
+INFO[0000] Fetching CRDs for version &quot;latest&quot;           
+INFO[0001] Fetching resources for version &quot;latest&quot;      
+INFO[0007] Creating CRDs and resources                  
+INFO[0007]   Creating CustomResourceDefinition &quot;clusterserviceversions.operators.coreos.com&quot;
+INFO[0007]   Creating CustomResourceDefinition &quot;installplans.operators.coreos.com&quot;
+INFO[0007]   Creating CustomResourceDefinition &quot;subscriptions.operators.coreos.com&quot;
+INFO[0007]   Creating CustomResourceDefinition &quot;catalogsources.operators.coreos.com&quot;
+INFO[0007]   Creating CustomResourceDefinition &quot;operatorgroups.operators.coreos.com&quot;
+INFO[0007]   Creating Namespace &quot;olm&quot;                   
+INFO[0007]   Creating Namespace &quot;operators&quot;             
+INFO[0007]   Creating ServiceAccount &quot;olm/olm-operator-serviceaccount&quot;
+INFO[0007]   Creating ClusterRole &quot;system:controller:operator-lifecycle-manager&quot;
+INFO[0007]   Creating ClusterRoleBinding &quot;olm-operator-binding-olm&quot;
+INFO[0007]   Creating Deployment &quot;olm/olm-operator&quot;     
+INFO[0007]   Creating Deployment &quot;olm/catalog-operator&quot;
+INFO[0007]   Creating ClusterRole &quot;aggregate-olm-edit&quot;  
+INFO[0007]   Creating ClusterRole &quot;aggregate-olm-view&quot;  
+INFO[0007]   Creating OperatorGroup &quot;operators/global-operators&quot;
+INFO[0011]   Creating OperatorGroup &quot;olm/olm-operators&quot;
+INFO[0011]   Creating ClusterServiceVersion &quot;olm/packageserver&quot;
+INFO[0011]   Creating CatalogSource &quot;olm/operatorhubio-catalog&quot;
+INFO[0011] Waiting for deployment/olm-operator rollout to complete
+INFO[0011]   Waiting for Deployment &quot;olm/olm-operator&quot; to rollout: 0 of 1 updated replicas are available
+INFO[0013]   Deployment &quot;olm/olm-operator&quot; successfully rolled out
+INFO[0013] Waiting for deployment/catalog-operator rollout to complete
+INFO[0013]   Waiting for Deployment &quot;olm/catalog-operator&quot; to rollout: 0 of 1 updated replicas are available
+INFO[0018]   Deployment &quot;olm/catalog-operator&quot; successfully rolled out
+INFO[0018] Waiting for deployment/packageserver rollout to complete
+INFO[0018]   Waiting for Deployment &quot;olm/packageserver&quot; to rollout: 1 out of 2 new replicas have been updated
+INFO[0023]   Waiting for Deployment &quot;olm/packageserver&quot; to rollout: 1 old replicas are pending termination
+INFO[0030]   Deployment &quot;olm/packageserver&quot; successfully rolled out
+INFO[0030] Successfully installed OLM version &quot;latest&quot;  
+
+NAME                                            NAMESPACE    KIND                        STATUS
+clusterserviceversions.operators.coreos.com                  CustomResourceDefinition    Installed
+installplans.operators.coreos.com                            CustomResourceDefinition    Installed
+subscriptions.operators.coreos.com                           CustomResourceDefinition    Installed
+catalogsources.operators.coreos.com                          CustomResourceDefinition    Installed
+operatorgroups.operators.coreos.com                          CustomResourceDefinition    Installed
+olm                                                          Namespace                   Installed
+operators                                                    Namespace                   Installed
+olm-operator-serviceaccount                     olm          ServiceAccount              Installed
+system:controller:operator-lifecycle-manager                 ClusterRole                 Installed
+olm-operator-binding-olm                                     ClusterRoleBinding          Installed
+olm-operator                                    olm          Deployment                  Installed
+catalog-operator                                olm          Deployment                  Installed
+aggregate-olm-edit                                           ClusterRole                 Installed
+aggregate-olm-view                                           ClusterRole                 Installed
+global-operators                                operators    OperatorGroup               Installed
+olm-operators                                   olm          OperatorGroup               Installed
+packageserver                                   olm          ClusterServiceVersion       Installed
+operatorhubio-catalog                           olm          CatalogSource               Installed
+
+# Check OLM's status.
+$ operator-sdk olm status
+INFO[0000] Fetching CRDs for version &quot;0.14.1&quot;           
+INFO[0002] Fetching resources for version &quot;0.14.1&quot;      
+INFO[0002] Successfully got OLM status for version &quot;0.14.1&quot;
+
+NAME                                            NAMESPACE    KIND                        STATUS
+olm                                                          Namespace                   Installed
+operatorgroups.operators.coreos.com                          CustomResourceDefinition    Installed
+catalogsources.operators.coreos.com                          CustomResourceDefinition    Installed
+subscriptions.operators.coreos.com                           CustomResourceDefinition    Installed
+installplans.operators.coreos.com                            CustomResourceDefinition    Installed
+aggregate-olm-edit                                           ClusterRole                 Installed
+catalog-operator                                olm          Deployment                  Installed
+olm-operator                                    olm          Deployment                  Installed
+operatorhubio-catalog                           olm          CatalogSource               Installed
+olm-operators                                   olm          OperatorGroup               Installed
+aggregate-olm-view                                           ClusterRole                 Installed
+operators                                                    Namespace                   Installed
+global-operators                                operators    OperatorGroup               Installed
+olm-operator-serviceaccount                     olm          ServiceAccount              Installed
+packageserver                                   olm          ClusterServiceVersion       Installed
+system:controller:operator-lifecycle-manager                 ClusterRole                 Installed
+clusterserviceversions.operators.coreos.com                  CustomResourceDefinition    Installed
+olm-operator-binding-olm                                     ClusterRoleBinding          Installed
+</code></pre><p><strong>Note:</strong> certain cluster types may already have OLM enabld, but under a non-default (<code>&quot;olm&quot;</code>) namespace.
+Set <code>--olm-namespac=[non-default-olm-namespace]</code> for both <code>operator-sdk olm</code> and <code>operator-sdk run</code>
+commands if this is the case.</p>
+<h3 id="simple-operator">Simple Operator</h3>
+<p>Assuming everything your Operator needs to successfully deploy and run exists
+in your bundle directory (no <code>Secret</code>'s, etc.), you can deploy your Operator
+using the following command invocation:</p>
+<pre><code class="language-console" data-lang="console">$ operator-sdk run --olm --manifests deploy/olm-catalog/memcached-operator --operator-version 0.1.0
+INFO[0000] loading Bundles                               dir=deploy/olm-catalog/memcached-operator
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=memcached-operator load=bundles
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=0.1.0 load=bundles
+INFO[0000] found csv, loading bundle                     dir=deploy/olm-catalog/memcached-operator file=memcached-operator.v0.1.0.clusterserviceversion.yaml load=bundles
+INFO[0000] loading bundle file                           dir=deploy/olm-catalog/memcached-operator/0.1.0 file=example.com_memcacheds_crd.yaml load=bundle
+INFO[0000] loading bundle file                           dir=deploy/olm-catalog/memcached-operator/0.1.0 file=memcached-operator.v0.1.0.clusterserviceversion.yaml load=bundle
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=metadata load=bundles
+INFO[0000] loading Packages and Entries                  dir=deploy/olm-catalog/memcached-operator
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=memcached-operator load=package
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=0.1.0 load=package
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=metadata load=package
+INFO[0000] Creating registry                            
+INFO[0000]   Creating ConfigMap &quot;olm/memcached-operator-registry-bundles&quot;
+INFO[0000]   Creating Deployment &quot;olm/memcached-operator-registry-server&quot;
+INFO[0000]   Creating Service &quot;olm/memcached-operator-registry-server&quot;
+INFO[0000] Waiting for Deployment &quot;olm/memcached-operator-registry-server&quot; rollout to complete
+INFO[0000]   Waiting for Deployment &quot;olm/memcached-operator-registry-server&quot; to rollout: 0 out of 1 new replicas have been updated
+INFO[0001]   Waiting for Deployment &quot;olm/memcached-operator-registry-server&quot; to rollout: 0 of 1 updated replicas are available
+INFO[0002]   Deployment &quot;olm/memcached-operator-registry-server&quot; successfully rolled out
+INFO[0002] Creating resources                           
+INFO[0002]   Creating CatalogSource &quot;default/memcached-operator-ocs&quot;
+INFO[0002]   Creating Subscription &quot;default/memcached-operator-v0-0-1-sub&quot;
+INFO[0002]   Creating OperatorGroup &quot;default/operator-sdk-og&quot;
+INFO[0002] Waiting for ClusterServiceVersion &quot;default/memcached-operator.v0.1.0&quot; to reach 'Succeeded' phase
+INFO[0002]   Waiting for ClusterServiceVersion &quot;default/memcached-operator.v0.1.0&quot; to appear
+INFO[0034]   Found ClusterServiceVersion &quot;default/memcached-operator.v0.1.0&quot; phase: Pending
+INFO[0035]   Found ClusterServiceVersion &quot;default/memcached-operator.v0.1.0&quot; phase: InstallReady
+INFO[0036]   Found ClusterServiceVersion &quot;default/memcached-operator.v0.1.0&quot; phase: Installing
+INFO[0036]   Found ClusterServiceVersion &quot;default/memcached-operator.v0.1.0&quot; phase: Succeeded
+INFO[0037] Successfully installed &quot;memcached-operator.v0.1.0&quot; on OLM version &quot;0.14.1&quot;
+
+NAME                            NAMESPACE    KIND                        STATUS
+memcacheds.cache.example.com    default      CustomResourceDefinition    Installed
+memcached-operator.v0.1.0       default      ClusterServiceVersion       Installed
+</code></pre><p>This command can be further simplified by passing only <code>--operator-version=0.1.0</code>
+and letting the command infer the bundle path.</p>
+<h3 id="multi-namespacedcluster-wide-deployment">Multi-namespaced/cluster-wide deployment</h3>
+<p>Lets say you modify your CSV&rsquo;s <code>installModes</code> to support <code>MultiNamespace</code>. Now
+you can deploy your Operator such that it watches multiple namespaces <code>ns-1</code>, <code>ns-2</code>, and <code>ns-3</code>:</p>
+<pre><code class="language-console" data-lang="console">$ operator-sdk run --olm --operator-version 0.1.0 --install-mode-MultiNamespace=ns-1,ns-2,ns-3
+</code></pre><h3 id="supplying-your-own-catalog-manifests">Supplying your own catalog manifests</h3>
+<p>I now have a reasonably complicated set of catalog requirements, ex. multiple <code>OperatorGroup</code>'s in my cluster,
+and want full control over how the SDK tells OLM to deploy my operator.</p>
+<p>These manifests are in <code>deploy/catalog-manifests</code>:</p>
+<pre><code class="language-console" data-lang="console">$ ls -l deploy/catalog-manifests
+-rw-rw-r--. 1 user user  2368 Mar 24 19:21 special-operatorgroup.yaml
+-rw-rw-r--. 1 user user  3264 Mar 24 19:23 special-subscription.yaml
+-rw-rw-r--. 1 user user  5117 Mar 24 18:22 special-catalogsource.yaml
+</code></pre><p>Instead of <code>operator-sdk run --olm</code> creating these manifests for my Operator,
+I can direct the command to create the above manifests:</p>
+<pre><code class="language-console" data-lang="console">$ operator-sdk run --olm --operator-version 0.1.0 --include special-operatorgroup.yaml,special-subscription.yaml,special-catalogsource.yaml
+INFO[0000] loading Bundles                               dir=deploy/olm-catalog/memcached-operator
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=memcached-operator load=bundles
+...
+INFO[0002] Creating resources                           
+INFO[0002]   Creating OperatorGroup &quot;default/special-operatorgroup&quot;
+INFO[0002]   Creating CatalogSource &quot;default/special-subscription&quot;
+INFO[0002]   Creating Subscription &quot;default/special-catalogsource&quot;
+...
+</code></pre><h3 id="cleaning-up">Cleaning up</h3>
+<p>I was testing my Operator, and now I would like to remove it from your cluster
+in a given namespace. The <code>operator-sdk cleanup --olm</code> command will do this for you:</p>
+<pre><code class="language-console" data-lang="console">$ operator-sdk cleanup --olm --operator-version 0.1.0
+INFO[0000] loading Bundles                               dir=deploy/olm-catalog/memcached-operator
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=memcached-operator load=bundles
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=0.1.0 load=bundles
+INFO[0000] found csv, loading bundle                     dir=deploy/olm-catalog/memcached-operator file=memcached-operator.v0.1.0.clusterserviceversion.yaml load=bundles
+INFO[0000] loading bundle file                           dir=deploy/olm-catalog/memcached-operator/0.1.0 file=example.com_memcacheds_crd.yaml load=bundle
+INFO[0000] loading bundle file                           dir=deploy/olm-catalog/memcached-operator/0.1.0 file=memcached-operator.v0.1.0.clusterserviceversion.yaml load=bundle
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=metadata load=bundles
+INFO[0000] loading Packages and Entries                  dir=deploy/olm-catalog/memcached-operator
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=memcached-operator load=package
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=0.1.0 load=package
+INFO[0000] directory                                     dir=deploy/olm-catalog/memcached-operator file=metadata load=package
+INFO[0000] Deleting resources                           
+INFO[0000]   Deleting CatalogSource &quot;default/memcached-operator-ocs&quot;
+INFO[0000]   Deleting Subscription &quot;default/memcached-operator-v0-0-1-sub&quot;
+INFO[0000]   Deleting OperatorGroup &quot;default/operator-sdk-og&quot;
+INFO[0000]   Deleting CustomResourceDefinition &quot;default/memcacheds.example.com&quot;
+INFO[0000]   Deleting ClusterServiceVersion &quot;default/memcached-operator.v0.1.0&quot;
+INFO[0000]   Waiting for deleted resources to disappear
+INFO[0001] Successfully uninstalled &quot;memcached-operator.v0.1.0&quot; on OLM version &quot;0.14.1&quot;
+</code></pre><h2 id="caveats">Caveats</h2>
+<ul>
+<li><code>operator-sdk run</code> (and <code>operator-sdk cleanup</code>) are intended to be used for testing
+purposes only as of now, since this command creates a transient image registry that
+should not be used in production. Typically a registry is deployed eparately and a
+set of catalog manifests are created in the cluster to inform OLM
+of that registry and which Operator versions it can deploy and where to deploy the Operator.</li>
+<li><code>operator-sdk run</code> can only deploy one Operator and one version of that Operator
+at a time, hence its intended purpose being testing only. Production OLM usage
+requires the typical setup described above.</li>
+</ul>
+
+	
+	
+	<div class="text-muted mt-5 pt-3 border-top">Last modified January 1, 0001
+</div>
+</div>
+
+
+          </main>
+        </div>
+      </div>
+      <div class="row flex-xl-nowrap">
+        
+<footer class="of-footer-main">
+  <div class="of-footer-main__meta">
+    <img src="/build/images/logo.svg" alt="">
+    <p class="of-footer-main__meta__text">The Operator Framework is an open source toolkit to manage Kubernetes nativeapplications, called Operators, in an effective, automated, and scalable way.</p>
+    <ul class="of-link-list of-link-list--secondary">
+      <li class="of-link-list__li"><a class="of-link-list__a" href="#">Operator SDK</a></li>
+      <li class="of-link-list__li"><a class="of-link-list__a" href="#">Operator Lifecycle Manager</a></li>
+      <li class="of-link-list__li"><a class="of-link-list__a" class="of-link of-link--external" href="#">OperatorHub</a></li>
+    </ul>
+  </div>
+  <div class="of-footer-main__social">
+    <h4 class="of-heading of-heading--sm">Connect with us!</h4>
+      
+        
+        
+    <ul class="of-link-list">
+      
+        <li class="of-link-list__li">
+          <a class="of-link-list__a" href="https://groups.google.com/forum/#!forum/operator-framework" aria-label="Forum">
+            <i class="fas fa-comment"></i>
+          </a>
+        </li>
+      
+        <li class="of-link-list__li">
+          <a class="of-link-list__a" href="https://github.com/operator-framework/operator-sdk" aria-label="github">
+            <i class="fab fa-github"></i>
+          </a>
+        </li>
+      
+</ul>
+
+      
+    
+
+  </div>
+  <div class="of-footer-main__copyright">
+    <p>Copyright &copy; 2020</p>
+    <ul class="of-link-list">
+      <li class="of-link-list__li"><a href="https://www.redhat.com/en/about/privacy-policy">Privacy Statement</a></li>
+      
+    </ul>
+  </div>
+</footer>
+</body>
+</html>
+
+      </div>
+    </div>
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+<script src="/js/main.min.29b0315468c00226fa6f4556a9cebc0ac4fe1ce1457a01b22c0a06b329877383.js" integrity="sha256-KbAxVGjAAib6b0VWqc68CsT&#43;HOFFegGyLAoGsymHc4M=" crossorigin="anonymous"></script>
+
+
+
+  </body>
+</html>
